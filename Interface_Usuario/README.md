@@ -1,8 +1,8 @@
 # Interface de Usuário
 
-Aqui nesse projeto consta o código do projeto da camada contendo interface de usuario
+Aqui nesse projeto consta o código do projeto da camada contendo interface de usuario para administração do serviço web.
 
 
 ## TODO
 
-* Definir a linguagem da interface de usuario
+* Montar a interface de usuario;
