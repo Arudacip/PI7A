@@ -1,26 +1,23 @@
 package main;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import frameLog.LogCtrl;
 import frameStatus.StatusCtrl;
 import btns.BtnCtrler;
+import btns.ButtonTypes;
 
 public class IAServiceAdmin extends JFrame implements ActionListener
 {
-	
 	private static final long serialVersionUID = 1L;
 	private BtnCtrler buttons = new BtnCtrler();
 	private LogCtrl frameLog = new LogCtrl();
 	private StatusCtrl frameStatus = new StatusCtrl();
 	
-	// Constroi a IA de Administracao do servi�o
 	public IAServiceAdmin()
 	{
 		super("Servidor Web v1.0 - ECP7AN-MCA1-09");
@@ -42,6 +39,17 @@ public class IAServiceAdmin extends JFrame implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		// TODO: Criar as a��es a ser realizadas
+		if(e.getSource() == buttons.getButton(ButtonTypes.Start)) /*Iniciar*/
+		{
+			frameLog.AddMessage("Tentativa de iniciar...");
+		}
+		else if(e.getSource() == buttons.getButton(ButtonTypes.Restart))/*Reiniciar*/
+		{
+			frameLog.AddMessage("Tentativa de reiniciar...");
+		}
+		else if(e.getSource() == buttons.getButton(ButtonTypes.Stop))/*Parar*/
+		{
+			frameLog.AddMessage("Tentativa de parar...");
+		}
 	}
 }

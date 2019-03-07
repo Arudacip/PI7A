@@ -20,17 +20,15 @@ public class LogCtrl
 		txtLog = new JTextArea(6, 30);
 		txtLog.setEditable(false);
 		txtLog.setBorder(BorderFactory.createEtchedBorder());
-		txtLog.setText("Servidor iniciado as 14:17:32 14/02/2019 \n"
-				+ "Servidor parado as 14:16:20 14/02/2019"); // TEXTO STUB
-		
-		// define os listeners dos objetos
-		// NAO HA LISTENER AQUI
-		
-		// acrescenta no frame os objetos
 		frameLog.setLayout(new BorderLayout());
 		frameLog.add(lbTitle, BorderLayout.NORTH);
 		frameLog.add(txtLog, BorderLayout.CENTER);
 		
 		return frameLog;
+	}
+	
+	public void AddMessage(String message)
+	{
+		txtLog.setText(txtLog.getText() + "\n" + message);
 	}
 }

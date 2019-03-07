@@ -10,7 +10,7 @@ import main.IAServiceAdmin;
 
 public class BtnCtrler 
 {
-	private ArrayList<JButton> buttonsList = new ArrayList<>();
+	private ArrayList<ArudacipButton> buttonsList = new ArrayList<>();
 	public BtnCtrler()
 	{
 		buttonsList.add(new start());
@@ -21,12 +21,22 @@ public class BtnCtrler
 	{
 		JPanel frameControl = new JPanel();
 		frameControl.setLayout(new FlowLayout());
-		for(JButton btn : buttonsList)
+		for(ArudacipButton btn : buttonsList)
 		{
-			btn.addActionListener(ui);
-			frameControl.add(btn);
+			JButton myBT = (JButton)btn;
+			myBT.addActionListener(ui);
+			frameControl.add(myBT);
 		}
 		return frameControl;
 	}
-
+	
+	public JButton getButton(ButtonTypes button)
+	{
+		for(ArudacipButton obj : buttonsList)
+		{
+			if(obj.type() == button)
+				return (JButton) obj;
+		}
+		return null;
+	}
 }
