@@ -7,8 +7,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import main.IAServiceAdmin;
-
 public class StatusCtrl 
 {
 	private JLabel lbStatus;
