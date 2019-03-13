@@ -27,6 +27,7 @@ public class IAServiceAdmin extends JFrame implements ActionListener
 		JPanel panelStatus = frameStatus.criaFrameStatus();
 		JPanel panelLog = frameLog.criaFrameLog();
 		JPanel panelControl = buttons.criaFrameControl(this);
+		
 		panelStatus.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		panelLog.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		panelControl.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
