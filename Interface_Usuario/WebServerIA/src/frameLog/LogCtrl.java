@@ -14,8 +14,6 @@ public class LogCtrl
 	public JPanel criaFrameLog()
 	{
 		JPanel frameLog = new JPanel();
-		
-		// instanciar os objetos de tela
 		JLabel lbTitle = new JLabel("�ltimos eventos:");
 		txtLog = new JTextArea(6, 30);
 		txtLog.setEditable(false);
