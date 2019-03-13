@@ -77,21 +77,15 @@ public class ViewServiceAdmin extends JFrame implements ActionListener
         AbstractLog log;
         if (e.getSource() == composeControl.getButton(ButtonTypes.Start))/*Iniciar*/
         {
-            log = new LogInfo();
-            log.setParameters(new Date(System.currentTimeMillis()), "Tentativa de iniciar...");
-            //mainlog.add(log);
+            log = new LogInfo(new Date(System.currentTimeMillis()), "Tentativa de iniciar...");
             composeLog.AddMessage(log);
         } else if (e.getSource() == composeControl.getButton(ButtonTypes.Restart))/*Reiniciar*/
         {
-            log = new LogWarn();
-            log.setParameters(new Date(System.currentTimeMillis()), "Tentativa de reiniciar...");
-            //mainlog.add(log);
+            log = new LogWarn(new Date(System.currentTimeMillis()), "Tentativa de reiniciar...");
             composeLog.AddMessage(log);
         } else if (e.getSource() == composeControl.getButton(ButtonTypes.Stop))/*Parar*/
         {
-            log = new LogCrit();
-            log.setParameters(new Date(System.currentTimeMillis()), "Tentativa de parar...");
-            //mainlog.add(log);
+            log = new LogCrit(new Date(System.currentTimeMillis()), "Tentativa de parar...");
             composeLog.AddMessage(log);
         }
     }

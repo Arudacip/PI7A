@@ -15,7 +15,11 @@ public abstract class AbstractLog
      * @method getText: retorna o texto
      * @method setParameters: seta os valores do log
      */
-
+    public AbstractLog(Date data, String texto)
+    {
+        this.data = data;
+        this.texto = texto;
+    }
     private Date data;
     private String texto;
 
@@ -29,11 +33,5 @@ public abstract class AbstractLog
     public String getText()
     {
         return texto;
-    }
-
-    public void setParameters(Date data, String texto)
-    {
-        this.data = data;
-        this.texto = texto;
     }
 }

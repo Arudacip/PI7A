@@ -52,9 +52,7 @@ public class ComposeControl
         for (AbstractButton obj : buttonsList)
         {
             if (obj.tipo() == button)
-            {
                 return (JButton) obj;
-            }
         }
         return null;
     }
