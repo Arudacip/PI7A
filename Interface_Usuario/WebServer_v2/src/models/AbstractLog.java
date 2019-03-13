@@ -13,7 +13,7 @@ public abstract class AbstractLog
      * @method imprime: abstrato que retorna o texto do log
      * @method getData: retorna a data
      * @method getText: retorna o texto
-     * @method setParameters: seta os valores do log
+     * @method AbstractLog: construtor que recebe os valores do log
      */
     public AbstractLog(Date data, String texto)
     {
