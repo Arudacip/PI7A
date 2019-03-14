@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Date;
+
 public class LogWarn extends AbstractLog
 {
     
@@ -11,7 +13,12 @@ public class LogWarn extends AbstractLog
      */
 
     private String prefix = "WARNING: ";
-
+    
+    public LogWarn(Date data, String texto)
+    {
+		super(data, texto);
+	}
+    
     @Override
     public String imprime()
     {

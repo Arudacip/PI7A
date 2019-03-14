@@ -7,6 +7,8 @@ import models.AbstractLog;
 import models.FactoryLogCrit;
 import models.FactoryLogInfo;
 import models.FactoryLogWarn;
+import models.LogInfo;
+import models.LogWarn;
 import views.ViewServiceAdmin;
 
 public class Main
@@ -42,8 +44,8 @@ public class Main
             // fabricas montam os logs recuperados no database
             // AbstractLogDAO.getLogs(conn);
             log = fabrica.retornaLogs(new Date(System.currentTimeMillis()), "Aberto.");
-	}
-        //mainlog.add(log);
+        }
+        mainlog.add(log);
         
         // Cria Views
         viewSAUI = new ViewServiceAdmin();

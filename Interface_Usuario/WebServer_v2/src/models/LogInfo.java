@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Date;
+
 public class LogInfo extends AbstractLog
 {
 
@@ -11,7 +13,12 @@ public class LogInfo extends AbstractLog
      */
     
     private String prefix = "INFO: ";
-
+    
+    public LogInfo(Date data, String texto)
+    {
+		super(data, texto);
+	}
+    
     @Override
     public String imprime()
     {

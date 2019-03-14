@@ -14,8 +14,7 @@ public class FactoryLogInfo extends AbstractFactoryLog
     @Override
     public AbstractLog retornaLogs(Date data, String text)
     {
-        AbstractLog logline = new LogInfo();
-        logline.setParameters(data, text);
+        AbstractLog logline = new LogInfo(data, text);
         return logline;
     }
 

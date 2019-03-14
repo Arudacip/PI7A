@@ -14,8 +14,7 @@ public class FactoryLogCrit extends AbstractFactoryLog
     @Override
     public AbstractLog retornaLogs(Date data, String text)
     {
-        AbstractLog logline = new LogCrit();
-        logline.setParameters(data, text);
+        AbstractLog logline = new LogCrit(data, text);
         return logline;
     }
 

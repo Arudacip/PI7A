@@ -1,21 +1,15 @@
 package views;
 
-import controllers.Main;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+
+import controllers.utils.ComponentMapper;
 import models.AbstractLog;
 import models.LogCrit;
 import models.LogInfo;
@@ -41,7 +35,6 @@ public class ViewServiceAdmin extends JFrame implements ActionListener
     private ComposeStatus composeStatus = new ComposeStatus();
     private ComposeLog composeLog = new ComposeLog();
     private ComposeControl composeControl = new ComposeControl();
-    private HashMap componentMap;
     //private ControllerMain controller;
     //private ArrayList<AbstractLog> mainlog;
 
@@ -68,7 +61,7 @@ public class ViewServiceAdmin extends JFrame implements ActionListener
         getContentPane().add(panelLog, BorderLayout.CENTER);
         getContentPane().add(panelControl, BorderLayout.SOUTH);
         
-        createComponentMap();
+        ComponentMapper.createComponentMap(this);
     }
 
     @Override
@@ -88,25 +81,5 @@ public class ViewServiceAdmin extends JFrame implements ActionListener
             log = new LogCrit(new Date(System.currentTimeMillis()), "Tentativa de parar...");
             composeLog.AddMessage(log);
         }
-    }
-    
-    @SuppressWarnings("unchecked")
-    private void createComponentMap()
-    {
-        componentMap = new HashMap<String,Component>();
-        Component[] components = getContentPane().getComponents();
-        for (int i=0; i < components.length; i++)
-        {
-            componentMap.put(components[i].getName(), components[i]);
-        }
-    }
-    
-    public Component getComponentByName(String name)
-    {
-        if (componentMap.containsKey(name))
-        {
-            return (Component) componentMap.get(name);
-        }
-        else return null;
     }
 }

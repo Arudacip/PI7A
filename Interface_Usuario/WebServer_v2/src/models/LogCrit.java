@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Date;
+
 public class LogCrit extends AbstractLog
 {
     
@@ -11,7 +13,12 @@ public class LogCrit extends AbstractLog
      */
     
     private String prefix = "CRITICAL: ";
-
+    
+    public LogCrit(Date data, String texto)
+    {
+		super(data, texto);
+	}
+    
     @Override
     public String imprime()
     {

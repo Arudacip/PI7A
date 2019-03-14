@@ -16,7 +16,8 @@ public class ComponentMapper
      * @method getComponentByName: retorna o componente por nome
      */
     
-    private static HashMap componentMap;
+    @SuppressWarnings("rawtypes")
+	private static HashMap componentMap;
     
     @SuppressWarnings("unchecked")
     public static void createComponentMap(JFrame ui)
