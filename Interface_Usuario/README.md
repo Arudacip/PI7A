@@ -5,4 +5,4 @@ Aqui nesse projeto consta o código do projeto da camada contendo interface de u
 
 ## TODO
 
-* Montar a interface de usuario;
+* Montar as funcionalidades da interface de usuario *já existente*;

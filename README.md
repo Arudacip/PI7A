@@ -1,4 +1,4 @@
-# Pi7A - WebServer
+# PI7A - WebServer
 
 ## Projeto de PI 7A
 WebServer de computação paralela para atender solicitações HTTP.
