@@ -12,7 +12,7 @@ public class LogInfo extends AbstractLog
      * @method imprime: retorna o texto do log
      */
     
-    private String prefix = "INFO: ";
+    private String prefix = "> INFO: ";
     
     public LogInfo(Date data, String texto)
     {

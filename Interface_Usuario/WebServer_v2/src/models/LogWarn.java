@@ -12,7 +12,7 @@ public class LogWarn extends AbstractLog
      * @method imprime: retorna o texto do log
      */
 
-    private String prefix = "WARNING: ";
+    private String prefix = "> WARNING: ";
     
     public LogWarn(Date data, String texto)
     {

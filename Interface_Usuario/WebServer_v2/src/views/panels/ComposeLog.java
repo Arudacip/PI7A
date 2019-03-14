@@ -1,6 +1,8 @@
 package views.panels;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,6 +33,7 @@ public class ComposeLog
         txtLog = new JTextArea(6, 30);
         txtLog.setName("txtLog");
         txtLog.setEditable(false);
+        txtLog.setFont(new Font("Logger", Font.PLAIN, 10));;
         txtLog.setBorder(BorderFactory.createEtchedBorder());
         JScrollPane scrollLog = new JScrollPane(txtLog);
         panelLog.setLayout(new BorderLayout());

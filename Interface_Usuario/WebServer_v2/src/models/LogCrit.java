@@ -12,7 +12,7 @@ public class LogCrit extends AbstractLog
      * @method imprime: retorna o texto do log
      */
     
-    private String prefix = "CRITICAL: ";
+    private String prefix = "> CRITICAL: ";
     
     public LogCrit(Date data, String texto)
     {

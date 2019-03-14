@@ -2,16 +2,15 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Date;
+
 import models.AbstractFactoryLog;
 import models.AbstractLog;
 import models.FactoryLogCrit;
 import models.FactoryLogInfo;
 import models.FactoryLogWarn;
-import models.LogInfo;
-import models.LogWarn;
 import views.ViewServiceAdmin;
 
-public class Main
+public class ControllerMain
 {
 
     /**
@@ -26,7 +25,10 @@ public class Main
      */
     
     // Models
-    private static ArrayList<AbstractLog> infolog, warnlog, critlog, mainlog;
+    private static ArrayList<AbstractLog> infolog = new ArrayList<AbstractLog>();
+    private static ArrayList<AbstractLog> warnlog = new ArrayList<AbstractLog>();
+    private static ArrayList<AbstractLog> critlog = new ArrayList<AbstractLog>();
+    private static ArrayList<AbstractLog> mainlog = new ArrayList<AbstractLog>();
 
     // Views
     private static ViewServiceAdmin viewSAUI;
@@ -44,11 +46,11 @@ public class Main
             // fabricas montam os logs recuperados no database
             // AbstractLogDAO.getLogs(conn);
             log = fabrica.retornaLogs(new Date(System.currentTimeMillis()), "Aberto.");
+            mainlog.add(log);
         }
-        mainlog.add(log);
         
         // Cria Views
-        viewSAUI = new ViewServiceAdmin();
+        viewSAUI = new ViewServiceAdmin(infolog, warnlog, critlog, mainlog);
         viewSAUI.setVisible(true);
     }
 }
