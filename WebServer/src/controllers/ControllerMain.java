@@ -2,6 +2,7 @@ package controllers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -80,35 +81,69 @@ public class ControllerMain implements ActionListener
     
     public void startService()
     {
-    	generateLog("Tentando iniciar o servidor...", WARN);
-        boolean sucesso = servidor.start(porta);
-        if (sucesso)
-        {
-        	generateLog("Servidor iniciado!", INFO);
-        } else
-        {
-        	generateLog("Falha ao iniciar do servidor!", CRIT);
-        }
+    	// Usa uma Thread, para nao travar a view
+    	new Thread()
+    	{
+            @Override
+            public void run() {
+            	generateLog(WARN, "Tentando iniciar o servidor...");
+                try {
+                	servidor.start(porta);
+                	generateLog(INFO, "Servidor iniciado!");
+                	// tem que ser checado aqui caso contrario da null pointer exception
+                    checkStatus();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                	generateLog(CRIT, "Falha ao iniciar do servidor!");
+                	// tem que ser checado aqui caso contrario da null pointer exception
+                    checkStatus();
+                }
+            }
+        }.start();
     }
     
     public void stopService()
     {
-        generateLog("Tentando parar o servidor...", WARN);
+        generateLog(WARN, "Tentando parar o servidor...");
         boolean sucesso = servidor.stop();
         if (sucesso)
         {
-        	generateLog("Servidor parado!", INFO);
+        	generateLog(INFO, "Servidor parado!");
+        	// tem que ser checado aqui caso contrario da null pointer exception
+            checkStatus();
         } else
         {
-        	generateLog("Falha na parada do servidor!", CRIT);
+        	generateLog(CRIT, "Falha na parada do servidor!");
+        	// tem que ser checado aqui caso contrario da null pointer exception
+            checkStatus();
         }
     }
     
     public void restartService()
     {
-    	generateLog("Reiniciando o servidor.", WARN);
+    	generateLog(WARN, "Reiniciando o servidor.");
         stopService();
         startService();
+    }
+    
+    public void checkStatus()
+    {
+    	int valor = servidor.getStatus();
+    	switch (valor)
+    	{
+    	case ViewServiceAdmin.STARTED:
+    		viewSAUI.setStatus(ViewServiceAdmin.STARTED);
+    		break;
+    	case ViewServiceAdmin.STOPPED:
+            viewSAUI.setStatus(ViewServiceAdmin.STOPPED);
+    		break;
+    	case ViewServiceAdmin.UNKOWN:
+            viewSAUI.setStatus(ViewServiceAdmin.UNKOWN);
+    		break;
+    	default:
+            viewSAUI.setStatus(ViewServiceAdmin.UNKOWN);
+    		break;
+    	}
     }
     
 	@Override
@@ -128,7 +163,7 @@ public class ControllerMain implements ActionListener
         }
 	}
 	
-	public void generateLog(String texto, int tipo)
+	public void generateLog(int tipo, String texto)
 	{
 		switch(tipo)
 		{
@@ -140,6 +175,7 @@ public class ControllerMain implements ActionListener
 			System.out.println("Tamanho info: "+infolog.size());
 			System.out.println("Tamanho main: "+mainlog.size());
 			break;
+			
 		case WARN:
 			currentLog = new LogWarn(new Date(System.currentTimeMillis()), texto);
 			warnlog.add(currentLog);
@@ -148,6 +184,7 @@ public class ControllerMain implements ActionListener
 			System.out.println("Tamanho warn: "+warnlog.size());
 			System.out.println("Tamanho main: "+mainlog.size());
 			break;
+			
 		case CRIT:
 			currentLog = new LogCrit(new Date(System.currentTimeMillis()), texto);
 			critlog.add(currentLog);
@@ -156,6 +193,7 @@ public class ControllerMain implements ActionListener
 			System.out.println("Tamanho crit: "+critlog.size());
 			System.out.println("Tamanho main: "+mainlog.size());
 			break;
+			
 		default:
 			currentLog = new LogCrit(new Date(System.currentTimeMillis()), "Erro desconhecido.");
 			critlog.add(currentLog);

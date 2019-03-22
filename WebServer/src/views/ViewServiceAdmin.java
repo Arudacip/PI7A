@@ -29,11 +29,15 @@ public class ViewServiceAdmin extends JFrame
     private ComposeStatus composeStatus = new ComposeStatus();
     private ComposeLog composeLog = new ComposeLog();
     private ComposeControl composeControl = new ComposeControl();
-    private ControllerMain controller;
+    private ControllerMain controller = null;
     
     // Constantes
-    private static final String STARTED = "Ativo";
-    private static final String STOPPED = "Inativo";
+    private static final String ISSTARTED = "Ativo";
+    private static final String ISSTOPPED = "Inativo";
+    private static final String ISUNKOWN = "---";
+    public static final int STARTED = 1;
+    public static final int STOPPED = 2;
+    public static final int UNKOWN = 3;
 
     // Constroi a IA de Administracao do servico
     public ViewServiceAdmin(ControllerMain controller)
@@ -60,13 +64,22 @@ public class ViewServiceAdmin extends JFrame
         ComponentMapper.createComponentMap(this);
     }
     
-    public void setStatus(boolean status)
+    public void setStatus(int status)
     {
-    	if (status)
+    	switch(status)
     	{
-    		composeStatus.setStatus(STARTED);
-    	} else {
-    		composeStatus.setStatus(STOPPED);
+    	case STARTED:
+    		composeStatus.setStatus(ISSTARTED);
+    		break;
+    	case STOPPED:
+    		composeStatus.setStatus(ISSTOPPED);
+    		break;
+    	case UNKOWN:
+    		composeStatus.setStatus(ISUNKOWN);
+    		break;
+    	default:
+    		composeStatus.setStatus(ISUNKOWN);
+    		break;
     	}
     }
     

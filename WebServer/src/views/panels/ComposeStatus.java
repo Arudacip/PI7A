@@ -28,7 +28,6 @@ public class ComposeStatus
         lbTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
         lbStatus = new JLabel("Status: ---");
         lbStatus.setName("lbStatus");
-        this.setStatus("Ativo"); // STATUS STUB	
         
         // acrescenta no frame os objetos
         panelStatus.setLayout(new BorderLayout());

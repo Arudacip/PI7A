@@ -6,6 +6,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import models.AbstractLog;
@@ -22,6 +23,7 @@ public class ComposeLog
      */
     
     private JTextArea txtLog;
+    private JScrollPane scrollLog;
 
     public JPanel criaPanelLog()
     {
@@ -35,7 +37,7 @@ public class ComposeLog
         txtLog.setEditable(false);
         txtLog.setFont(new Font("Logger", Font.PLAIN, 10));;
         txtLog.setBorder(BorderFactory.createEtchedBorder());
-        JScrollPane scrollLog = new JScrollPane(txtLog);
+        scrollLog = new JScrollPane(txtLog);
         panelLog.setLayout(new BorderLayout());
         panelLog.add(lbTitle, BorderLayout.NORTH);
         panelLog.add(scrollLog, BorderLayout.CENTER);
@@ -46,5 +48,7 @@ public class ComposeLog
     public void AddMessage(AbstractLog message)
     {
         txtLog.setText(txtLog.getText() + "\n" + message.imprime());
+        JScrollBar sb = scrollLog.getVerticalScrollBar();
+        sb.setValue(sb.getMaximum());
     }
 }
