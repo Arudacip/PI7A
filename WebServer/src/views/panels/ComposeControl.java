@@ -2,9 +2,11 @@ package views.panels;
 
 import java.awt.FlowLayout;
 import java.util.ArrayList;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import views.ViewServiceAdmin;
+
+import controllers.ControllerMain;
 import views.buttons.AbstractButton;
 import views.buttons.ButtonTypes;
 import views.buttons.RestartButton;
@@ -32,7 +34,7 @@ public class ComposeControl
         buttonsList.add(new RestartButton());
     }
 
-    public JPanel criaPanelControl(ViewServiceAdmin ui)
+    public JPanel criaPanelControl(ControllerMain controller)
     {
         JPanel panelControl = new JPanel();
         panelControl.setName("panelControl");
@@ -41,7 +43,7 @@ public class ComposeControl
         for (AbstractButton btn : buttonsList)
         {
             JButton myBT = (JButton) btn;
-            myBT.addActionListener(ui);
+            myBT.addActionListener(controller);
             panelControl.add(myBT);
         }
         return panelControl;
