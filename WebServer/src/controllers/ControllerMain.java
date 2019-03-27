@@ -36,8 +36,8 @@ public class ControllerMain implements ActionListener
 	private static final int INFO = 1;
 	private static final int WARN = 2;
 	private static final int CRIT = 3;
+    private static int porta = 80;
 	private AbstractLog currentLog;
-    private int porta = 80;
     private SocketAdmin servidor;
 	
     // Models
@@ -56,6 +56,7 @@ public class ControllerMain implements ActionListener
     	warnlog = new ArrayList<AbstractLog>();
     	critlog = new ArrayList<AbstractLog>();
     	mainlog = new ArrayList<AbstractLog>();
+    	porta = 80;
     	
         AbstractFactoryLog[] factories = new AbstractFactoryLog[3];
         factories[0] = new FactoryLogInfo();
