@@ -16,7 +16,7 @@ public class FacadeMain
 	
 	public void startAdmin()
 	{
-		controller.createService();
 		controller.createView();
+		controller.createService();
 	}
 }

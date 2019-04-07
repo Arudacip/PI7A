@@ -33,10 +33,11 @@ public class ControllerMain implements ActionListener
      */
 	
 	// Variaveis de Ambiente
-	private static final int INFO = 1;
-	private static final int WARN = 2;
-	private static final int CRIT = 3;
-    private static int porta = 80;
+	public static final int INFO = 1;
+	public static final int WARN = 2;
+	public static final int CRIT = 3;
+    public static int PORTA = 80;
+    public static final boolean VERBOSE = true;
 	private AbstractLog currentLog;
     private SocketAdmin servidor;
 	
@@ -56,7 +57,7 @@ public class ControllerMain implements ActionListener
     	warnlog = new ArrayList<AbstractLog>();
     	critlog = new ArrayList<AbstractLog>();
     	mainlog = new ArrayList<AbstractLog>();
-    	porta = 80;
+    	PORTA = 80;
     	
         AbstractFactoryLog[] factories = new AbstractFactoryLog[3];
         factories[0] = new FactoryLogInfo();
@@ -70,7 +71,7 @@ public class ControllerMain implements ActionListener
             log = fabrica.retornaLogs(new Date(System.currentTimeMillis()), "Aberto.");
             mainlog.add(log);
         }
-        servidor = new SocketAdmin();
+        servidor = new SocketAdmin(this);
     }
     
     public void createView()
@@ -86,10 +87,12 @@ public class ControllerMain implements ActionListener
     	new Thread()
     	{
             @Override
-            public void run() {
+            public void run()
+            {
             	generateLog(WARN, "Tentando iniciar o servidor...");
-                try {
-                	servidor.start(porta);
+                try
+                {
+                	servidor.start(PORTA);
                 	generateLog(INFO, "Servidor iniciado!");
                 	// tem que ser checado aqui caso contrario da null pointer exception
                     checkStatus();
@@ -99,6 +102,7 @@ public class ControllerMain implements ActionListener
                 	// tem que ser checado aqui caso contrario da null pointer exception
                     checkStatus();
                 }
+                servidor.esperarCliente();
             }
         }.start();
     }
@@ -173,8 +177,11 @@ public class ControllerMain implements ActionListener
 			infolog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
-			System.out.println("Tamanho info: "+infolog.size());
-			System.out.println("Tamanho main: "+mainlog.size());
+			if (ControllerMain.VERBOSE)
+			{
+				System.out.println("Tamanho info: "+infolog.size());
+				System.out.println("Tamanho main: "+mainlog.size());
+			}
 			break;
 			
 		case WARN:
@@ -182,8 +189,11 @@ public class ControllerMain implements ActionListener
 			warnlog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
-			System.out.println("Tamanho warn: "+warnlog.size());
-			System.out.println("Tamanho main: "+mainlog.size());
+			if (ControllerMain.VERBOSE)
+			{
+				System.out.println("Tamanho warn: "+warnlog.size());
+				System.out.println("Tamanho main: "+mainlog.size());
+			}
 			break;
 			
 		case CRIT:
@@ -191,8 +201,11 @@ public class ControllerMain implements ActionListener
 			critlog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
-			System.out.println("Tamanho crit: "+critlog.size());
-			System.out.println("Tamanho main: "+mainlog.size());
+			if (ControllerMain.VERBOSE)
+			{
+				System.out.println("Tamanho crit: "+critlog.size());
+				System.out.println("Tamanho main: "+mainlog.size());
+			}
 			break;
 			
 		default:
@@ -200,8 +213,11 @@ public class ControllerMain implements ActionListener
 			critlog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
-			System.out.println("Tamanho crit: "+critlog.size());
-			System.out.println("Tamanho main: "+mainlog.size());
+			if (ControllerMain.VERBOSE)
+			{
+				System.out.println("Tamanho crit: "+critlog.size());
+				System.out.println("Tamanho main: "+mainlog.size());
+			}
 			break;
 		}
 	}
