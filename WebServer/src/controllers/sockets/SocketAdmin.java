@@ -30,7 +30,7 @@ public class SocketAdmin implements Runnable
 	private ServerSocket servidor;
 	private Socket cliente;
 	
-	// Construtor p	rincipal
+	// Construtor principal
 	public SocketAdmin(ControllerMain controller)
 	{
         this.controller = controller;
