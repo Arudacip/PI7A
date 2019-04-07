@@ -29,7 +29,8 @@ public class ViewServiceAdmin extends JFrame
     private ComposeStatus composeStatus = new ComposeStatus();
     private ComposeLog composeLog = new ComposeLog();
     private ComposeControl composeControl = new ComposeControl();
-    private ControllerMain controller = null;
+    @SuppressWarnings("unused")
+	private ControllerMain controller = null;
     
     // Constantes
     private static final String ISSTARTED = "Ativo";
