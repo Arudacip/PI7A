@@ -18,11 +18,11 @@ import models.LogWarn;
 import views.ViewServiceAdmin;
 import views.buttons.ButtonTypes;
 
-public class ControllerMain implements ActionListener
+public final class ControllerMain implements ActionListener
 {
 
     /**
-     * Classe do Controller principal do design pattern MVC.
+     * Classe Singleton do Controller principal do design pattern MVC.
      *
      * @param infolog: logs de informacao
      * @param warnlog: logs de warning
@@ -33,6 +33,7 @@ public class ControllerMain implements ActionListener
      */
 	
 	// Variaveis de Ambiente
+	private static final ControllerMain INSTANCE = new ControllerMain();
 	public static final int INFO = 1;
 	public static final int WARN = 2;
 	public static final int CRIT = 3;
@@ -49,7 +50,17 @@ public class ControllerMain implements ActionListener
 
     // Views
     private static ViewServiceAdmin viewSAUI;
-
+    
+    private ControllerMain()
+    {
+    }
+    
+    // retorna o Singleton do Controller
+    public static ControllerMain getInstance()
+    {
+    	return INSTANCE;
+    }
+    
     public void createService()
     {
         // Cria os Models
@@ -71,13 +82,13 @@ public class ControllerMain implements ActionListener
             log = fabrica.retornaLogs(new Date(System.currentTimeMillis()), "Aberto.");
             mainlog.add(log);
         }
-        servidor = new SocketAdmin(this);
+        servidor = new SocketAdmin();
     }
     
     public void createView()
     {
     	// Cria Views
-        viewSAUI = new ViewServiceAdmin(this);
+        viewSAUI = new ViewServiceAdmin();
         viewSAUI.setVisible(true);
     }
     

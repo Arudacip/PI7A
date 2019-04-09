@@ -6,7 +6,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import controllers.ControllerMain;
 import controllers.utils.ComponentMapper;
 import models.AbstractLog;
 import views.panels.ComposeControl;
@@ -29,8 +28,6 @@ public class ViewServiceAdmin extends JFrame
     private ComposeStatus composeStatus = new ComposeStatus();
     private ComposeLog composeLog = new ComposeLog();
     private ComposeControl composeControl = new ComposeControl();
-    @SuppressWarnings("unused")
-	private ControllerMain controller = null;
     
     // Constantes
     private static final String ISSTARTED = "Ativo";
@@ -41,19 +38,18 @@ public class ViewServiceAdmin extends JFrame
     public static final int UNKOWN = 3;
 
     // Constroi a IA de Administracao do servico
-    public ViewServiceAdmin(ControllerMain controller)
+    public ViewServiceAdmin()
     {
         // Define valores principais do View
         super("Servidor Web v2.0 - ECP7AN-MCA1-09");
         setSize(400, 300);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.controller = controller;
         
         // Compoe paineis e monta a interface
         JPanel panelStatus = composeStatus.criaPanelStatus();
         JPanel panelLog = composeLog.criaPanelLog();
-        JPanel panelControl = composeControl.criaPanelControl(controller);
+        JPanel panelControl = composeControl.criaPanelControl();
         panelStatus.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         panelLog.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         panelControl.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));

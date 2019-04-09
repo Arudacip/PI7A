@@ -34,7 +34,7 @@ public class ComposeControl
         buttonsList.add(new RestartButton());
     }
 
-    public JPanel criaPanelControl(ControllerMain controller)
+    public JPanel criaPanelControl()
     {
         JPanel panelControl = new JPanel();
         panelControl.setName("panelControl");
@@ -43,7 +43,7 @@ public class ComposeControl
         for (AbstractButton btn : buttonsList)
         {
             JButton myBT = (JButton) btn;
-            myBT.addActionListener(controller);
+            myBT.addActionListener(ControllerMain.getInstance());
             panelControl.add(myBT);
         }
         return panelControl;

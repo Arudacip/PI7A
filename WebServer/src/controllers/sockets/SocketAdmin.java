@@ -26,14 +26,12 @@ public class SocketAdmin implements Runnable
     private static final String DEFAULT_FILE = "index.html";
     private static final String FILE_NOT_FOUND = "404.html";
     private static final String NOT_SUPPORTED = "notsupported.html";
-    private ControllerMain controller = null;
 	private ServerSocket servidor;
 	private Socket cliente;
 	
 	// Construtor principal
-	public SocketAdmin(ControllerMain controller)
+	public SocketAdmin()
 	{
-        this.controller = controller;
 	}
 	
 	// Construtor auxiliar
@@ -97,7 +95,7 @@ public class SocketAdmin implements Runnable
 					System.out.println("Conexao aberta. (" + cliente.toString() + ")");
 					System.out.println("Cliente na porta: " + cliente.getPort());
 				}
-				controller.generateLog(ControllerMain.INFO, "Cliente "+cliente.toString()+" conectado na porta "+ControllerMain.PORTA+".");
+				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Cliente "+cliente.toString()+" conectado na porta "+ControllerMain.PORTA+".");
 				// create dedicated thread to manage the client connection
 				Thread thread = new Thread(server);
 				thread.start();
@@ -121,46 +119,41 @@ public class SocketAdmin implements Runnable
 		
 		try
 		{
-			// get reader for characters from the client via input stream on the socket
+			// make reader for client characters
 			in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
-			// get character output stream to client (for headers)
+			// make character output stream
 			out = new PrintWriter(cliente.getOutputStream());
-			// get binary output stream to client (for requested data)
+			// make binary output stream
 			dataOut = new BufferedOutputStream(cliente.getOutputStream());
 			
-			// get first line of the request from the client
 			String input = in.readLine();
-			// we parse the request with a string tokenizer
 			StringTokenizer parse = new StringTokenizer(input);
-			// we get the HTTP method of the client
 			String method = parse.nextToken().toUpperCase();
-			// we get file requested
+			// separa o arquivo solicitado
 			fileRequested = parse.nextToken().toLowerCase();
 			
-			// supporting only GET and HEAD methods, this checks if the method is different then supported
+			// soporta apenas GET and HEAD
 			if (!method.equals("GET")  &&  !method.equals("HEAD"))
 			{
 				if (ControllerMain.VERBOSE)
 				{
 					System.out.println("501 Nao implementado: metodo " + method + ".");
 				}
-				controller.generateLog(ControllerMain.INFO, "501 - Nao implementado.");
+				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "501 - Nao implementado.");
 				
-				// return the not supported file to the client
 				File file = new File(WEB_ROOT, NOT_SUPPORTED);
 				int fileLength = (int) file.length();
 				String contentMimeType = "text/html";
-				// read content to return to client
 				byte[] fileData = lerArquivoDados(file, fileLength);
 					
-				// send HTTP Headers with data to client
+				// envia HTTP Headers e dados
 				out.println("HTTP/1.1 501 Nao Implementado");
 				out.println("Server: Servidor Java HTTP - ECP7AN-MCA1-09");
 				out.println("Date: " + new Date());
 				out.println("Content-type: " + contentMimeType);
 				out.println("Content-length: " + fileLength);
-				out.println(); // blank line between headers and content. Very important!
-				out.flush(); // flush character output stream buffer
+				out.println();
+				out.flush();
 				// file
 				dataOut.write(fileData, 0, fileLength);
 				dataOut.flush();
@@ -171,6 +164,12 @@ public class SocketAdmin implements Runnable
 				if (fileRequested.endsWith("/"))
 				{
 					fileRequested += DEFAULT_FILE;
+				}
+				
+				if (ControllerMain.VERBOSE)
+				{
+					System.out.println("Buscando o arquivo " + fileRequested);
+					ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Buscando o arquivo " + fileRequested);
 				}
 				
 				File file = new File(WEB_ROOT, fileRequested);
@@ -188,8 +187,8 @@ public class SocketAdmin implements Runnable
 					out.println("Date: " + new Date());
 					out.println("Content-type: " + content);
 					out.println("Content-length: " + fileLength);
-					out.println(); // blank line between headers and content. Very important!
-					out.flush(); // flush character output stream buffer
+					out.println();
+					out.flush();
 					
 					dataOut.write(fileData, 0, fileLength);
 					dataOut.flush();
@@ -199,7 +198,7 @@ public class SocketAdmin implements Runnable
 				{
 					System.out.println("HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
 				}
-				controller.generateLog(ControllerMain.INFO, "HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
+				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
 			}
 			
 		} catch (FileNotFoundException fnfe)
@@ -211,14 +210,14 @@ public class SocketAdmin implements Runnable
 			{
 				String message = ioe.getMessage();
 				System.out.println("SYSError - FileNotFoundException: " + message);
-				controller.generateLog(ControllerMain.CRIT, "SYSError - FileNotFoundException: " + message);
+				ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - FileNotFoundException: " + message);
 			}
 			
 		} catch (IOException ioe)
 		{
 			String message = ioe.getMessage();
 			System.out.println("SYSError - Erro de servidor: " + message);
-			controller.generateLog(ControllerMain.CRIT, "SYSError - Erro de servidor: " + message);
+			ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Erro de servidor: " + message);
 		} finally
 		{
 			try
@@ -231,12 +230,12 @@ public class SocketAdmin implements Runnable
 			{
 				String message = e.getMessage();
 				System.out.println("SYSError - Erro ao fechar conexao: " + message);
-				controller.generateLog(ControllerMain.CRIT, "SYSError - Erro ao fechar conexao: " + message);
+				ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Erro ao fechar conexao: " + message);
 			}
 			if (ControllerMain.VERBOSE)
 			{
 				System.out.println("Conexao fechada com sucesso.");
-				controller.generateLog(ControllerMain.INFO, "Conexao fechada com sucesso.");
+				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Conexao fechada com sucesso.");
 			}
 		}
 	}
@@ -278,8 +277,8 @@ public class SocketAdmin implements Runnable
 		out.println("Date: " + new Date());
 		out.println("Content-type: " + content);
 		out.println("Content-length: " + fileLength);
-		out.println(); // blank line between headers and content. Very important!
-		out.flush(); // flush character output stream buffer
+		out.println();
+		out.flush();
 		
 		dataOut.write(fileData, 0, fileLength);
 		dataOut.flush();
@@ -287,7 +286,7 @@ public class SocketAdmin implements Runnable
 		if (ControllerMain.VERBOSE)
 		{
 			System.out.println("HTTP 404: Arquivo  " + fileRequested + " nao encontrado");
-			controller.generateLog(ControllerMain.CRIT, "HTTP 404: Arquivo  " + fileRequested + " nao encontrado");
+			ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "HTTP 404: Arquivo  " + fileRequested + " nao encontrado");
 		}
 	}
 }

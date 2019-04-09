@@ -11,7 +11,7 @@ public class FacadeMain
 	
 	public FacadeMain()
 	{
-		controller = new ControllerMain();
+		controller = ControllerMain.getInstance();
 	}
 	
 	public void startAdmin()
