@@ -18,49 +18,74 @@ import models.LogWarn;
 import views.ViewServiceAdmin;
 import views.buttons.ButtonTypes;
 
+/**
+ * Classe em design pattern Singleton, que gera o Controller principal do servidor, em design pattern MVC.
+ * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
+ *
+ * @param INSTANCE : [CONSTANT] instancia Singleton do Controller
+ * @param PORTA_CLIENT : [CONSTANT] porta de acesso default para clientes
+ * @param PORTA_SERVER : [CONSTANT] porta de acesso default para administradores
+ * @param STOPPED : [CONSTANT] status do service web parado
+ * @param UNKOWN : [CONSTANT] status do service web desconhecido
+ * @param INFO : [CONSTANT] LogType para logs informativos
+ * @param WARN : [CONSTANT] LogType para logs de warning
+ * @param CRIT : [CONSTANT] LogType para logs de critical
+ * @param VERBOSE : [CONSTANT] define se os logs de sistema e servico devem ser <b>verbose</b>
+ * @param PORTA : porta em uso no servidor
+ * @param servidor : ponteiro para o servidor
+ * 
+ * @param infolog : lista de logs INFO
+ * @param warnlog : lista de logs WARN
+ * @param critlog : lista de logs CRIT
+ * @param mainlog : lista de logs completa
+ * 
+ * @param viewSAUI : ponteiro para o View de ServiceAdmin
+ */
+
 public final class ControllerMain implements ActionListener
 {
 
-    /**
-     * Classe Singleton do Controller principal do design pattern MVC.
-     *
-     * @param infolog: logs de informacao
-     * @param warnlog: logs de warning
-     * @param critlog: logs de critical
-     * @param mainlog: logs completos
-     * @param viewSAUI: View do Service Admin
-     * @method main: inicia o app
-     */
-	
-	// Variaveis de Ambiente
+    // VARIAVEIS DE AMBIENTE
 	private static final ControllerMain INSTANCE = new ControllerMain();
+	private static final int PORTA_CLIENT = 80;
+	@SuppressWarnings("unused")
+	private static final int PORTA_SERVER = 8080;
+    public static final int STARTED = 1;
+    public static final int STOPPED = 2;
+    public static final int UNKOWN = 3;
 	public static final int INFO = 1;
 	public static final int WARN = 2;
 	public static final int CRIT = 3;
-    public static int PORTA = 80;
     public static final boolean VERBOSE = true;
+    public static int PORTA;
 	private AbstractLog currentLog;
     private SocketAdmin servidor;
 	
-    // Models
+    // MODELS
     private ArrayList<AbstractLog> infolog;
     private ArrayList<AbstractLog> warnlog;
     private ArrayList<AbstractLog> critlog;
     private ArrayList<AbstractLog> mainlog;
 
-    // Views
+    // VIEWS
     private static ViewServiceAdmin viewSAUI;
     
     private ControllerMain()
     {
     }
     
-    // retorna o Singleton do Controller
+    /**
+     * Retorna a instancia unica do Controller principal do servidor.
+     * @return Instancia unica do Controller
+     */
     public static ControllerMain getInstance()
     {
     	return INSTANCE;
     }
     
+    /**
+     * Prepara as variaveis de ambiente necessarias para funcionamento e cria o service web HTTP no servidor.
+     */
     public void createService()
     {
         // Cria os Models
@@ -68,7 +93,7 @@ public final class ControllerMain implements ActionListener
     	warnlog = new ArrayList<AbstractLog>();
     	critlog = new ArrayList<AbstractLog>();
     	mainlog = new ArrayList<AbstractLog>();
-    	PORTA = 80;
+    	PORTA = PORTA_CLIENT;
     	
         AbstractFactoryLog[] factories = new AbstractFactoryLog[3];
         factories[0] = new FactoryLogInfo();
@@ -85,14 +110,19 @@ public final class ControllerMain implements ActionListener
         servidor = new SocketAdmin();
     }
     
+    /**
+     * Constroi as Views, em design pattern MVC.
+     */
     public void createView()
     {
-    	// Cria Views
         viewSAUI = new ViewServiceAdmin();
         viewSAUI.setVisible(true);
     }
     
-    public void startService()
+    /**
+     * Inicializar o service web em uma Thread, separadamente da View.
+     */
+    private void startService()
     {
     	// Usa uma Thread, para nao travar a view
     	new Thread()
@@ -118,7 +148,10 @@ public final class ControllerMain implements ActionListener
         }.start();
     }
     
-    public void stopService()
+    /**
+     * Parar o service web.
+     */
+    private void stopService()
     {
         generateLog(WARN, "Tentando parar o servidor...");
         boolean sucesso = servidor.stop();
@@ -135,50 +168,68 @@ public final class ControllerMain implements ActionListener
         }
     }
     
-    public void restartService()
+    /**
+     * Reiniciar o service web.
+     */
+    private void restartService()
     {
     	generateLog(WARN, "Reiniciando o servidor.");
         stopService();
         startService();
     }
     
-    public void checkStatus()
+    /**
+     * Verificar o status do service web.
+     */
+    private void checkStatus()
     {
     	int valor = servidor.getStatus();
     	switch (valor)
     	{
-    	case ViewServiceAdmin.STARTED:
-    		viewSAUI.setStatus(ViewServiceAdmin.STARTED);
+    	case ControllerMain.STARTED:
+    		viewSAUI.setStatus(ControllerMain.STARTED);
     		break;
-    	case ViewServiceAdmin.STOPPED:
-            viewSAUI.setStatus(ViewServiceAdmin.STOPPED);
+    	case ControllerMain.STOPPED:
+            viewSAUI.setStatus(ControllerMain.STOPPED);
     		break;
-    	case ViewServiceAdmin.UNKOWN:
-            viewSAUI.setStatus(ViewServiceAdmin.UNKOWN);
+    	case ControllerMain.UNKOWN:
+            viewSAUI.setStatus(ControllerMain.UNKOWN);
     		break;
     	default:
-            viewSAUI.setStatus(ViewServiceAdmin.UNKOWN);
+            viewSAUI.setStatus(ControllerMain.UNKOWN);
     		break;
     	}
     }
     
+    /**
+     * Recebe os eventos da View e executa as acoes necessarias de acordo com o caso.
+     */
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-        if (e.getSource() == viewSAUI.getIteractions().getButton(ButtonTypes.Start))/*Iniciar*/
+		// Iniciar
+        if (e.getSource() == viewSAUI.getIteractions().getButton(ButtonTypes.Start))
         {
             startService();
         }
-        else if (e.getSource() == viewSAUI.getIteractions().getButton(ButtonTypes.Restart))/*Reiniciar*/
+        // Reiniciar
+        else if (e.getSource() == viewSAUI.getIteractions().getButton(ButtonTypes.Restart))
         {
         	restartService();
         }
-        else if (e.getSource() == viewSAUI.getIteractions().getButton(ButtonTypes.Stop))/*Parar*/
+        // Parar
+        else if (e.getSource() == viewSAUI.getIteractions().getButton(ButtonTypes.Stop))
         {
             stopService();
         }
 	}
 	
+	/**
+	 * Gera os objetos AbstractLog do service web, de acordo com os tipos e parametros necessarios.
+	 * 
+	 * @param tipo : tipo de AbstractLog
+	 * @param texto : mensagem do log
+	 */
 	public void generateLog(int tipo, String texto)
 	{
 		switch(tipo)

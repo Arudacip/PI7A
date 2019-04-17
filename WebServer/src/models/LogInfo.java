@@ -2,18 +2,23 @@ package models;
 
 import java.util.Date;
 
+/**
+ * Classe do Model de LogInfo do design pattern MVC + Abstract Factory.
+ * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
+ *
+ * @param prefix: prefixo do log
+ */
+
 public class LogInfo extends AbstractLog
 {
 
-    /**
-     * Classe do Model de LogInfo do design pattern MVC + Abstract Factory.
-     *
-     * @param prefix: prefixo do log
-     * @method imprime: retorna o texto do log
-     */
-    
     private String prefix = "> INFO: ";
     
+    /**
+     * Construtor principal do LogInfo que recebe os valores do log.
+	 * @param data : data do log
+	 * @param texto : texto do log
+     */
     public LogInfo(Date data, String texto)
     {
 		super(data, texto);

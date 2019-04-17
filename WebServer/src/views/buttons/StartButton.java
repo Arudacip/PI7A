@@ -1,20 +1,21 @@
 package views.buttons;
 
+/**
+ * Classe de StartButton do design pattern MVC + Compose.
+ * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
+ *
+ * @param tipo: tipo de button
+ */
+
 public class StartButton extends AbstractButton
 {
     
-    /**
-     * Classe do ViewItem de StartButton do design pattern MVC + Compose. 
-     *
-     * @param tipo: tipo de button
-     * @param serialVersionUID: serializable
-     * @method StartButton: construtor do button de start
-     * @method tipo: retorna o tipo de botao
-     */
-
     private static final long serialVersionUID = 1L;
     public ButtonTypes tipo = ButtonTypes.Start;
     
+    /**
+     * Construtor do button de start.
+     */
     public StartButton()
     {
         this.setName("btStart");

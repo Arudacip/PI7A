@@ -2,14 +2,13 @@ package models;
 
 import java.util.Date;
 
+/**
+ * Classe do Model FactoryLogWarn do design pattern MVC + Abstract Factory.
+ * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
+ */
+
 public class FactoryLogWarn extends AbstractFactoryLog
 {
-    
-    /**
-     * Classe do Model FactoryLogWarn do design pattern MVC + Abstract Factory.
-     *
-     * @method retornaLogs: retorna o texto dos logs armazenados
-     */
     
     @Override
     public AbstractLog retornaLogs(Date data, String text)

@@ -6,18 +6,22 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * Classe de painel do design pattern MVC + Compose.
+ * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
+ *
+ * @param lbStatus: area de texto para logs exibidos
+ */
+
 public class ComposeStatus
 {
 
-    /**
-     * Classe do ViewItem de painel do design pattern MVC + Compose.
-     *
-     * @param lbStatus: area de texto para logs exibidos
-     * @method criaPanelStatus: cria o painel de status para o View
-     * @method setStatus: altera o status exibido do servidor
-     */
     private JLabel lbStatus;
-
+    
+    /**
+     * Cria o painel de status para o View.
+     * @return Painel de Status
+     */
     public JPanel criaPanelStatus()
     {
         JPanel panelStatus = new JPanel();
@@ -36,7 +40,11 @@ public class ComposeStatus
 
         return panelStatus;
     }
-
+    
+    /**
+     * Altera o status exibido do servidor.
+     * @param status : status a exibir
+     */
     public void setStatus(String status)
     {
         lbStatus.setText("Status: " + status);

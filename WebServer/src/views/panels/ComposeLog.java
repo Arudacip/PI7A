@@ -11,20 +11,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import models.AbstractLog;
 
+/**
+ * Classe de painel do design pattern MVC + Compose.
+ * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
+ *
+ * @param txtLog: area de texto para logs exibidos
+ * @param scrollLog: scroll para a area de texto
+ */
+
 public class ComposeLog
 {
     
-    /**
-     * Classe do ViewItem de painel do design pattern MVC + Compose.
-     *
-     * @param txtLog: area de texto para logs exibidos
-     * @method criaPanelLog: cria o painel de logs para o View
-     * @method AddMessage: altera os logs exibidos
-     */
-    
     private JTextArea txtLog;
     private JScrollPane scrollLog;
-
+    
+    /**
+     * Cria o painel de logs para o View.
+     * @return O painel de Logs
+     */
     public JPanel criaPanelLog()
     {
         JPanel panelLog = new JPanel();
@@ -44,7 +48,12 @@ public class ComposeLog
 
         return panelLog;
     }
-
+    
+    /**
+     * Altera os logs exibidos na View.
+     * 
+     * @param message : AbstractLog a ser acrescentado
+     */
     public void AddMessage(AbstractLog message)
     {
         txtLog.setText(txtLog.getText() + "\n" + message.imprime());

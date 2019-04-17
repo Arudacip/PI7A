@@ -13,27 +13,32 @@ import views.buttons.RestartButton;
 import views.buttons.StartButton;
 import views.buttons.StopButton;
 
+/**
+ * Classe de painel do design pattern MVC + Compose.
+ * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
+ *
+ * @param buttonsList : lista de buttons da interface
+ */
+
 public class ComposeControl
 {
-
-    /**
-     * Classe do ViewItem de painel do design pattern MVC + Compose.
-     *
-     * @param buttonsList: lista de buttons da solucao
-     * @method ComposeControl: construtor dos buttons
-     * @method criaPanelControl: cria o painel de controle para o View
-     * @method getButton: retorna o button por tipo
-     */
-    
+	
     private ArrayList<AbstractButton> buttonsList = new ArrayList<>();
-
+    
+    /**
+     * Construtor principal do painel.
+     */
     public ComposeControl()
     {
         buttonsList.add(new StartButton());
         buttonsList.add(new StopButton());
         buttonsList.add(new RestartButton());
     }
-
+    
+    /**
+     * Cria o painel de controle e os botoes, monta a interface e retorna o painel completo.
+     * @return Painel de Controle 
+     */
     public JPanel criaPanelControl()
     {
         JPanel panelControl = new JPanel();
@@ -48,7 +53,12 @@ public class ComposeControl
         }
         return panelControl;
     }
-
+    
+    /**
+     * Retorna o botao de acordo com seu tipo.
+     * @param button : tipo de botao
+     * @return Ponteiro para o botao de acordo com seu tipo.
+     */
     public JButton getButton(ButtonTypes button)
     {
         for (AbstractButton obj : buttonsList)

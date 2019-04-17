@@ -15,36 +15,61 @@ import java.util.Date;
 import java.util.StringTokenizer;
 
 import controllers.ControllerMain;
-import views.ViewServiceAdmin;
+
+/**
+ * Classe que cria o server socket principal do servidor, assim como controla e trata as threads dos usuarios, sob demanda.
+ * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
+ * 
+ * @param WEB_ROOT : [CONSTANT] raiz do service web
+ * @param DEFAULT_FILE : [CONSTANT] path do arquivo de indice
+ * @param NOT_FOUND : [CONSTANT] path do arquivo de erro 404
+ * @param NOT_SUPPORTED : [CONSTANT] path do arquivo de erro 405
+ * @param UNKNOWN : [CONSTANT] path do arquivo de erro 400 
+ * @param servidor : ponteiro para o servidor
+ * @param cliente : ponteiro para o cliente da thread
+ */
 
 public class SocketAdmin implements Runnable
 {
-	
-	// TODO: Javadoc
 
     private static final File WEB_ROOT = new File("./resources/");
     private static final String DEFAULT_FILE = "index.html";
-    private static final String FILE_NOT_FOUND = "404.html";
-    private static final String NOT_SUPPORTED = "notsupported.html";
+    private static final String NOT_FOUND = "404.html";
+    private static final String NOT_SUPPORTED = "405.html";
+	private static final String UNKNOWN = "400.html";
 	private ServerSocket servidor;
 	private Socket cliente;
 	
-	// Construtor principal
+	/**
+	 * Construtor principal do SocketAdmin.
+	 */
 	public SocketAdmin()
 	{
 	}
 	
-	// Construtor auxiliar
+	/**
+	 * Construtor auxiliar do SocketAdmin.
+	 * @param cliente : ciente a ser conectado ao service web
+	 */
 	public SocketAdmin(Socket cliente)
 	{
 		this.cliente = cliente;
 	}
-
+	
+	/**
+	 * Inicia o server socket para receber as requisicoes dos usuarios.
+	 * @param porta : porta onde o service vai "ouvir"
+	 * @throws IOException
+	 */
 	public void start(int porta) throws IOException
 	{
 		servidor = new ServerSocket(porta);
 	}
 	
+	/**
+	 * Parar o server socket do service web.
+	 * @return Se o server socket parou ou nao
+	 */
 	public boolean stop()
 	{
 		try
@@ -53,34 +78,47 @@ public class SocketAdmin implements Runnable
 			return true;
 		} catch (IOException e)
 		{
-			// TODO: tratar exception
-			e.printStackTrace();
+			// Trata a exception
+			if (ControllerMain.VERBOSE)
+			{
+				System.out.println("CRIT: " + e.getMessage());
+				ControllerMain.getInstance().generateLog(ControllerMain.CRIT, e.getMessage());
+			}
+			System.out.println("SYSERROR:" + e.getMessage());
 			return false;
 		}
 	}
 	
+	/**
+	 * Checar o status do service web, e portanto do server socket.
+	 * @return Se o server socket esta parado ou nao
+	 */
 	public int getStatus()
 	{
-		int status = ViewServiceAdmin.UNKOWN;
+		int status = ControllerMain.UNKOWN;
 		try
 		{
 			boolean isdown = servidor.isClosed();
 			if (!isdown)
 			{
-				status = ViewServiceAdmin.STARTED;
+				status = ControllerMain.STARTED;
 			} else
 			{
-				status = ViewServiceAdmin.STOPPED;
+				status = ControllerMain.STOPPED;
 			}
 		} catch (Exception e)
 		{
 			// TODO tratar exception
 			e.printStackTrace();
-			status = ViewServiceAdmin.UNKOWN;
+			status = ControllerMain.UNKOWN;
 		}
 		return status;
 	}
 	
+	/**
+	 * Espera qualquer cliente conectar, e prepara o ambiente quando um cliente novo acessa o service web.
+	 * @return Conexao de cliente recebida
+	 */
 	public Socket esperarCliente()
 	{
 		cliente = null;
@@ -93,25 +131,34 @@ public class SocketAdmin implements Runnable
 				if (ControllerMain.VERBOSE)
 				{
 					System.out.println("Conexao aberta. (" + cliente.toString() + ")");
+					ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Conexao aberta. (" + cliente.toString() + ")");
 					System.out.println("Cliente na porta: " + cliente.getPort());
+					ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Cliente na porta: " + cliente.getPort());
 				}
 				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Cliente "+cliente.toString()+" conectado na porta "+ControllerMain.PORTA+".");
-				// create dedicated thread to manage the client connection
+				// cria a thread dedicada para gerenciar o cliente
 				Thread thread = new Thread(server);
 				thread.start();
 			}
 		} catch (IOException e)
 		{
-			// TODO tratar exception
-			e.printStackTrace();
+			// Trata a exception
+			if (ControllerMain.VERBOSE)
+			{
+				System.out.println("CRIT: " + e.getMessage());
+				ControllerMain.getInstance().generateLog(ControllerMain.CRIT, e.getMessage());
+			}
 		}
 		return cliente;
 	}
 	
+	/**
+	 * Executa a thread individual de cada cliente.
+	 */
 	@Override
 	public void run()
 	{
-		// Gerenciando a conexao do cliente individaual
+		// Gerenciando a conexao do cliente individual
 		BufferedReader in = null;
 		PrintWriter out = null;
 		BufferedOutputStream dataOut = null;
@@ -119,11 +166,11 @@ public class SocketAdmin implements Runnable
 		
 		try
 		{
-			// make reader for client characters
+			// cria reader para entradas de texto do cliente
 			in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
-			// make character output stream
+			// cria writer para saidas de texto
 			out = new PrintWriter(cliente.getOutputStream());
-			// make binary output stream
+			// cria writer para saidas de dados
 			dataOut = new BufferedOutputStream(cliente.getOutputStream());
 			
 			String input = in.readLine();
@@ -132,14 +179,20 @@ public class SocketAdmin implements Runnable
 			// separa o arquivo solicitado
 			fileRequested = parse.nextToken().toLowerCase();
 			
-			// soporta apenas GET and HEAD
+			if (ControllerMain.VERBOSE)
+			{
+				System.out.println("INFO: Metodo recebido: " + method + ".");
+				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Metodo recebido: " + method + ".");
+			}
+			
+			// checa o metodo - suporta apenas GET and HEAD
 			if (!method.equals("GET")  &&  !method.equals("HEAD"))
 			{
 				if (ControllerMain.VERBOSE)
 				{
-					System.out.println("501 Nao implementado: metodo " + method + ".");
+					System.out.println("INFO: 405 Metodo nao suportado: metodo " + method + ".");
+					ControllerMain.getInstance().generateLog(ControllerMain.INFO, "405 - Metodo nao suportado.");
 				}
-				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "501 - Nao implementado.");
 				
 				File file = new File(WEB_ROOT, NOT_SUPPORTED);
 				int fileLength = (int) file.length();
@@ -147,7 +200,7 @@ public class SocketAdmin implements Runnable
 				byte[] fileData = lerArquivoDados(file, fileLength);
 					
 				// envia HTTP Headers e dados
-				out.println("HTTP/1.1 501 Nao Implementado");
+				out.println("HTTP/1.1 405 Nao Suportado");
 				out.println("Server: Servidor Java HTTP - ECP7AN-MCA1-09");
 				out.println("Date: " + new Date());
 				out.println("Content-type: " + contentMimeType);
@@ -197,8 +250,8 @@ public class SocketAdmin implements Runnable
 				if (ControllerMain.VERBOSE)
 				{
 					System.out.println("HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
+					ControllerMain.getInstance().generateLog(ControllerMain.INFO, "HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
 				}
-				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
 			}
 			
 		} catch (FileNotFoundException fnfe)
@@ -218,6 +271,17 @@ public class SocketAdmin implements Runnable
 			String message = ioe.getMessage();
 			System.out.println("SYSError - Erro de servidor: " + message);
 			ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Erro de servidor: " + message);
+		}  catch (Exception une)
+		{
+			try
+			{
+				requisicaoNaoCompreendida(out, dataOut, fileRequested);
+			} catch (IOException ioe)
+			{
+				String message = une.getMessage();
+				System.out.println("SYSError - Unknown - Erro de servidor: " + message);
+				ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Unknown - Erro de servidor: " + message);
+			}
 		} finally
 		{
 			try
@@ -225,7 +289,7 @@ public class SocketAdmin implements Runnable
 				in.close();
 				out.close();
 				dataOut.close();
-				cliente.close(); // we close socket connection
+				cliente.close(); // fecha a conexao do socket
 			} catch (Exception e)
 			{
 				String message = e.getMessage();
@@ -240,6 +304,15 @@ public class SocketAdmin implements Runnable
 		}
 	}
 	
+	/**
+	 * Le o arquivo apontado pela solicitacao nos recursos web do servidor, e os retorna para o service web.
+	 * Os arquivos de recursos web estao em SocketAdmin.WEB_ROOT.
+	 * 
+	 * @param file : arquivo solicitado
+	 * @param fileLength : tamanho do arquivo
+	 * @return Arquivo solicitado
+	 * @throws IOException
+	 */
 	private byte[] lerArquivoDados(File file, int fileLength) throws IOException
 	{
 		FileInputStream fileIn = null;
@@ -256,7 +329,12 @@ public class SocketAdmin implements Runnable
 		return fileData;
 	}
 	
-	// retorna os MIME Types suportados
+	/**
+	 * Retorna os ContentTypes MIME Types suportados pelo service web.
+	 * 
+	 * @param fileRequested : arquivo solicitado
+	 * @return ContentType do arquivo
+	 */
 	private String getContentType(String fileRequested)
 	{
 		if (fileRequested.endsWith(".htm")  ||  fileRequested.endsWith(".html"))
@@ -265,9 +343,17 @@ public class SocketAdmin implements Runnable
 			return "text/plain";
 	}
 	
+	/**
+	 * Processa uma requisicao de arquivo nao encontrado com erro HTML 404. 
+	 * 
+	 * @param out : writer de texto
+	 * @param dataOut : writer de dados
+	 * @param fileRequested : arquivo solicitado
+	 * @throws IOException
+	 */
 	private void arquivoNaoEncontrado(PrintWriter out, OutputStream dataOut, String fileRequested) throws IOException
 	{
-		File file = new File(WEB_ROOT, FILE_NOT_FOUND);
+		File file = new File(WEB_ROOT, NOT_FOUND);
 		int fileLength = (int) file.length();
 		String content = "text/html";
 		byte[] fileData = lerArquivoDados(file, fileLength);
@@ -287,6 +373,39 @@ public class SocketAdmin implements Runnable
 		{
 			System.out.println("HTTP 404: Arquivo  " + fileRequested + " nao encontrado");
 			ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "HTTP 404: Arquivo  " + fileRequested + " nao encontrado");
+		}
+	}
+	
+	/**
+	 * Processa uma requisicao nao compreendida com erro HTML 400. 
+	 * 
+	 * @param out : writer de texto
+	 * @param dataOut : writer de dados
+	 * @param fileRequested : arquivo solicitado
+	 * @throws IOException
+	 */
+	private void requisicaoNaoCompreendida(PrintWriter out, OutputStream dataOut, String fileRequested) throws IOException
+	{
+		File file = new File(WEB_ROOT, UNKNOWN);
+		int fileLength = (int) file.length();
+		String content = "text/html";
+		byte[] fileData = lerArquivoDados(file, fileLength);
+		
+		out.println("HTTP/1.1 400 Requisicao Nao Compreendida");
+		out.println("Server: Servidor Java HTTP - ECP7AN-MCA1-09");
+		out.println("Date: " + new Date());
+		out.println("Content-type: " + content);
+		out.println("Content-length: " + fileLength);
+		out.println();
+		out.flush();
+		
+		dataOut.write(fileData, 0, fileLength);
+		dataOut.flush();
+		
+		if (ControllerMain.VERBOSE)
+		{
+			System.out.println("HTTP 400: Requisicao Nao Compreendida");
+			ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "HTTP 400: Requisicao Nao Compreendida");
 		}
 	}
 }

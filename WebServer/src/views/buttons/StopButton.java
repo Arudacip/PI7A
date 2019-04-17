@@ -1,20 +1,21 @@
 package views.buttons;
 
+/**
+ * Classe de StopButton do design pattern MVC + Compose.
+ * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
+ *
+ * @param tipo: tipo de button
+ */
+
 public class StopButton extends AbstractButton
 {
     
-    /**
-     * Classe do ViewItem de StopButton do design pattern MVC + Compose. 
-     *
-     * @param tipo: tipo de button
-     * @param serialVersionUID: serializable
-     * @method StopButton: construtor do button de start
-     * @method tipo: retorna o tipo de botao
-     */
-
     private static final long serialVersionUID = 3L;
     ButtonTypes tipo = ButtonTypes.Stop;
-
+    
+    /**
+     * Construtor do button de stop.
+     */
     public StopButton()
     {
         this.setName("btStop");

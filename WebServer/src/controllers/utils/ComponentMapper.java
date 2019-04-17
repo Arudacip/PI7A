@@ -4,21 +4,24 @@ import java.awt.Component;
 import java.util.HashMap;
 import javax.swing.JFrame;
 
+/**
+ * Classe utilitaria de mapeamento dos componentes visuais das Views do servidor.
+ * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
+ * 
+ * @param componentMap : mapa de componentes do servidor
+ */
+
 public class ComponentMapper
 {
-    
-    /**
-     * Classe da View de ServiceAdmin do design pattern MVC.
-     *
-     * 
-     * @param componentMap: mapa de componentes da view
-     * @method createComponentMap: constroi o mapa de componentes
-     * @method getComponentByName: retorna o componente por nome
-     */
     
     @SuppressWarnings("rawtypes")
 	private static HashMap componentMap;
     
+    /**
+     * Constroi o mapa de componentes.
+     * 
+     * @param ui : interface apresentada na View
+     */
     @SuppressWarnings("unchecked")
     public static void createComponentMap(JFrame ui)
     {
@@ -30,6 +33,12 @@ public class ComponentMapper
         }
     }
     
+    /**
+     * Retorna qualquer componente visual de qualquer View que utilize o ComponentMapper, de acordo com o nome fornecido.
+     * 
+     * @param name : nome do componente, como definido nos objetos de cada um durante criacao
+     * @return O componente visual da interface, de acordo com o nome fornecido
+     */
     public static Component getComponentByName(String name)
     {
         if (componentMap.containsKey(name))
