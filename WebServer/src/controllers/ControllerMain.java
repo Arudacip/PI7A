@@ -241,8 +241,7 @@ public final class ControllerMain implements ActionListener
 			viewSAUI.addLog(currentLog);
 			if (ControllerMain.VERBOSE)
 			{
-				System.out.println("Tamanho info: "+infolog.size());
-				System.out.println("Tamanho main: "+mainlog.size());
+				System.out.println("INFO: "+currentLog.imprime());
 			}
 			break;
 			
@@ -253,8 +252,7 @@ public final class ControllerMain implements ActionListener
 			viewSAUI.addLog(currentLog);
 			if (ControllerMain.VERBOSE)
 			{
-				System.out.println("Tamanho warn: "+warnlog.size());
-				System.out.println("Tamanho main: "+mainlog.size());
+				System.out.println("INFO: "+currentLog.imprime());
 			}
 			break;
 			
@@ -265,8 +263,7 @@ public final class ControllerMain implements ActionListener
 			viewSAUI.addLog(currentLog);
 			if (ControllerMain.VERBOSE)
 			{
-				System.out.println("Tamanho crit: "+critlog.size());
-				System.out.println("Tamanho main: "+mainlog.size());
+				System.out.println("INFO: "+currentLog.imprime());
 			}
 			break;
 			
@@ -277,8 +274,7 @@ public final class ControllerMain implements ActionListener
 			viewSAUI.addLog(currentLog);
 			if (ControllerMain.VERBOSE)
 			{
-				System.out.println("Tamanho crit: "+critlog.size());
-				System.out.println("Tamanho main: "+mainlog.size());
+				System.out.println("INFO: "+currentLog.imprime());
 			}
 			break;
 		}
