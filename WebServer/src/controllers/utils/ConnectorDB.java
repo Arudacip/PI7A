@@ -1,8 +1,12 @@
 package controllers.utils;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
+
+import controllers.ControllerMain;
 
 /**
  * Classe utilitaria de conexao com o Banco de Dados. Atualmente funcional para apenas BDs MySQL.
@@ -13,15 +17,17 @@ import java.sql.SQLException;
 
 public class ConnectorDB
 {
-	private final static String DRIVER = "com.mysql.jdbc.Driver"; 
+	private final static String DRIVER; 
 	
 	static
 	{
 		try
 		{
+			Properties prop = ControllerMain.getProp();
+			DRIVER = prop.getProperty("prop.server.driver");
 			Class.forName(DRIVER);
 		}
-		catch (ClassNotFoundException e) {
+		catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
@@ -38,8 +44,16 @@ public class ConnectorDB
 	 * @param password : senha para conectar ao BD
 	 * @return Conexao criada e funcional para o Banco de Dados do servidor
 	 * @throws SQLException
+	 * @throws IOException 
 	 */
-	public Connection getConnection(String jdbc, String server, String database, String user, String password) throws SQLException {
-		return DriverManager.getConnection("jdbc:"+jdbc+"://"+server+"/"+database+"?user="+user+"&"+"password="+password);
+	public Connection getConnection() throws SQLException, IOException {
+		String jdbc, address, database, user, password;
+		Properties prop = ControllerMain.getProp();
+		jdbc = prop.getProperty("prop.server.jdbc");
+		address = prop.getProperty("prop.server.address");
+		database = prop.getProperty("prop.server.database");
+		user = prop.getProperty("prop.server.jdbc");
+		password = prop.getProperty("prop.server.password");
+		return DriverManager.getConnection("jdbc:"+jdbc+"://"+address+"/"+database+"?user="+user+"&"+"password="+password);
 	}
 }

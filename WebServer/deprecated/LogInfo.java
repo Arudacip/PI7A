@@ -3,23 +3,24 @@ package models;
 import java.util.Date;
 
 /**
- * Classe do Model de LogWarn do design pattern MVC + Abstract Factory.
+ * Classe do Model de LogInfo do design pattern MVC + Abstract Factory.
  * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
  *
  * @param prefix: prefixo do log
  */
 
-public class LogWarn extends AbstractLog
+public class LogInfo extends AbstractLog
 {
-    
-    private String prefix = "> WARNING: ";
+	
+	private static final long serialVersionUID = 1L;
+    private String prefix = "> INFO: ";
     
     /**
-     * Construtor principal do LogWarn que recebe os valores do log.
+     * Construtor principal do LogInfo que recebe os valores do log.
 	 * @param data : data do log
 	 * @param texto : texto do log
      */
-    public LogWarn(Date data, String texto)
+    public LogInfo(Date data, String texto)
     {
 		super(data, texto);
 	}

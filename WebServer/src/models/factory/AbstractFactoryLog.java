@@ -1,6 +1,8 @@
-package models;
+package models.factory;
 
 import java.util.Date;
+
+import models.AbstractLog;
 
 /**
  * Classe do Model raiz da Factory do design pattern MVC + Abstract Factory.

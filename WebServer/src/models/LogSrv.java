@@ -2,24 +2,27 @@ package models;
 
 import java.util.Date;
 
+import models.AbstractLog;
+
 /**
- * Classe do Model de LogCrit do design pattern MVC + Abstract Factory.
+ * Classe do Model de LogServ do design pattern MVC + Abstract Factory.
  * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
  *
- * @param prefix: prefixo do log
+ * @param prefix : prefixo do log
  */
 
-public class LogCrit extends AbstractLog
+public class LogSrv extends AbstractLog
 {
-    
-    private String prefix = "> CRITICAL: ";
+	
+	private static final long serialVersionUID = 1L;
+    private String prefix = "> SERVER: ";
     
     /**
-     * Construtor principal do LogCrit que recebe os valores do log.
+     * Construtor principal do LogServ que recebe os valores do log.
 	 * @param data : data do log
 	 * @param texto : texto do log
      */
-    public LogCrit(Date data, String texto)
+    public LogSrv(Date data, String texto)
     {
 		super(data, texto);
 	}

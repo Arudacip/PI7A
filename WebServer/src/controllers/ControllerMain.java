@@ -2,19 +2,22 @@ package controllers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 
 import controllers.sockets.SocketAdmin;
-import models.AbstractFactoryLog;
+import controllers.utils.ConnectorDB;
 import models.AbstractLog;
-import models.FactoryLogCrit;
-import models.FactoryLogInfo;
-import models.FactoryLogWarn;
-import models.LogCrit;
-import models.LogInfo;
-import models.LogWarn;
+import models.LogAcc;
+import models.LogSrv;
+import models.factory.AbstractFactoryLog;
+import models.factory.FactoryLogAcc;
+import models.factory.FactoryLogSrv;
 import views.ViewServiceAdmin;
 import views.buttons.ButtonTypes;
 
@@ -27,16 +30,14 @@ import views.buttons.ButtonTypes;
  * @param PORTA_SERVER : [CONSTANT] porta de acesso default para administradores
  * @param STOPPED : [CONSTANT] status do service web parado
  * @param UNKOWN : [CONSTANT] status do service web desconhecido
- * @param INFO : [CONSTANT] LogType para logs informativos
- * @param WARN : [CONSTANT] LogType para logs de warning
- * @param CRIT : [CONSTANT] LogType para logs de critical
+ * @param SRV : [CONSTANT] LogType para logs de SERVIDOR
+ * @param ACC : [CONSTANT] LogType para logs de ACESSO
  * @param VERBOSE : [CONSTANT] define se os logs de sistema e servico devem ser <b>verbose</b>
  * @param PORTA : porta em uso no servidor
  * @param servidor : ponteiro para o servidor
  * 
- * @param infolog : lista de logs INFO
- * @param warnlog : lista de logs WARN
- * @param critlog : lista de logs CRIT
+ * @param srvlog : lista de logs de SERVIDOR
+ * @param acclog : lista de logs de ACESSO
  * @param mainlog : lista de logs completa
  * 
  * @param viewSAUI : ponteiro para o View de ServiceAdmin
@@ -47,24 +48,21 @@ public final class ControllerMain implements ActionListener
 
     // VARIAVEIS DE AMBIENTE
 	private static final ControllerMain INSTANCE = new ControllerMain();
-	private static final int PORTA_CLIENT = 80;
-	@SuppressWarnings("unused")
-	private static final int PORTA_SERVER = 8080;
+	private static final int PORTA_DEFAULT = 80;
     public static final int STARTED = 1;
     public static final int STOPPED = 2;
     public static final int UNKOWN = 3;
-	public static final int INFO = 1;
-	public static final int WARN = 2;
-	public static final int CRIT = 3;
+	public static final int SRV = 1;
+	public static final int ACC = 2;
     public static final boolean VERBOSE = true;
     public static int PORTA;
-	private AbstractLog currentLog;
     private SocketAdmin servidor;
+	private AbstractLog currentLog;
+    private Connection conn;
 	
     // MODELS
-    private ArrayList<AbstractLog> infolog;
-    private ArrayList<AbstractLog> warnlog;
-    private ArrayList<AbstractLog> critlog;
+    private ArrayList<AbstractLog> srvlog;
+    private ArrayList<AbstractLog> acclog;
     private ArrayList<AbstractLog> mainlog;
 
     // VIEWS
@@ -72,6 +70,27 @@ public final class ControllerMain implements ActionListener
     
     private ControllerMain()
     {
+    	Properties prop;
+		try {
+			// Recupera a porta de acesso ao serverweb
+			prop = getProp();
+			PORTA = Integer.parseInt(prop.getProperty("prop.server.porta"));
+			System.out.println("SYSINFO: Porta encontrada na config: " + Integer.parseInt(prop.getProperty("prop.server.porta")));
+			
+			// Recupera as configs de BD e instancia a o ConnectorDB
+			conn = null;
+			ConnectorDB db = new ConnectorDB();
+			conn = db.getConnection();
+			conn.setAutoCommit(false);
+			//ServiceLogSrv service = new ServiceLogSrv(conn);
+		} catch (IOException ioe) {
+			// Trata o erro, se ocorrer
+			System.out.println("SYSERROR: " + ioe.getMessage());
+			PORTA = PORTA_DEFAULT;
+		} catch (SQLException sqle) {
+			// Trata o erro, se ocorrer
+			System.out.println("SYSERROR: " + sqle.getMessage());
+		}
     }
     
     /**
@@ -89,21 +108,18 @@ public final class ControllerMain implements ActionListener
     public void createService()
     {
         // Cria os Models
-    	infolog = new ArrayList<AbstractLog>();
-    	warnlog = new ArrayList<AbstractLog>();
-    	critlog = new ArrayList<AbstractLog>();
+    	srvlog = new ArrayList<AbstractLog>();
+    	acclog = new ArrayList<AbstractLog>();
     	mainlog = new ArrayList<AbstractLog>();
-    	PORTA = PORTA_CLIENT;
     	
         AbstractFactoryLog[] factories = new AbstractFactoryLog[3];
-        factories[0] = new FactoryLogInfo();
-        factories[1] = new FactoryLogWarn();
-        factories[2] = new FactoryLogCrit();
+        factories[0] = new FactoryLogSrv();
+        factories[1] = new FactoryLogAcc();
         AbstractLog log = null;
         for (AbstractFactoryLog fabrica : factories)
         {
             // TODO: fabricas montarem os logs recuperados no database
-            // AbstractLogDAO.getLogs(conn);
+        	// AbstractLogDAO.getLogs(conn);
             log = fabrica.retornaLogs(new Date(System.currentTimeMillis()), "Aberto.");
             mainlog.add(log);
         }
@@ -130,16 +146,16 @@ public final class ControllerMain implements ActionListener
             @Override
             public void run()
             {
-            	generateLog(WARN, "Tentando iniciar o servidor...");
+            	generateLog(SRV, "Tentando iniciar o servidor...");
                 try
                 {
                 	servidor.start(PORTA);
-                	generateLog(INFO, "Servidor iniciado!");
+                	generateLog(SRV, "Servidor iniciado!");
                 	// tem que ser checado aqui caso contrario da null pointer exception
                     checkStatus();
                 } catch (IOException ex) {
                     ex.printStackTrace();
-                	generateLog(CRIT, "Falha ao iniciar do servidor!");
+                	generateLog(SRV, "Falha ao iniciar do servidor!");
                 	// tem que ser checado aqui caso contrario da null pointer exception
                     checkStatus();
                 }
@@ -153,16 +169,16 @@ public final class ControllerMain implements ActionListener
      */
     private void stopService()
     {
-        generateLog(WARN, "Tentando parar o servidor...");
+        generateLog(SRV, "Tentando parar o servidor...");
         boolean sucesso = servidor.stop();
         if (sucesso)
         {
-        	generateLog(INFO, "Servidor parado!");
+        	generateLog(SRV, "Servidor parado!");
         	// tem que ser checado aqui caso contrario da null pointer exception
             checkStatus();
         } else
         {
-        	generateLog(CRIT, "Falha na parada do servidor!");
+        	generateLog(SRV, "Falha na parada do servidor!");
         	// tem que ser checado aqui caso contrario da null pointer exception
             checkStatus();
         }
@@ -173,7 +189,7 @@ public final class ControllerMain implements ActionListener
      */
     private void restartService()
     {
-    	generateLog(WARN, "Reiniciando o servidor.");
+    	generateLog(ACC, "Reiniciando o servidor.");
         stopService();
         startService();
     }
@@ -234,49 +250,52 @@ public final class ControllerMain implements ActionListener
 	{
 		switch(tipo)
 		{
-		case INFO:
-			currentLog = new LogInfo(new Date(System.currentTimeMillis()), texto);
-			infolog.add(currentLog);
+		case SRV:
+			currentLog = new LogSrv(new Date(System.currentTimeMillis()), texto);
+			srvlog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
 			if (ControllerMain.VERBOSE)
 			{
-				System.out.println("INFO: "+currentLog.imprime());
+				System.out.println("SERVER: "+currentLog.imprime());
 			}
 			break;
 			
-		case WARN:
-			currentLog = new LogWarn(new Date(System.currentTimeMillis()), texto);
-			warnlog.add(currentLog);
+		case ACC:
+			currentLog = new LogAcc(new Date(System.currentTimeMillis()), texto);
+			acclog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
 			if (ControllerMain.VERBOSE)
 			{
-				System.out.println("INFO: "+currentLog.imprime());
-			}
-			break;
-			
-		case CRIT:
-			currentLog = new LogCrit(new Date(System.currentTimeMillis()), texto);
-			critlog.add(currentLog);
-			mainlog.add(currentLog);
-			viewSAUI.addLog(currentLog);
-			if (ControllerMain.VERBOSE)
-			{
-				System.out.println("INFO: "+currentLog.imprime());
+				System.out.println("ACCESS: "+currentLog.imprime());
 			}
 			break;
 			
 		default:
-			currentLog = new LogCrit(new Date(System.currentTimeMillis()), "Erro desconhecido.");
-			critlog.add(currentLog);
+			currentLog = new LogSrv(new Date(System.currentTimeMillis()), "Erro desconhecido.");
+			srvlog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
 			if (ControllerMain.VERBOSE)
 			{
-				System.out.println("INFO: "+currentLog.imprime());
+				System.out.println("SERVER: "+currentLog.imprime());
 			}
 			break;
 		}
 	}
+	
+
+	/**
+	 * Retorna as propriedades definidas no arquivo de configuracao do webserver.
+	 * @return Propriedades do webserver
+	 * @throws IOException
+	 */
+	public static Properties getProp() throws IOException
+	{
+        Properties props = new Properties();
+        FileInputStream file = new FileInputStream("./info.properties");
+        props.load(file);
+        return props;
+    }
 }

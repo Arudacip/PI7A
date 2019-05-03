@@ -1,19 +1,24 @@
 package models;
 
 import java.util.Date;
+import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  * Classe do Model raiz de FactoryItem do design pattern MVC + Abstract Factory.
  * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
  *
- * @param data: data do log
- * @param texto: texto do log
+ * @param id : id do log
+ * @param data : data do log
+ * @param texto : texto do log
  */
 
-public abstract class AbstractLog
+public abstract class AbstractLog implements Serializable
 {
 	
-    private Date data;
+	private static final long serialVersionUID = 1L;
+	private int id;
+    private Timestamp data;
     private String texto;
 	
 	/**
@@ -23,7 +28,8 @@ public abstract class AbstractLog
 	 */
     public AbstractLog(Date data, String texto)
     {
-        this.data = data;
+    	this.id = 0;
+        this.data = new Timestamp(data.getTime());
         this.texto = texto;
     }
     
@@ -32,6 +38,15 @@ public abstract class AbstractLog
      * @return Texto do log
      */
     public abstract String imprime();
+    
+    /**
+     * Retorna o ID do log.
+     * @return ID do log
+     */
+    public int getID()
+    {
+        return id;
+    }
     
     /**
      * Retorna a data do log.

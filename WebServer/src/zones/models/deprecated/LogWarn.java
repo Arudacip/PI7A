@@ -1,25 +1,28 @@
-package models;
+package zones.models.deprecated;
 
 import java.util.Date;
 
+import models.AbstractLog;
+
 /**
- * Classe do Model de LogInfo do design pattern MVC + Abstract Factory.
+ * Classe do Model de LogWarn do design pattern MVC + Abstract Factory.
  * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
  *
  * @param prefix: prefixo do log
  */
 
-public class LogInfo extends AbstractLog
+public class LogWarn extends AbstractLog
 {
-
-    private String prefix = "> INFO: ";
+	
+	private static final long serialVersionUID = 1L;
+    private String prefix = "> WARNING: ";
     
     /**
-     * Construtor principal do LogInfo que recebe os valores do log.
+     * Construtor principal do LogWarn que recebe os valores do log.
 	 * @param data : data do log
 	 * @param texto : texto do log
      */
-    public LogInfo(Date data, String texto)
+    public LogWarn(Date data, String texto)
     {
 		super(data, texto);
 	}

@@ -1,6 +1,9 @@
-package models;
+package models.deprecated;
 
 import java.util.Date;
+
+import models.AbstractLog;
+import models.factory.AbstractFactoryLog;
 
 /**
  * Classe do Model FactoryLogWarn do design pattern MVC + Abstract Factory.

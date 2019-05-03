@@ -131,11 +131,11 @@ public class SocketAdmin implements Runnable
 				if (ControllerMain.VERBOSE)
 				{
 					System.out.println("Conexao aberta. (" + cliente.toString() + ")");
-					ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Conexao aberta. (" + cliente.toString() + ")");
+					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Conexao aberta. (" + cliente.toString() + ")");
 					System.out.println("Cliente na porta: " + cliente.getPort());
-					ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Cliente na porta: " + cliente.getPort());
+					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Cliente na porta: " + cliente.getPort());
 				}
-				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Cliente "+cliente.toString()+" conectado na porta "+ControllerMain.PORTA+".");
+				ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Cliente "+cliente.toString()+" conectado na porta "+ControllerMain.PORTA+".");
 				// cria a thread dedicada para gerenciar o cliente
 				Thread thread = new Thread(server);
 				thread.start();
@@ -182,7 +182,7 @@ public class SocketAdmin implements Runnable
 			if (ControllerMain.VERBOSE)
 			{
 				System.out.println("INFO: Metodo recebido: " + method + ".");
-				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Metodo recebido: " + method + ".");
+				ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Metodo recebido: " + method + ".");
 			}
 			
 			// checa o metodo - suporta apenas GET and HEAD
@@ -191,7 +191,7 @@ public class SocketAdmin implements Runnable
 				if (ControllerMain.VERBOSE)
 				{
 					System.out.println("INFO: 405 Metodo nao suportado: metodo " + method + ".");
-					ControllerMain.getInstance().generateLog(ControllerMain.INFO, "405 - Metodo nao suportado.");
+					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "405 - Metodo nao suportado.");
 				}
 				
 				File file = new File(WEB_ROOT, NOT_SUPPORTED);
@@ -222,7 +222,7 @@ public class SocketAdmin implements Runnable
 				if (ControllerMain.VERBOSE)
 				{
 					System.out.println("Buscando o arquivo " + fileRequested);
-					ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Buscando o arquivo " + fileRequested);
+					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Buscando o arquivo " + fileRequested);
 				}
 				
 				File file = new File(WEB_ROOT, fileRequested);
@@ -250,7 +250,7 @@ public class SocketAdmin implements Runnable
 				if (ControllerMain.VERBOSE)
 				{
 					System.out.println("HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
-					ControllerMain.getInstance().generateLog(ControllerMain.INFO, "HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
+					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
 				}
 			}
 			
@@ -299,7 +299,7 @@ public class SocketAdmin implements Runnable
 			if (ControllerMain.VERBOSE)
 			{
 				System.out.println("Conexao fechada com sucesso.");
-				ControllerMain.getInstance().generateLog(ControllerMain.INFO, "Conexao fechada com sucesso.");
+				ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Conexao fechada com sucesso.");
 			}
 		}
 	}
