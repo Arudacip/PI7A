@@ -81,10 +81,9 @@ public class SocketAdmin implements Runnable
 			// Trata a exception
 			if (ControllerMain.VERBOSE)
 			{
-				System.out.println("CRIT: " + e.getMessage());
-				ControllerMain.getInstance().generateLog(ControllerMain.CRIT, e.getMessage());
+				System.out.println("SYSERROR: " + e.getMessage());
+				ControllerMain.getInstance().generateLog(ControllerMain.SRV, e.getMessage());
 			}
-			System.out.println("SYSERROR:" + e.getMessage());
 			return false;
 		}
 	}
@@ -135,7 +134,6 @@ public class SocketAdmin implements Runnable
 					System.out.println("Cliente na porta: " + cliente.getPort());
 					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Cliente na porta: " + cliente.getPort());
 				}
-				ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Cliente "+cliente.toString()+" conectado na porta "+ControllerMain.PORTA+".");
 				// cria a thread dedicada para gerenciar o cliente
 				Thread thread = new Thread(server);
 				thread.start();
@@ -146,7 +144,7 @@ public class SocketAdmin implements Runnable
 			if (ControllerMain.VERBOSE)
 			{
 				System.out.println("CRIT: " + e.getMessage());
-				ControllerMain.getInstance().generateLog(ControllerMain.CRIT, e.getMessage());
+				ControllerMain.getInstance().generateLog(ControllerMain.SRV, e.getMessage());
 			}
 		}
 		return cliente;
@@ -163,6 +161,7 @@ public class SocketAdmin implements Runnable
 		PrintWriter out = null;
 		BufferedOutputStream dataOut = null;
 		String fileRequested = null;
+		String method = "";
 		
 		try
 		{
@@ -175,14 +174,15 @@ public class SocketAdmin implements Runnable
 			
 			String input = in.readLine();
 			StringTokenizer parse = new StringTokenizer(input);
-			String method = parse.nextToken().toUpperCase();
+			method = parse.nextToken().toUpperCase();
 			// separa o arquivo solicitado
 			fileRequested = parse.nextToken().toLowerCase();
+			String ip = cliente.getInetAddress().getHostAddress();
 			
 			if (ControllerMain.VERBOSE)
 			{
-				System.out.println("INFO: Metodo recebido: " + method + ".");
-				ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Metodo recebido: " + method + ".");
+				System.out.println("ACC: " +fileRequested+"#"+method+"#"+ip+"#"+"405");
+				ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"405");
 			}
 			
 			// checa o metodo - suporta apenas GET and HEAD
@@ -190,8 +190,8 @@ public class SocketAdmin implements Runnable
 			{
 				if (ControllerMain.VERBOSE)
 				{
-					System.out.println("INFO: 405 Metodo nao suportado: metodo " + method + ".");
-					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "405 - Metodo nao suportado.");
+					System.out.println("ACC: "+fileRequested+"#"+method+"#"+ip+"#"+"405");
+					ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"405");
 				}
 				
 				File file = new File(WEB_ROOT, NOT_SUPPORTED);
@@ -221,8 +221,8 @@ public class SocketAdmin implements Runnable
 				
 				if (ControllerMain.VERBOSE)
 				{
-					System.out.println("Buscando o arquivo " + fileRequested);
-					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Buscando o arquivo " + fileRequested);
+					System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
+					ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
 				}
 				
 				File file = new File(WEB_ROOT, fileRequested);
@@ -249,8 +249,8 @@ public class SocketAdmin implements Runnable
 				
 				if (ControllerMain.VERBOSE)
 				{
-					System.out.println("HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
-					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "HTTP 200: Arquivo " + fileRequested + " e tipo " + content + " enviados.");
+					System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
+					ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
 				}
 			}
 			
@@ -258,29 +258,29 @@ public class SocketAdmin implements Runnable
 		{
 			try
 			{
-				arquivoNaoEncontrado(out, dataOut, fileRequested);
+				arquivoNaoEncontrado(out, dataOut, fileRequested, method);
 			} catch (IOException ioe)
 			{
 				String message = ioe.getMessage();
 				System.out.println("SYSError - FileNotFoundException: " + message);
-				ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - FileNotFoundException: " + message);
+				//ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - FileNotFoundException: " + message);
 			}
 			
 		} catch (IOException ioe)
 		{
 			String message = ioe.getMessage();
 			System.out.println("SYSError - Erro de servidor: " + message);
-			ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Erro de servidor: " + message);
+			//ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Erro de servidor: " + message);
 		}  catch (Exception une)
 		{
 			try
 			{
-				requisicaoNaoCompreendida(out, dataOut, fileRequested);
+				requisicaoNaoCompreendida(out, dataOut, fileRequested, method);
 			} catch (IOException ioe)
 			{
 				String message = une.getMessage();
 				System.out.println("SYSError - Unknown - Erro de servidor: " + message);
-				ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Unknown - Erro de servidor: " + message);
+				//ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Unknown - Erro de servidor: " + message);
 			}
 		} finally
 		{
@@ -294,12 +294,12 @@ public class SocketAdmin implements Runnable
 			{
 				String message = e.getMessage();
 				System.out.println("SYSError - Erro ao fechar conexao: " + message);
-				ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Erro ao fechar conexao: " + message);
+				//ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Erro ao fechar conexao: " + message);
 			}
 			if (ControllerMain.VERBOSE)
 			{
 				System.out.println("Conexao fechada com sucesso.");
-				ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Conexao fechada com sucesso.");
+				//ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Conexao fechada com sucesso.");
 			}
 		}
 	}
@@ -349,9 +349,10 @@ public class SocketAdmin implements Runnable
 	 * @param out : writer de texto
 	 * @param dataOut : writer de dados
 	 * @param fileRequested : arquivo solicitado
+	 * @param method 
 	 * @throws IOException
 	 */
-	private void arquivoNaoEncontrado(PrintWriter out, OutputStream dataOut, String fileRequested) throws IOException
+	private void arquivoNaoEncontrado(PrintWriter out, OutputStream dataOut, String fileRequested, String method) throws IOException
 	{
 		File file = new File(WEB_ROOT, NOT_FOUND);
 		int fileLength = (int) file.length();
@@ -369,10 +370,12 @@ public class SocketAdmin implements Runnable
 		dataOut.write(fileData, 0, fileLength);
 		dataOut.flush();
 		
+		String ip = cliente.getInetAddress().getHostAddress();
+		
 		if (ControllerMain.VERBOSE)
 		{
-			System.out.println("HTTP 404: Arquivo  " + fileRequested + " nao encontrado");
-			ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "HTTP 404: Arquivo  " + fileRequested + " nao encontrado");
+			System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"404");
+			ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"404");
 		}
 	}
 	
@@ -382,9 +385,10 @@ public class SocketAdmin implements Runnable
 	 * @param out : writer de texto
 	 * @param dataOut : writer de dados
 	 * @param fileRequested : arquivo solicitado
+	 * @param method 
 	 * @throws IOException
 	 */
-	private void requisicaoNaoCompreendida(PrintWriter out, OutputStream dataOut, String fileRequested) throws IOException
+	private void requisicaoNaoCompreendida(PrintWriter out, OutputStream dataOut, String fileRequested, String method) throws IOException
 	{
 		File file = new File(WEB_ROOT, UNKNOWN);
 		int fileLength = (int) file.length();
@@ -402,10 +406,12 @@ public class SocketAdmin implements Runnable
 		dataOut.write(fileData, 0, fileLength);
 		dataOut.flush();
 		
+		String ip = cliente.getInetAddress().getHostAddress();
+		
 		if (ControllerMain.VERBOSE)
 		{
-			System.out.println("HTTP 400: Requisicao Nao Compreendida");
-			ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "HTTP 400: Requisicao Nao Compreendida");
+			System.out.println("ACC: "+fileRequested+"#"+method+"#"+ip+"#"+"400");
+			ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"400");
 		}
 	}
 }

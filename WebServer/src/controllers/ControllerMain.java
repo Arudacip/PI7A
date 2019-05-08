@@ -189,7 +189,7 @@ public final class ControllerMain implements ActionListener
      */
     private void restartService()
     {
-    	generateLog(ACC, "Reiniciando o servidor.");
+    	generateLog(SRV, "Reiniciando o servidor.");
         stopService();
         startService();
     }
@@ -284,7 +284,6 @@ public final class ControllerMain implements ActionListener
 			break;
 		}
 	}
-	
 
 	/**
 	 * Retorna as propriedades definidas no arquivo de configuracao do webserver.
