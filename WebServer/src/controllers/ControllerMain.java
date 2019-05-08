@@ -82,7 +82,6 @@ public final class ControllerMain implements ActionListener
 			ConnectorDB db = new ConnectorDB();
 			conn = db.getConnection();
 			conn.setAutoCommit(false);
-			//ServiceLogSrv service = new ServiceLogSrv(conn);
 		} catch (IOException ioe) {
 			// Trata o erro, se ocorrer
 			System.out.println("SYSERROR: " + ioe.getMessage());
@@ -115,15 +114,17 @@ public final class ControllerMain implements ActionListener
         AbstractFactoryLog[] factories = new AbstractFactoryLog[3];
         factories[0] = new FactoryLogSrv();
         factories[1] = new FactoryLogAcc();
-        AbstractLog log = null;
-        for (AbstractFactoryLog fabrica : factories)
-        {
-            // TODO: fabricas montarem os logs recuperados no database
+        // TODO: fabricas montarem os logs recuperados no database
+        //AbstractLog log = null;
+		//ServiceLogSrv service = new ServiceLogSrv(conn, log);
+        //for (AbstractFactoryLog fabrica : factories)
+        //{
         	// AbstractLogDAO.getLogs(conn);
-            log = fabrica.retornaLogs(new Date(System.currentTimeMillis()), "Aberto.");
-            mainlog.add(log);
-        }
+            //log = fabrica.retornaLogs(new Date(System.currentTimeMillis()), "Aberto.");
+            //mainlog.add(log);
+        //}
         servidor = new SocketAdmin();
+        System.out.println(servidor.toString());
     }
     
     /**
@@ -255,10 +256,10 @@ public final class ControllerMain implements ActionListener
 			srvlog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
-			if (ControllerMain.VERBOSE)
-			{
-				System.out.println("SERVER: "+currentLog.imprime());
-			}
+			//if (ControllerMain.VERBOSE)
+			//{
+			//	System.out.println("SERVER: "+currentLog.imprime());
+			//}
 			break;
 			
 		case ACC:
@@ -266,10 +267,10 @@ public final class ControllerMain implements ActionListener
 			acclog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
-			if (ControllerMain.VERBOSE)
-			{
-				System.out.println("ACCESS: "+currentLog.imprime());
-			}
+			//if (ControllerMain.VERBOSE)
+			//{
+			//	System.out.println("ACCESS: "+currentLog.imprime());
+			//}
 			break;
 			
 		default:
@@ -277,10 +278,10 @@ public final class ControllerMain implements ActionListener
 			srvlog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
-			if (ControllerMain.VERBOSE)
-			{
-				System.out.println("SERVER: "+currentLog.imprime());
-			}
+			//if (ControllerMain.VERBOSE)
+			//{
+			//	System.out.println("SERVER: "+currentLog.imprime());
+			//}
 			break;
 		}
 	}

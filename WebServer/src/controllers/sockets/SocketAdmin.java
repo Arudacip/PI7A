@@ -131,8 +131,6 @@ public class SocketAdmin implements Runnable
 				{
 					System.out.println("Conexao aberta. (" + cliente.toString() + ")");
 					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Conexao aberta. (" + cliente.toString() + ")");
-					System.out.println("Cliente na porta: " + cliente.getPort());
-					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Cliente na porta: " + cliente.getPort());
 				}
 				// cria a thread dedicada para gerenciar o cliente
 				Thread thread = new Thread(server);
