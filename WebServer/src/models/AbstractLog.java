@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
- * Classe do Model raiz de FactoryItem do design pattern MVC + Abstract Factory.
+ * Classe do Model raiz de FactoryItem do design pattern MVC + Abstract.
  * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
  *
  * @param id : id do log
@@ -13,7 +13,7 @@ import java.sql.Timestamp;
  * @param texto : texto do log
  */
 
-public abstract class AbstractLog implements Serializable
+public abstract class AbstractLog implements Serializable, Comparable<AbstractLog>
 {
 	
 	private static final long serialVersionUID = 1L;
@@ -64,5 +64,21 @@ public abstract class AbstractLog implements Serializable
     public String getText()
     {
         return texto;
+    }
+    
+    @Override
+    public int compareTo(AbstractLog o)
+    {
+    	if (getData() == null || o.getData() == null)
+    	{
+    		return 0;
+    	}
+    	return getData().compareTo(o.getData());
+    }
+    
+    @Override
+    public String toString()
+    {
+    	return imprime();
     }
 }

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 import models.AbstractLog;
-import models.LogSrv;
 import models.dao.DAOLogSrv;
 
 /**
@@ -22,30 +21,47 @@ public class ServiceLogSrv
 	private Connection conn = null;
 	
 	/**
-	 * Construtor exclusivo para referencia da conexao com o banco de dados e registro do LogSrv.
+	 * Construtor exclusivo para referencia da conexao com o banco de dados e recuperar logs.
 	 * @param conn : conexao com o banco de dados
-	 * @param log : objeto do LogSrv
 	 */
-	public ServiceLogSrv(Connection conn, LogSrv log)
+	public ServiceLogSrv(Connection conn)
 	{
-		dao.setLog(log);
+		this.conn = conn;
 	}
 	
 	/**
 	 * Inclui um LogSrv no banco de dados.
 	 */
-	public void incluir()
+	public void incluir(AbstractLog log)
 	{
+		dao.setLog(log);
 		dao.incluir(conn);
 	}
 	
 	/**
-	 * Recupera a lista de LogSrv do banco de dados.
+	 * Recupera um LogSrv do banco de dados por ID.
 	 * @return lista de LogSrv
 	 */
-	public ArrayList<AbstractLog> carregar()
+	public AbstractLog carregaID()
 	{
-		return dao.carregar(conn);
+		return dao.carregaID(conn);
 	}
 	
+	/**
+	 * Recupera a lista dos ultimos X LogSrv do banco de dados.
+	 * @return lista de LogSrv
+	 */
+	public ArrayList<AbstractLog> listaUltimos(int num)
+	{
+		return dao.listaUltimos(conn, num);
+	}
+	
+	/**
+	 * Recupera a lista de todos os LogSrv do banco de dados.
+	 * @return lista de LogSrv
+	 */
+	public ArrayList<AbstractLog> listaTodos()
+	{
+		return dao.listaTodos(conn);
+	}
 }

@@ -3,7 +3,7 @@ package models;
 import java.util.Date;
 
 /**
- * Classe do Model de LogAcc do design pattern MVC + Abstract Factory.
+ * Classe do Model de LogAcc do design pattern MVC + Abstract.
  * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
  *
  * @param prefix : prefixo do log

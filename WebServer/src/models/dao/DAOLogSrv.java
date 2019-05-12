@@ -5,10 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import models.AbstractLog;
-import zones.models.deprecated.LogInfo;
+import models.LogSrv;
 
 /**
  * Classe do Model DAO do LogSrv do design pattern MVC + Abstract Factory.
@@ -34,39 +33,122 @@ public class DAOLogSrv
 	 * Incluir no DB o log de servidor
 	 * @param conn : conexao com o DB
 	 */
-	public void incluir(Connection conn) {
+	public void incluir(Connection conn)
+	{
 		String sqlInsert = "INSERT INTO LogServidor(hora_data, acao) VALUES (?, ?)";
 		
 		// inclui o log na base
-		try (PreparedStatement stm = conn.prepareStatement(sqlInsert);) {
-			stm.setLong(1, log.getData().getTime());
+		try (PreparedStatement stm = conn.prepareStatement(sqlInsert);)
+		{
+			// Converte o valor de data SQL Timestamp
+			java.util.Date date = log.getData();
+			java.sql.Timestamp sqlTime=new java.sql.Timestamp(date.getTime());
+			// Define valores no stm
+			stm.setTimestamp(1, sqlTime);
 			stm.setString(2, log.getText());
 			stm.execute();
-		} catch (Exception e) {
-			e.printStackTrace();
-			try {
+		} catch (SQLException e1)
+		{
+			//System.out.println(e1.getMessage() + " - " + e1.getSuppressed());
+			try
+			{
 				conn.rollback();
-			} catch (SQLException e1) {
+			} catch (SQLException e2)
+			{
+				System.out.print(e2.getStackTrace());
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			try
+			{
+				conn.rollback();
+			} catch (SQLException e1)
+			{
 				System.out.print(e1.getStackTrace());
 			}
+		}
+		try {
+			conn.commit();
+		} catch (SQLException e) {
+			System.out.println("SYSERROR: " + e.getMessage());
 		}
 	}
 	
 	/**
-	 * Busca os logs de servidor
+	 * Carrega um log de servidor a partir do ID
 	 * @param conn : conexao com o DB
 	 */
-	public ArrayList<AbstractLog> carregar(Connection conn) {
+	public AbstractLog carregaID(Connection conn)
+	{
+		String sqlSelect = "SELECT * FROM LogServidor WHERE LogServidor.id = ?";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			stm.setInt(1, log.getID());
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				if (rs.next())
+				{
+					log = new LogSrv(rs.getTimestamp("hora_data"), rs.getString("acao"));
+				}
+			} catch (SQLException e)
+			{
+				System.out.print(e.getStackTrace());
+			}
+		} catch (Exception e1)
+		{
+			System.out.print(e1.getStackTrace());
+		}
+		return log;
+	}
+	
+	/**
+	 * Lista os 10 ultimos logs de servidor
+	 * @param conn : conexao com o DB
+	 */
+	public ArrayList<AbstractLog> listaUltimos(Connection conn, int num)
+	{
 		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
 		AbstractLog currentlog;
-		String sqlSelect = "SELECT * FROM LogServidor";
-		//String sqlSelect = "SELECT * FROM LogServidor WHERE LogServidor.id = ?";
+		String sqlSelect = "SELECT * FROM (SELECT * FROM LogServidor ORDER BY id DESC LIMIT "+num+") sub ORDER BY id ASC;";
 		
-		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);) {
-			//stm.setInt(1, log.getID());
-			try (ResultSet rs = stm.executeQuery();) {
-				if (rs.next()) {
-					currentlog = new LogInfo(new Date(rs.getLong("hora_data")), rs.getString("acao"));
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentlog = new LogSrv(rs.getTimestamp("hora_data"), rs.getString("acao"));
+					logs.add(currentlog);
+				}
+			} catch (SQLException e)
+			{
+				System.out.print(e.getStackTrace());
+			}
+		} catch (Exception e1)
+		{
+			System.out.print(e1.getStackTrace());
+		}
+		return logs;
+	}
+	
+	/**
+	 * Lista todos logs de servidor registrados no DB
+	 * @param conn : conexao com o DB
+	 */
+	public ArrayList<AbstractLog> listaTodos(Connection conn)
+	{
+		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
+		AbstractLog currentlog;
+		String sqlSelect = "SELECT * FROM LogServidor;";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next()) {
+					currentlog = new LogSrv(rs.getTimestamp("hora_data"), rs.getString("acao"));
 					logs.add(currentlog);
 				}
 			} catch (SQLException e) {

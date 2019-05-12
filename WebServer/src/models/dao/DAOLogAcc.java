@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import models.AbstractLog;
 import models.LogAcc;
@@ -43,7 +42,11 @@ public class DAOLogAcc
 		// inclui o log na base
 		try (PreparedStatement stm = conn.prepareStatement(sqlInsert);)
 		{
-			stm.setLong(1, currentlog.getData().getTime());
+			// Converte o valor de data SQL Timestamp
+			java.util.Date date = log.getData();
+			java.sql.Timestamp sqlTime = new java.sql.Timestamp(date.getTime());
+			// Define valores no stm
+			stm.setTimestamp(1, sqlTime);
 			stm.setString(2, currentlog.getArquivo());
 			stm.setString(3, currentlog.getMethod());
 			stm.setString(4, currentlog.getIP());
@@ -60,27 +63,92 @@ public class DAOLogAcc
 				System.out.print(e1.getStackTrace());
 			}
 		}
+		try {
+			conn.commit();
+		} catch (SQLException e) {
+			System.out.println("SYSERROR: " + e.getMessage());
+		}
 	}
 	
 	/**
-	 * Busca os logs de acesso
+	 * Lista os ultimos logs de acesso
 	 * @param conn : conexao com o DB
 	 */
-	public ArrayList<AbstractLog> carregar(Connection conn)
+	public AbstractLog carregaID(Connection conn)
 	{
-		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
-		LogAcc currentlog;
-		String sqlSelect = "SELECT * FROM LogAcesso";
-		//String sqlSelect = "SELECT * FROM LogAcesso WHERE LogServidor.id = ?";
+		String sqlSelect = "SELECT * FROM LogAcesso WHERE LogAcesso.id = ?";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
-			//stm.setInt(1, log.getID());
+			stm.setInt(1, log.getID());
 			try (ResultSet rs = stm.executeQuery();)
 			{
 				if (rs.next())
 				{
-					currentlog = new LogAcc(new Date(rs.getLong("hora_data")), rs.getString("arquivo")+"#"
+					log = new LogAcc(rs.getTimestamp("hora_data"), rs.getString("arquivo")+"#"
+													+rs.getString("metodo_http")+"#"+rs.getString("ip")+"#"
+													+rs.getString("codigo_resposta"));
+				}
+			} catch (SQLException e)
+			{
+				System.out.print(e.getStackTrace());
+			}
+		} catch (Exception e1)
+		{
+			System.out.print(e1.getStackTrace());
+		}
+		return log;
+	}
+	
+	/**
+	 * Lista os ultimos logs de acesso
+	 * @param conn : conexao com o DB
+	 */
+	public ArrayList<AbstractLog> listaUltimos(Connection conn, int num)
+	{
+		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
+		LogAcc currentlog;
+		String sqlSelect = "SELECT * FROM (SELECT * FROM LogAcesso ORDER BY id DESC LIMIT "+num+") sub ORDER BY id ASC;";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentlog = new LogAcc(rs.getTimestamp("hora_data"), rs.getString("arquivo")+"#"
+													+rs.getString("metodo_http")+"#"+rs.getString("ip")+"#"
+													+rs.getString("codigo_resposta"));
+					logs.add(currentlog);
+				}
+			} catch (SQLException e)
+			{
+				System.out.print(e.getStackTrace());
+			}
+		} catch (Exception e1)
+		{
+			System.out.print(e1.getStackTrace());
+		}
+		return logs;
+	}
+	
+	/**
+	 * Lista todos os logs de acesso registrados no DB
+	 * @param conn : conexao com o DB
+	 */
+	public ArrayList<AbstractLog> listaTodos(Connection conn)
+	{
+		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
+		LogAcc currentlog;
+		String sqlSelect = "SELECT * FROM LogAcesso;";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentlog = new LogAcc(rs.getTimestamp("hora_data"), rs.getString("arquivo")+"#"
 													+rs.getString("metodo_http")+"#"+rs.getString("ip")+"#"
 													+rs.getString("codigo_resposta"));
 					logs.add(currentlog);

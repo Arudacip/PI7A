@@ -79,11 +79,11 @@ public class SocketAdmin implements Runnable
 		} catch (IOException e)
 		{
 			// Trata a exception
-			if (ControllerMain.VERBOSE)
+			if (ControllerMain.DEBUG)
 			{
 				System.out.println("SYSERROR: " + e.getMessage());
-				ControllerMain.getInstance().generateLog(ControllerMain.SRV, e.getMessage());
 			}
+			ControllerMain.getInstance().generateLog(ControllerMain.SRV, "IOError");
 			return false;
 		}
 	}
@@ -107,7 +107,7 @@ public class SocketAdmin implements Runnable
 			}
 		} catch (Exception e)
 		{
-			// TODO tratar exception
+			// Trata a exception
 			e.printStackTrace();
 			status = ControllerMain.UNKOWN;
 		}
@@ -127,11 +127,11 @@ public class SocketAdmin implements Runnable
 			{
 				cliente = servidor.accept();
 				SocketAdmin server = new SocketAdmin(cliente);
-				if (ControllerMain.VERBOSE)
+				if (ControllerMain.DEBUG)
 				{
 					System.out.println("Conexao aberta. (" + cliente.toString() + ")");
-					ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Conexao aberta. (" + cliente.toString() + ")");
 				}
+				ControllerMain.getInstance().generateLog(ControllerMain.SRV, "OpenCon");
 				// cria a thread dedicada para gerenciar o cliente
 				Thread thread = new Thread(server);
 				thread.start();
@@ -139,11 +139,11 @@ public class SocketAdmin implements Runnable
 		} catch (IOException e)
 		{
 			// Trata a exception
-			if (ControllerMain.VERBOSE)
+			if (ControllerMain.DEBUG)
 			{
 				System.out.println("CRIT: " + e.getMessage());
-				ControllerMain.getInstance().generateLog(ControllerMain.SRV, e.getMessage());
 			}
+			ControllerMain.getInstance().generateLog(ControllerMain.SRV, "IOError");
 		}
 		return cliente;
 	}
@@ -177,20 +177,14 @@ public class SocketAdmin implements Runnable
 			fileRequested = parse.nextToken().toLowerCase();
 			String ip = cliente.getInetAddress().getHostAddress();
 			
-			if (ControllerMain.VERBOSE)
-			{
-				System.out.println("ACC: " +fileRequested+"#"+method+"#"+ip+"#"+"405");
-				ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"405");
-			}
-			
 			// checa o metodo - suporta apenas GET and HEAD
 			if (!method.equals("GET")  &&  !method.equals("HEAD"))
 			{
-				if (ControllerMain.VERBOSE)
+				if (ControllerMain.DEBUG)
 				{
 					System.out.println("ACC: "+fileRequested+"#"+method+"#"+ip+"#"+"405");
-					ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"405");
 				}
+				ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"405");
 				
 				File file = new File(WEB_ROOT, NOT_SUPPORTED);
 				int fileLength = (int) file.length();
@@ -217,11 +211,11 @@ public class SocketAdmin implements Runnable
 					fileRequested += DEFAULT_FILE;
 				}
 				
-				if (ControllerMain.VERBOSE)
+				if (ControllerMain.DEBUG)
 				{
 					System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
-					ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
 				}
+				ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
 				
 				File file = new File(WEB_ROOT, fileRequested);
 				int fileLength = (int) file.length();
@@ -245,11 +239,11 @@ public class SocketAdmin implements Runnable
 					dataOut.flush();
 				}
 				
-				if (ControllerMain.VERBOSE)
+				if (ControllerMain.DEBUG)
 				{
 					System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
-					ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
 				}
+				ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
 			}
 			
 		} catch (FileNotFoundException fnfe)
@@ -259,16 +253,20 @@ public class SocketAdmin implements Runnable
 				arquivoNaoEncontrado(out, dataOut, fileRequested, method);
 			} catch (IOException ioe)
 			{
-				String message = ioe.getMessage();
-				System.out.println("SYSError - FileNotFoundException: " + message);
-				//ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - FileNotFoundException: " + message);
+				if (ControllerMain.DEBUG)
+				{
+					String message = ioe.getMessage();
+					System.out.println("SYSError - FileNotFoundException: " + message);
+				}
 			}
 			
 		} catch (IOException ioe)
 		{
-			String message = ioe.getMessage();
-			System.out.println("SYSError - Erro de servidor: " + message);
-			//ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Erro de servidor: " + message);
+			if (ControllerMain.DEBUG)
+			{
+				String message = ioe.getMessage();
+				System.out.println("SYSError - Erro de servidor: " + message);
+			}
 		}  catch (Exception une)
 		{
 			try
@@ -276,9 +274,11 @@ public class SocketAdmin implements Runnable
 				requisicaoNaoCompreendida(out, dataOut, fileRequested, method);
 			} catch (IOException ioe)
 			{
-				String message = une.getMessage();
-				System.out.println("SYSError - Unknown - Erro de servidor: " + message);
-				//ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Unknown - Erro de servidor: " + message);
+				if (ControllerMain.DEBUG)
+				{
+					String message = une.getMessage();
+					System.out.println("SYSError - Unknown - Erro de servidor: " + message);
+				}
 			}
 		} finally
 		{
@@ -291,14 +291,17 @@ public class SocketAdmin implements Runnable
 			} catch (Exception e)
 			{
 				String message = e.getMessage();
-				System.out.println("SYSError - Erro ao fechar conexao: " + message);
-				//ControllerMain.getInstance().generateLog(ControllerMain.CRIT, "SYSError - Erro ao fechar conexao: " + message);
+				if (ControllerMain.DEBUG)
+				{
+					System.out.println("SYSError - Erro ao fechar conexao: " + message);
+				}
+				ControllerMain.getInstance().generateLog(ControllerMain.SRV, "CloseErr");
 			}
-			if (ControllerMain.VERBOSE)
+			if (ControllerMain.DEBUG)
 			{
 				System.out.println("Conexao fechada com sucesso.");
-				//ControllerMain.getInstance().generateLog(ControllerMain.SRV, "Conexao fechada com sucesso.");
 			}
+			ControllerMain.getInstance().generateLog(ControllerMain.SRV, "CloseOK");
 		}
 	}
 	
@@ -369,12 +372,11 @@ public class SocketAdmin implements Runnable
 		dataOut.flush();
 		
 		String ip = cliente.getInetAddress().getHostAddress();
-		
-		if (ControllerMain.VERBOSE)
+		if (ControllerMain.DEBUG)
 		{
 			System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"404");
-			ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"404");
 		}
+		ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"404");
 	}
 	
 	/**
@@ -405,11 +407,10 @@ public class SocketAdmin implements Runnable
 		dataOut.flush();
 		
 		String ip = cliente.getInetAddress().getHostAddress();
-		
-		if (ControllerMain.VERBOSE)
+		if (ControllerMain.DEBUG)
 		{
 			System.out.println("ACC: "+fileRequested+"#"+method+"#"+ip+"#"+"400");
-			ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"400");
 		}
+		ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"400");
 	}
 }

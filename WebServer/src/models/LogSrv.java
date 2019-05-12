@@ -5,7 +5,7 @@ import java.util.Date;
 import models.AbstractLog;
 
 /**
- * Classe do Model de LogServ do design pattern MVC + Abstract Factory.
+ * Classe do Model de LogSrv do design pattern MVC + Abstract.
  * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
  *
  * @param prefix : prefixo do log
@@ -18,7 +18,7 @@ public class LogSrv extends AbstractLog
     private String prefix = "> SERVER: ";
     
     /**
-     * Construtor principal do LogServ que recebe os valores do log.
+     * Construtor principal do LogSrv que recebe os valores do log.
 	 * @param data : data do log
 	 * @param texto : texto do log
      */

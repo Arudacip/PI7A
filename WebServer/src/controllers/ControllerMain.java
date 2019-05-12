@@ -7,17 +7,17 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Properties;
 
+import controllers.services.ServiceLogAcc;
+import controllers.services.ServiceLogSrv;
 import controllers.sockets.SocketAdmin;
 import controllers.utils.ConnectorDB;
 import models.AbstractLog;
 import models.LogAcc;
 import models.LogSrv;
-import models.factory.AbstractFactoryLog;
-import models.factory.FactoryLogAcc;
-import models.factory.FactoryLogSrv;
 import views.ViewServiceAdmin;
 import views.buttons.ButtonTypes;
 
@@ -32,10 +32,12 @@ import views.buttons.ButtonTypes;
  * @param UNKOWN : [CONSTANT] status do service web desconhecido
  * @param SRV : [CONSTANT] LogType para logs de SERVIDOR
  * @param ACC : [CONSTANT] LogType para logs de ACESSO
- * @param VERBOSE : [CONSTANT] define se os logs de sistema e servico devem ser <b>verbose</b>
+ * @param DEBUG : [CONSTANT] define se os logs de sistema e servico devem ser <b>verbose</b>
  * @param PORTA : porta em uso no servidor
  * @param servidor : ponteiro para o servidor
  * 
+ * @param srvlog : service de logs de SERVIDOR
+ * @param srvlog : service de logs de ACESSO
  * @param srvlog : lista de logs de SERVIDOR
  * @param acclog : lista de logs de ACESSO
  * @param mainlog : lista de logs completa
@@ -54,13 +56,15 @@ public final class ControllerMain implements ActionListener
     public static final int UNKOWN = 3;
 	public static final int SRV = 1;
 	public static final int ACC = 2;
-    public static final boolean VERBOSE = true;
+    public static final boolean DEBUG = true;
     public static int PORTA;
     private SocketAdmin servidor;
 	private AbstractLog currentLog;
     private Connection conn;
 	
     // MODELS
+    private ServiceLogSrv serviceLS;
+    private ServiceLogAcc serviceLA;
     private ArrayList<AbstractLog> srvlog;
     private ArrayList<AbstractLog> acclog;
     private ArrayList<AbstractLog> mainlog;
@@ -75,20 +79,33 @@ public final class ControllerMain implements ActionListener
 			// Recupera a porta de acesso ao serverweb
 			prop = getProp();
 			PORTA = Integer.parseInt(prop.getProperty("prop.server.porta"));
-			System.out.println("SYSINFO: Porta encontrada na config: " + Integer.parseInt(prop.getProperty("prop.server.porta")));
+			if (DEBUG)
+			{
+				System.out.println("SYSINFO: Porta encontrada na config: " + Integer.parseInt(prop.getProperty("prop.server.porta")));
+			}
 			
 			// Recupera as configs de BD e instancia a o ConnectorDB
 			conn = null;
 			ConnectorDB db = new ConnectorDB();
-			conn = db.getConnection();
+			conn = db.getConnection(prop);
 			conn.setAutoCommit(false);
+			if (DEBUG)
+			{
+				System.out.println("SYSINFO: " + "DB conectado: " + conn.toString());
+			}
 		} catch (IOException ioe) {
 			// Trata o erro, se ocorrer
-			System.out.println("SYSERROR: " + ioe.getMessage());
+			if (DEBUG)
+			{
+				System.out.println("SYSERROR: " + ioe.getMessage());
+			}
 			PORTA = PORTA_DEFAULT;
 		} catch (SQLException sqle) {
 			// Trata o erro, se ocorrer
-			System.out.println("SYSERROR: " + sqle.getMessage());
+			if (DEBUG)
+			{
+				System.out.println("SYSERROR: " + sqle.getMessage());
+			}
 		}
     }
     
@@ -110,21 +127,31 @@ public final class ControllerMain implements ActionListener
     	srvlog = new ArrayList<AbstractLog>();
     	acclog = new ArrayList<AbstractLog>();
     	mainlog = new ArrayList<AbstractLog>();
+    	srvlog.clear();
+    	acclog.clear();
+    	mainlog.clear();
     	
-        AbstractFactoryLog[] factories = new AbstractFactoryLog[3];
-        factories[0] = new FactoryLogSrv();
-        factories[1] = new FactoryLogAcc();
-        // TODO: fabricas montarem os logs recuperados no database
-        //AbstractLog log = null;
-		//ServiceLogSrv service = new ServiceLogSrv(conn, log);
-        //for (AbstractFactoryLog fabrica : factories)
-        //{
-        	// AbstractLogDAO.getLogs(conn);
-            //log = fabrica.retornaLogs(new Date(System.currentTimeMillis()), "Aberto.");
-            //mainlog.add(log);
-        //}
+        // Services montam os logs recuperados no database
+    	serviceLS = new ServiceLogSrv(conn);
+        serviceLA = new ServiceLogAcc(conn);
+        srvlog = serviceLS.listaUltimos(20);
+        acclog = serviceLA.listaUltimos(20);
+        mainlog.addAll(srvlog);
+        mainlog.addAll(acclog);
+    	Collections.sort(mainlog);
+    	for (int i = 0; i < 35; i++) {
+        	mainlog.remove(0); 
+        }
+        for (AbstractLog log : mainlog)
+        {
+        	viewSAUI.addLog(log);
+        }
+        
         servidor = new SocketAdmin();
-        System.out.println(servidor.toString());
+        if (DEBUG)
+		{
+			System.out.println("SYSINFO: " + servidor.toString());
+		}
     }
     
     /**
@@ -147,16 +174,16 @@ public final class ControllerMain implements ActionListener
             @Override
             public void run()
             {
-            	generateLog(SRV, "Tentando iniciar o servidor...");
+            	generateLog(SRV, "TryStart");
                 try
                 {
                 	servidor.start(PORTA);
-                	generateLog(SRV, "Servidor iniciado!");
+                	generateLog(SRV, "Started!");
                 	// tem que ser checado aqui caso contrario da null pointer exception
                     checkStatus();
                 } catch (IOException ex) {
                     ex.printStackTrace();
-                	generateLog(SRV, "Falha ao iniciar do servidor!");
+                	generateLog(SRV, "NotStarted");
                 	// tem que ser checado aqui caso contrario da null pointer exception
                     checkStatus();
                 }
@@ -170,16 +197,16 @@ public final class ControllerMain implements ActionListener
      */
     private void stopService()
     {
-        generateLog(SRV, "Tentando parar o servidor...");
+        generateLog(SRV, "TryStop");
         boolean sucesso = servidor.stop();
         if (sucesso)
         {
-        	generateLog(SRV, "Servidor parado!");
+        	generateLog(SRV, "Stopped!");
         	// tem que ser checado aqui caso contrario da null pointer exception
             checkStatus();
         } else
         {
-        	generateLog(SRV, "Falha na parada do servidor!");
+        	generateLog(SRV, "NotStopped");
         	// tem que ser checado aqui caso contrario da null pointer exception
             checkStatus();
         }
@@ -190,9 +217,10 @@ public final class ControllerMain implements ActionListener
      */
     private void restartService()
     {
-    	generateLog(SRV, "Reiniciando o servidor.");
+    	generateLog(SRV, "TryRestart");
         stopService();
         startService();
+        generateLog(SRV, "Restarted!");
     }
     
     /**
@@ -256,10 +284,8 @@ public final class ControllerMain implements ActionListener
 			srvlog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
-			//if (ControllerMain.VERBOSE)
-			//{
-			//	System.out.println("SERVER: "+currentLog.imprime());
-			//}
+			// Registra o log no DB
+			serviceLS.incluir(currentLog);
 			break;
 			
 		case ACC:
@@ -267,21 +293,18 @@ public final class ControllerMain implements ActionListener
 			acclog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
-			//if (ControllerMain.VERBOSE)
-			//{
-			//	System.out.println("ACCESS: "+currentLog.imprime());
-			//}
+			// Registra o log no DB
+			serviceLA.incluir(currentLog);
 			break;
 			
 		default:
-			currentLog = new LogSrv(new Date(System.currentTimeMillis()), "Erro desconhecido.");
+			System.out.println("SYSERROR: Erro Desconhecido");
+			currentLog = new LogSrv(new Date(System.currentTimeMillis()), "UnkErr");
 			srvlog.add(currentLog);
 			mainlog.add(currentLog);
 			viewSAUI.addLog(currentLog);
-			//if (ControllerMain.VERBOSE)
-			//{
-			//	System.out.println("SERVER: "+currentLog.imprime());
-			//}
+			// Registra o log no DB
+			serviceLS.incluir(currentLog);
 			break;
 		}
 	}

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 import models.AbstractLog;
-import models.LogAcc;
 import models.dao.DAOLogAcc;
 
 /**
@@ -22,30 +21,47 @@ public class ServiceLogAcc
 	private Connection conn = null;
 	
 	/**
-	 * Construtor exclusivo para referencia da conexao com o banco de dados e registro do LogAcc.
+	 * Construtor exclusivo para referencia da conexao com o banco de dados e recuperar logs.
 	 * @param conn : conexao com o banco de dados
-	 * @param log : objeto do LogAcc
 	 */
-	public ServiceLogAcc(Connection conn, LogAcc log)
+	public ServiceLogAcc(Connection conn)
 	{
-		dao.setLog(log);
+		this.conn = conn;
 	}
 	
 	/**
 	 * Inclui um LogAcc no banco de dados.
 	 */
-	public void incluir()
+	public void incluir(AbstractLog log)
 	{
+		dao.setLog(log);
 		dao.incluir(conn);
 	}
 	
 	/**
-	 * Recupera a lista de LogAcc do banco de dados.
+	 * Recupera um LogAcc do banco de dados por ID.
 	 * @return lista de LogAcc
 	 */
-	public ArrayList<AbstractLog> carregar()
+	public AbstractLog carregaID()
 	{
-		return dao.carregar(conn);
+		return dao.carregaID(conn);
 	}
 	
+	/**
+	 * Recupera a lista dos ultimos X LogAcc do banco de dados.
+	 * @return lista de LogAcc
+	 */
+	public ArrayList<AbstractLog> listaUltimos(int num)
+	{
+		return dao.listaUltimos(conn, num);
+	}
+	
+	/**
+	 * Recupera a lista de todos os LogAcc do banco de dados.
+	 * @return lista de LogAcc
+	 */
+	public ArrayList<AbstractLog> listaTodos()
+	{
+		return dao.listaTodos(conn);
+	}
 }

@@ -32,7 +32,7 @@ public class ConnectorDB
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Cria a conexao com o banco de dados, conforme os parametros necessarios, que devem ser informados ao utilitario de acordo com
 	 * as necesidades do projeto.
@@ -46,14 +46,28 @@ public class ConnectorDB
 	 * @throws SQLException
 	 * @throws IOException 
 	 */
-	public Connection getConnection() throws SQLException, IOException {
-		String jdbc, address, database, user, password;
-		Properties prop = ControllerMain.getProp();
+	public Connection getConnection(Properties prop) throws SQLException, IOException
+	{
+		// Define valores default STUB
+		String jdbc = "mariadb";
+		String address = "127.0.0.1";
+		String database = "pi7a";
+		String user = "webserverpi";
+		String password = "a2A4V1s5Fz";
+		if (ControllerMain.DEBUG)
+		{
+			System.out.println("jdbc:"+jdbc+"://"+address+"/"+database+"?user="+user+"&"+"password="+password);
+		}
+		// Ler propriedades do arquivo de conf
 		jdbc = prop.getProperty("prop.server.jdbc");
 		address = prop.getProperty("prop.server.address");
 		database = prop.getProperty("prop.server.database");
-		user = prop.getProperty("prop.server.jdbc");
+		user = prop.getProperty("prop.server.user");
 		password = prop.getProperty("prop.server.password");
+		if (ControllerMain.DEBUG)
+		{
+			System.out.println("jdbc:"+jdbc+"://"+address+"/"+database+"?user="+user+"&"+"password="+password);
+		}
 		return DriverManager.getConnection("jdbc:"+jdbc+"://"+address+"/"+database+"?user="+user+"&"+"password="+password);
 	}
 }
