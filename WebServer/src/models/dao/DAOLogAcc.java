@@ -36,7 +36,7 @@ public class DAOLogAcc
 	 */
 	public void incluir(Connection conn)
 	{
-		String sqlInsert = "INSERT INTO LogAcesso(hora_data, arquivo, metodo_http, ip, codigo_resposta) VALUES (?, ?, ?, ?, ?)";
+		String sqlInsert = "INSERT INTO logacesso(hora_data, arquivo, metodo_http, ip, codigo_resposta) VALUES (?, ?, ?, ?, ?)";
 		
 		LogAcc currentlog = (LogAcc) log;
 		// inclui o log na base
@@ -76,7 +76,7 @@ public class DAOLogAcc
 	 */
 	public AbstractLog carregaID(Connection conn)
 	{
-		String sqlSelect = "SELECT * FROM LogAcesso WHERE LogAcesso.id = ?";
+		String sqlSelect = "SELECT * FROM logacesso WHERE logacesso.id = ?";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -108,7 +108,7 @@ public class DAOLogAcc
 	{
 		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
 		LogAcc currentlog;
-		String sqlSelect = "SELECT * FROM (SELECT * FROM LogAcesso ORDER BY id DESC LIMIT "+num+") sub ORDER BY id ASC;";
+		String sqlSelect = "SELECT * FROM (SELECT * FROM logacesso ORDER BY id DESC LIMIT "+num+") sub ORDER BY id ASC;";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -140,7 +140,7 @@ public class DAOLogAcc
 	{
 		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
 		LogAcc currentlog;
-		String sqlSelect = "SELECT * FROM LogAcesso;";
+		String sqlSelect = "SELECT * FROM logacesso;";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{

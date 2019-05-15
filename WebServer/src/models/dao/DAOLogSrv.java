@@ -35,7 +35,7 @@ public class DAOLogSrv
 	 */
 	public void incluir(Connection conn)
 	{
-		String sqlInsert = "INSERT INTO LogServidor(hora_data, acao) VALUES (?, ?)";
+		String sqlInsert = "INSERT INTO logservidor(hora_data, acao) VALUES (?, ?)";
 		
 		// inclui o log na base
 		try (PreparedStatement stm = conn.prepareStatement(sqlInsert);)
@@ -81,7 +81,7 @@ public class DAOLogSrv
 	 */
 	public AbstractLog carregaID(Connection conn)
 	{
-		String sqlSelect = "SELECT * FROM LogServidor WHERE LogServidor.id = ?";
+		String sqlSelect = "SELECT * FROM logservidor WHERE logservidor.id = ?";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -111,7 +111,7 @@ public class DAOLogSrv
 	{
 		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
 		AbstractLog currentlog;
-		String sqlSelect = "SELECT * FROM (SELECT * FROM LogServidor ORDER BY id DESC LIMIT "+num+") sub ORDER BY id ASC;";
+		String sqlSelect = "SELECT * FROM (SELECT * FROM logservidor ORDER BY id DESC LIMIT "+num+") sub ORDER BY id ASC;";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -141,7 +141,7 @@ public class DAOLogSrv
 	{
 		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
 		AbstractLog currentlog;
-		String sqlSelect = "SELECT * FROM LogServidor;";
+		String sqlSelect = "SELECT * FROM logservidor;";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{

@@ -97,14 +97,20 @@ public final class ControllerMain implements ActionListener
 			// Trata o erro, se ocorrer
 			if (DEBUG)
 			{
-				System.out.println("SYSERROR: " + ioe.getMessage());
+				System.out.println("SYSERROR/IO: " + ioe.getMessage());
 			}
 			PORTA = PORTA_DEFAULT;
 		} catch (SQLException sqle) {
 			// Trata o erro, se ocorrer
 			if (DEBUG)
 			{
-				System.out.println("SYSERROR: " + sqle.getMessage());
+				System.out.println("SYSERROR/SQL: " + sqle.getMessage());
+			}
+		} catch (InterruptedException e) {
+			// Trata o erro, se ocorrer
+			if (DEBUG)
+			{
+				System.out.println("SYSERROR/ITR: " + e.getMessage());
 			}
 		}
     }
@@ -138,9 +144,14 @@ public final class ControllerMain implements ActionListener
         acclog = serviceLA.listaUltimos(20);
         mainlog.addAll(srvlog);
         mainlog.addAll(acclog);
+        if (DEBUG)
+        {
+			System.out.println("LOGSRV: " + srvlog.toString());
+			System.out.println("LOGACC: " + acclog.toString());
+		}
     	Collections.sort(mainlog);
     	for (int i = 0; i < 35; i++) {
-        	mainlog.remove(0); 
+        	mainlog.remove(0);
         }
         for (AbstractLog log : mainlog)
         {

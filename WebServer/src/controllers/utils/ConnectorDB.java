@@ -46,28 +46,56 @@ public class ConnectorDB
 	 * @throws SQLException
 	 * @throws IOException 
 	 */
-	public Connection getConnection(Properties prop) throws SQLException, IOException
+	public Connection getConnection(Properties prop) throws SQLException, IOException, InterruptedException 
 	{
 		// Define valores default STUB
 		String jdbc = "mariadb";
 		String address = "127.0.0.1";
+		String dbporta = "3306";
 		String database = "pi7a";
 		String user = "webserverpi";
 		String password = "a2A4V1s5Fz";
 		if (ControllerMain.DEBUG)
 		{
-			System.out.println("jdbc:"+jdbc+"://"+address+"/"+database+"?user="+user+"&"+"password="+password);
+			System.out.println("jdbc:"+jdbc+"://"+address+":"+dbporta+"/"+database+"?user="+user+"&"+"password="+password);
 		}
 		// Ler propriedades do arquivo de conf
 		jdbc = prop.getProperty("prop.server.jdbc");
 		address = prop.getProperty("prop.server.address");
+		dbporta = prop.getProperty("prop.server.dbporta");
 		database = prop.getProperty("prop.server.database");
 		user = prop.getProperty("prop.server.user");
 		password = prop.getProperty("prop.server.password");
 		if (ControllerMain.DEBUG)
 		{
-			System.out.println("jdbc:"+jdbc+"://"+address+"/"+database+"?user="+user+"&"+"password="+password);
+			System.out.println("jdbc:"+jdbc+"://"+address+":"+dbporta+"/"+database+"?user="+user+"&"+"password="+password);
 		}
-		return DriverManager.getConnection("jdbc:"+jdbc+"://"+address+"/"+database+"?user="+user+"&"+"password="+password);
+		Connection conn = null;
+		
+		boolean connected = false;
+		int errors = 0;
+		while(!connected) // Espera por conexao com o DB
+		{
+		    try
+		    {
+		    	conn = DriverManager.getConnection("jdbc:"+jdbc+"://"+address+":"+dbporta+"/"+database+"?user="+user+"&"+"password="+password);
+		        if (conn != null)
+		        {
+		        	connected = true;
+		        } else
+		        {
+		        	// Timeout. Tente novamente.
+		        }
+		    } catch(Exception e)
+		    {
+		        if (errors == 0)
+		        {
+		        	// Exception. Tente novamente.
+		        }
+		        ++errors;
+		        Thread.sleep(1000);
+		    }
+		}
+		return conn;
 	}
 }

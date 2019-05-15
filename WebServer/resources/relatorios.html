@@ -1,17 +1,42 @@
+<!DOCTYPE HTML>
 <html>
 <head>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script type="text/javascript">
+
+window.onload = function () {
+	var chart = new CanvasJS.Chart("chartContainer", {
+		title:{
+			text: "Teste de Gráfico - Relatório \"STUB\" CanvasJS"              
+		},
+		data: [              
+		{
+			// Change type to "doughnut", "line", "splineArea", etc.
+			type: "column",
+			dataPoints: [
+				{ label: "relatorios.html",  y: 10  },
+				{ label: "400.html", y: 15  },
+				{ label: "perfil.html", y: 25  },
+				{ label: "index.html",  y: 30  }
+			]
+		}
+		]
+	});
+	chart.render();
+}
+</script>
 <title>Relatórios - ECP7AN-MCA1-09</title>
 </head>
 <body>
 <div title=menu class="topnav">
-	<a href="index.html" title="Home">Home Page</a>
+	<a class=active href="index.html" title="Home">Home Page</a>
 	<a href="perfil.html" title="Perfil">Perfil</a>
-	<a class=active href="relatorios.html" title="Relatorios">Relatórios</a>
+	<a href="relatorios.html" title="Relatorios">Relatórios</a>
 </div>
 <div title=content>
-	<h2 align=center>Relatórios</h2>
+	<h2 align=center>Administração - Relatórios</h2>
 	<h2 align=center>Projeto do Grupo 09 - ECP7AN-MCA1-09</h2>
-	<h3 align=center>Ainda não Implementado</h3>
 </div>
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
 </body>
 </html>
