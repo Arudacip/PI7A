@@ -22,9 +22,10 @@ import controllers.ControllerMain;
  * 
  * @param WEB_ROOT : [CONSTANT] raiz do service web
  * @param DEFAULT_FILE : [CONSTANT] path do arquivo de indice
+ * @param UNKNOWN : [CONSTANT] path do arquivo de erro 400 
+ * @param FORBIDDEN : [CONSTANT] path do arquivo de erro 403 
  * @param NOT_FOUND : [CONSTANT] path do arquivo de erro 404
  * @param NOT_SUPPORTED : [CONSTANT] path do arquivo de erro 405
- * @param UNKNOWN : [CONSTANT] path do arquivo de erro 400 
  * @param servidor : ponteiro para o servidor
  * @param cliente : ponteiro para o cliente da thread
  */
@@ -34,10 +35,10 @@ public class SocketAdmin implements Runnable
 
     private static final File WEB_ROOT = new File("./resources/");
     private static final String DEFAULT_FILE = "index.html";
-    private static final String FORBIDDEN = "403.html";
-    private static final String NOT_FOUND = "404.html";
-    private static final String NOT_SUPPORTED = "405.html";
-	private static final String UNKNOWN = "400.html";
+	private static final String UNKNOWN = "errors/400.html";
+    private static final String FORBIDDEN = "errors/403.html";
+    private static final String NOT_FOUND = "errors/404.html";
+    private static final String NOT_SUPPORTED = "errors/405.html";
 	private ServerSocket servidor;
 	private Socket cliente;
 	
