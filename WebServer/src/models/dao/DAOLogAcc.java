@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import controllers.ControllerMain;
 import models.AbstractLog;
 import models.LogAcc;
 
@@ -54,19 +55,28 @@ public class DAOLogAcc
 			stm.execute();
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			if (ControllerMain.DEBUG)
+			{
+				System.out.println(e.getMessage());
+			}
 			try
 			{
 				conn.rollback();
 			} catch (SQLException e1)
 			{
-				System.out.print(e1.getStackTrace());
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e1.getMessage());
+				}
 			}
 		}
 		try {
 			conn.commit();
 		} catch (SQLException e) {
-			System.out.println("SYSERROR: " + e.getMessage());
+			if (ControllerMain.DEBUG)
+			{
+				System.out.println("SYSERROR: " + e.getMessage());
+			}
 		}
 	}
 	
@@ -91,11 +101,17 @@ public class DAOLogAcc
 				}
 			} catch (SQLException e)
 			{
-				System.out.print(e.getStackTrace());
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getStackTrace());
+				}
 			}
 		} catch (Exception e1)
 		{
-			System.out.print(e1.getStackTrace());
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getStackTrace());
+			}
 		}
 		return log;
 	}
@@ -123,11 +139,17 @@ public class DAOLogAcc
 				}
 			} catch (SQLException e)
 			{
-				System.out.print(e.getStackTrace());
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getStackTrace());
+				}
 			}
 		} catch (Exception e1)
 		{
-			System.out.print(e1.getStackTrace());
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getStackTrace());
+			}
 		}
 		return logs;
 	}
@@ -155,11 +177,17 @@ public class DAOLogAcc
 				}
 			} catch (SQLException e)
 			{
-				System.out.print(e.getStackTrace());
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getStackTrace());
+				}
 			}
 		} catch (Exception e1)
 		{
-			System.out.print(e1.getStackTrace());
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getStackTrace());
+			}
 		}
 		return logs;
 	}

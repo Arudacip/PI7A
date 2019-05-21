@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import controllers.ControllerMain;
 import models.AbstractLog;
 import models.LogSrv;
 
@@ -55,23 +56,35 @@ public class DAOLogSrv
 				conn.rollback();
 			} catch (SQLException e2)
 			{
-				System.out.print(e2.getStackTrace());
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e2.getMessage());
+				}
 			}
 		} catch (Exception e)
 		{
-			e.printStackTrace();
+			if (ControllerMain.DEBUG)
+			{
+				System.out.println(e.getMessage());
+			}
 			try
 			{
 				conn.rollback();
 			} catch (SQLException e1)
 			{
-				System.out.print(e1.getStackTrace());
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e1.getMessage());
+				}
 			}
 		}
 		try {
 			conn.commit();
 		} catch (SQLException e) {
-			System.out.println("SYSERROR: " + e.getMessage());
+			if (ControllerMain.DEBUG)
+			{
+				System.out.println("SYSERROR: " + e.getMessage());
+			}
 		}
 	}
 	
@@ -94,11 +107,17 @@ public class DAOLogSrv
 				}
 			} catch (SQLException e)
 			{
-				System.out.print(e.getStackTrace());
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getStackTrace());
+				}
 			}
 		} catch (Exception e1)
 		{
-			System.out.print(e1.getStackTrace());
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getStackTrace());
+			}
 		}
 		return log;
 	}
@@ -124,11 +143,17 @@ public class DAOLogSrv
 				}
 			} catch (SQLException e)
 			{
-				System.out.print(e.getStackTrace());
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getMessage());
+				}
 			}
 		} catch (Exception e1)
 		{
-			System.out.print(e1.getStackTrace());
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getMessage());
+			}
 		}
 		return logs;
 	}
@@ -152,10 +177,16 @@ public class DAOLogSrv
 					logs.add(currentlog);
 				}
 			} catch (SQLException e) {
-				System.out.print(e.getStackTrace());
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getMessage());
+				}
 			}
 		} catch (Exception e1) {
-			System.out.print(e1.getStackTrace());
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getMessage());
+			}
 		}
 		return logs;
 	}

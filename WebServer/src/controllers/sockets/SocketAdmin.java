@@ -34,6 +34,7 @@ public class SocketAdmin implements Runnable
 
     private static final File WEB_ROOT = new File("./resources/");
     private static final String DEFAULT_FILE = "index.html";
+    private static final String FORBIDDEN = "403.html";
     private static final String NOT_FOUND = "404.html";
     private static final String NOT_SUPPORTED = "405.html";
 	private static final String UNKNOWN = "400.html";
@@ -83,7 +84,7 @@ public class SocketAdmin implements Runnable
 			{
 				System.out.println("SYSERROR: " + e.getMessage());
 			}
-			ControllerMain.getInstance().generateLog(ControllerMain.SRV, "IOError");
+			//ControllerMain.getInstance().generateLog(ControllerMain.SRV, "IOError");
 			return false;
 		}
 	}
@@ -143,7 +144,7 @@ public class SocketAdmin implements Runnable
 			{
 				System.out.println("CRIT: " + e.getMessage());
 			}
-			ControllerMain.getInstance().generateLog(ControllerMain.SRV, "IOError");
+			//ControllerMain.getInstance().generateLog(ControllerMain.SRV, "IOError");
 		}
 		return cliente;
 	}
@@ -206,44 +207,89 @@ public class SocketAdmin implements Runnable
 			} else
 			{
 				// GET or HEAD method
-				if (fileRequested.endsWith("/"))
-				{
-					fileRequested += DEFAULT_FILE;
-				}
-				
 				if (ControllerMain.DEBUG)
 				{
-					System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
+					System.out.println("SYSINFO: Request: "+fileRequested);
 				}
-				ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
-				
-				File file = new File(WEB_ROOT, fileRequested);
-				int fileLength = (int) file.length();
-				String content = getContentType(fileRequested);
-				
-				// metodo de conexao GET no protocolo HTTP 
-				if (method.equals("GET"))
+				String subtest = fileRequested.substring(fileRequested.lastIndexOf('/') + 1);
+				if (fileRequested.length() > 1 && !subtest.contains("."))
 				{
-					byte[] fileData = lerArquivoDados(file, fileLength);
+					if (ControllerMain.DEBUG)
+					{
+						System.out.println("SYSINFO: Request nao contem extensao.");
+					}
+					fileRequested += "/";
+				}
+				// Verificar request de pasta
+				if (fileRequested.length() > 1 && fileRequested.endsWith("/"))
+				{
+					if (ControllerMain.DEBUG)
+					{
+						System.out.println("SYSINFO: Size="+fileRequested.length()+" > Request com / > Request de pasta.");
+					}
+					ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"403");
 					
-					// send HTTP Headers
-					out.println("HTTP/1.1 200 OK");
+					File file = new File(WEB_ROOT, FORBIDDEN);
+					int fileLength = (int) file.length();
+					String contentMimeType = "text/html";
+					byte[] fileData = lerArquivoDados(file, fileLength);
+						
+					// envia HTTP Headers e dados
+					out.println("HTTP/1.1 403 Proibido");
 					out.println("Server: Servidor Java HTTP - ECP7AN-MCA1-09");
 					out.println("Date: " + new Date());
-					out.println("Content-type: " + content);
+					out.println("Content-type: " + contentMimeType);
 					out.println("Content-length: " + fileLength);
 					out.println();
 					out.flush();
-					
+					// file
 					dataOut.write(fileData, 0, fileLength);
 					dataOut.flush();
-				}
-				
-				if (ControllerMain.DEBUG)
+				} else
 				{
-					System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
+					// Nao e pasta, segue o jogo
+					if (fileRequested.endsWith("/"))
+					{
+						if (ControllerMain.DEBUG)
+						{
+							System.out.println("SYSINFO: Size="+fileRequested.length()+" > Enviar root file.");
+						}
+						fileRequested += DEFAULT_FILE;
+					}
+					if (ControllerMain.DEBUG)
+					{
+						System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
+					}
+					ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
+					
+					File file = new File(WEB_ROOT, fileRequested);
+					int fileLength = (int) file.length();
+					String content = getContentType(fileRequested);
+					
+					// metodo de conexao GET no protocolo HTTP 
+					if (method.equals("GET"))
+					{
+						byte[] fileData = lerArquivoDados(file, fileLength);
+						
+						// send HTTP Headers
+						out.println("HTTP/1.1 200 OK");
+						out.println("Server: Servidor Java HTTP - ECP7AN-MCA1-09");
+						out.println("Date: " + new Date());
+						out.println("Content-type: " + content);
+						out.println("Content-length: " + fileLength);
+						out.println();
+						out.flush();
+						
+						dataOut.write(fileData, 0, fileLength);
+						dataOut.flush();
+					}
+					
+					if (ControllerMain.DEBUG)
+					{
+						System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
+					}
+					ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
 				}
-				ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
 			}
 			
 		} catch (FileNotFoundException fnfe)

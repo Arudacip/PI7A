@@ -193,7 +193,10 @@ public final class ControllerMain implements ActionListener
                 	// tem que ser checado aqui caso contrario da null pointer exception
                     checkStatus();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    if (DEBUG)
+                    {
+                    	System.out.println(ex.getMessage());
+                    }
                 	generateLog(SRV, "NotStarted");
                 	// tem que ser checado aqui caso contrario da null pointer exception
                     checkStatus();
