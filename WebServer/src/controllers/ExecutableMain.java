@@ -9,7 +9,7 @@ import controllers.facades.FacadeMain;
  * @version 4.1
  */
 
-public class TestMain
+public class ExecutableMain
 {
 	
 	/**
