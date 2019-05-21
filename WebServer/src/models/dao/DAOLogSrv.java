@@ -91,6 +91,7 @@ public class DAOLogSrv
 	/**
 	 * Carrega um log de servidor a partir do ID
 	 * @param conn : conexao com o DB
+	 * @return log solicitado.
 	 */
 	public AbstractLog carregaID(Connection conn)
 	{
@@ -123,8 +124,10 @@ public class DAOLogSrv
 	}
 	
 	/**
-	 * Lista os 10 ultimos logs de servidor
+	 * Lista os ultimos logs de servidor
 	 * @param conn : conexao com o DB
+	 * @param num : numero de logs a listar
+	 * @return resultado da querie em ArrayList.
 	 */
 	public ArrayList<AbstractLog> listaUltimos(Connection conn, int num)
 	{
@@ -161,6 +164,7 @@ public class DAOLogSrv
 	/**
 	 * Lista todos logs de servidor registrados no DB
 	 * @param conn : conexao com o DB
+	 * @return resultado da querie em ArrayList.
 	 */
 	public ArrayList<AbstractLog> listaTodos(Connection conn)
 	{

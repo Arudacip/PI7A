@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import controllers.ControllerMain;
 import models.AbstractLog;
 import models.LogAcc;
+import models.ResultTable;
 
 /**
  * Classe do Model DAO do LogAcc do design pattern MVC + Abstract Factory.
@@ -83,6 +84,7 @@ public class DAOLogAcc
 	/**
 	 * Lista os ultimos logs de acesso
 	 * @param conn : conexao com o DB
+	 * @return log solicitado.
 	 */
 	public AbstractLog carregaID(Connection conn)
 	{
@@ -119,6 +121,8 @@ public class DAOLogAcc
 	/**
 	 * Lista os ultimos logs de acesso
 	 * @param conn : conexao com o DB
+	 * @param num : numero de logs a listar
+	 * @return resultado da querie em ArrayList.
 	 */
 	public ArrayList<AbstractLog> listaUltimos(Connection conn, int num)
 	{
@@ -155,8 +159,85 @@ public class DAOLogAcc
 	}
 	
 	/**
+	 * Lista os arquivos mais acessados no servidor
+	 * @param conn : conexao com o DB
+	 * @param num : numero de logs a listar
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<ResultTable> listaMaisAcessados(Connection conn, int num)
+	{
+		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
+		ResultTable currentresult;
+		String sqlSelect = "SELECT arquivo, count(arquivo) AS ocorrencias FROM logacesso GROUP BY arquivo ORDER BY ocorrencias DESC LIMIT "+num+";";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentresult = new ResultTable(rs.getString("arquivo"), rs.getString("ocorrencias"));
+					resultados.add(currentresult);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getStackTrace());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getStackTrace());
+			}
+		}
+		return resultados;
+	}
+	
+	/**
+	 * Lista os arquivos mais acessados no servidor
+	 * @param conn : conexao com o DB
+	 * @param num : numero de logs a listar
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<ResultTable> listaIPsFrequentes(Connection conn, int num)
+	{
+		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
+		ResultTable currentresult;
+		String sqlSelect = "SELECT ip, count(ip) AS ocorrencias FROM logacesso GROUP BY ip ORDER BY ocorrencias DESC LIMIT "+num+";";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentresult = new ResultTable(rs.getString("ip"), rs.getString("ocorrencias"));
+					resultados.add(currentresult);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getStackTrace());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getStackTrace());
+			}
+		}
+		return resultados;
+	}
+	
+	/**
 	 * Lista todos os logs de acesso registrados no DB
 	 * @param conn : conexao com o DB
+	 * @return resultado da querie em ArrayList.
 	 */
 	public ArrayList<AbstractLog> listaTodos(Connection conn)
 	{
