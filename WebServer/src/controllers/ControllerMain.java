@@ -335,4 +335,14 @@ public final class ControllerMain implements ActionListener
         props.load(file);
         return props;
     }
+
+	/**
+	 * Retorna a conexao com o banco de dados do webserver.
+	 * @return Propriedades do webserver
+	 * @throws IOException
+	 */
+	public Connection getConn()
+	{
+        return conn;
+    }
 }

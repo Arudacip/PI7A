@@ -82,7 +82,7 @@ public class DAOLogAcc
 	}
 	
 	/**
-	 * Lista os ultimos logs de acesso
+	 * Lista o log de acesso conforme o ID
 	 * @param conn : conexao com o DB
 	 * @return log solicitado.
 	 */
@@ -105,14 +105,14 @@ public class DAOLogAcc
 			{
 				if (ControllerMain.DEBUG)
 				{
-					System.out.print(e.getStackTrace());
+					System.out.print(e.getMessage());
 				}
 			}
 		} catch (Exception e1)
 		{
 			if (ControllerMain.DEBUG)
 			{
-				System.out.print(e1.getStackTrace());
+				System.out.print(e1.getMessage());
 			}
 		}
 		return log;
@@ -145,14 +145,14 @@ public class DAOLogAcc
 			{
 				if (ControllerMain.DEBUG)
 				{
-					System.out.print(e.getStackTrace());
+					System.out.print(e.getMessage());
 				}
 			}
 		} catch (Exception e1)
 		{
 			if (ControllerMain.DEBUG)
 			{
-				System.out.print(e1.getStackTrace());
+				System.out.print(e1.getMessage());
 			}
 		}
 		return logs;
@@ -168,7 +168,7 @@ public class DAOLogAcc
 	{
 		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
 		ResultTable currentresult;
-		String sqlSelect = "SELECT arquivo, count(arquivo) AS ocorrencias FROM logacesso GROUP BY arquivo ORDER BY ocorrencias DESC LIMIT "+num+";";
+		String sqlSelect = "SELECT arquivo, codigo_resposta, count(arquivo) AS ocorrencias FROM logacesso WHERE codigo_resposta=200 GROUP BY arquivo ORDER BY ocorrencias DESC LIMIT "+num+";";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -183,19 +183,19 @@ public class DAOLogAcc
 			{
 				if (ControllerMain.DEBUG)
 				{
-					System.out.print(e.getStackTrace());
+					System.out.print(e.getMessage());
 				}
 			}
 		} catch (Exception e1)
 		{
 			if (ControllerMain.DEBUG)
 			{
-				System.out.print(e1.getStackTrace());
+				System.out.print(e1.getMessage());
 			}
 		}
 		return resultados;
 	}
-	
+
 	/**
 	 * Lista os arquivos mais acessados no servidor
 	 * @param conn : conexao com o DB
@@ -221,30 +221,30 @@ public class DAOLogAcc
 			{
 				if (ControllerMain.DEBUG)
 				{
-					System.out.print(e.getStackTrace());
+					System.out.print(e.getMessage());
 				}
 			}
 		} catch (Exception e1)
 		{
 			if (ControllerMain.DEBUG)
 			{
-				System.out.print(e1.getStackTrace());
+				System.out.print(e1.getMessage());
 			}
 		}
 		return resultados;
 	}
 	
 	/**
-	 * Lista os ultimos logs de acesso fa família
+	 * Lista os logs de acesso de uma data especificada
 	 * @param conn : conexao com o DB
-	 * @param num : numero de logs a listar
+	 * @param data : data a ser procurada
 	 * @return resultado da querie em ArrayList.
 	 */
-	public ArrayList<AbstractLog> lista404(Connection conn)
+	public ArrayList<AbstractLog> listaHora(Connection conn, String hora)
 	{
 		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
 		LogAcc currentlog;
-		String sqlSelect = "SELECT * FROM logacesso WHERE metodo_http=404 AND sub ORDER BY id ASC;";
+		String sqlSelect = "SELECT * FROM logacesso WHERE HOUR(hora_data) = '"+hora+"';";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -253,25 +253,295 @@ public class DAOLogAcc
 				while (rs.next())
 				{
 					currentlog = new LogAcc(rs.getTimestamp("hora_data"), rs.getString("arquivo")+"#"
-													+rs.getString("metodo_http")+"#"+rs.getString("ip")+"#"
-													+rs.getString("codigo_resposta"));
+							+rs.getString("metodo_http")+"#"+rs.getString("ip")+"#"
+							+rs.getString("codigo_resposta"));
 					logs.add(currentlog);
 				}
 			} catch (SQLException e)
 			{
 				if (ControllerMain.DEBUG)
 				{
-					System.out.print(e.getStackTrace());
+					System.out.print(e.getMessage());
 				}
 			}
 		} catch (Exception e1)
 		{
 			if (ControllerMain.DEBUG)
 			{
-				System.out.print(e1.getStackTrace());
+				System.out.print(e1.getMessage());
 			}
 		}
 		return logs;
+	}
+	
+	/**
+	 * Lista os logs de acesso de uma data especificada
+	 * @param conn : conexao com o DB
+	 * @param data : data a ser procurada
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<AbstractLog> listaDia(Connection conn, String data)
+	{
+		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
+		LogAcc currentlog;
+		String sqlSelect = "SELECT * FROM logacesso WHERE DATE(hora_data) = '"+data+"';";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentlog = new LogAcc(rs.getTimestamp("hora_data"), rs.getString("arquivo")+"#"
+							+rs.getString("metodo_http")+"#"+rs.getString("ip")+"#"
+							+rs.getString("codigo_resposta"));
+					logs.add(currentlog);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getMessage());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getMessage());
+			}
+		}
+		return logs;
+	}
+	
+	/**
+	 * Lista os logs de acesso de um mes especificado
+	 * @param conn : conexao com o DB
+	 * @param data : data a ser procurada
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<AbstractLog> listaMes(Connection conn, String mes)
+	{
+		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
+		LogAcc currentlog;
+		String sqlSelect = "SELECT * FROM logacesso WHERE MONTH(hora_data) = '"+mes+"';";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentlog = new LogAcc(rs.getTimestamp("hora_data"), rs.getString("arquivo")+"#"
+							+rs.getString("metodo_http")+"#"+rs.getString("ip")+"#"
+							+rs.getString("codigo_resposta"));
+					logs.add(currentlog);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getMessage());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getMessage());
+			}
+		}
+		return logs;
+	}
+	
+	/**
+	 * Lista os IPs distintos que acessaram o servidor
+	 * @param conn : conexao com o DB
+	 * @param data : data a ser procurada
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<ResultTable> listaDistintos(Connection conn)
+	{
+		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
+		ResultTable currentresult;
+		String sqlSelect = "SELECT DISTINCT ip FROM logacesso ORDER BY ip;";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentresult = new ResultTable("IP", rs.getString("ip"));
+					resultados.add(currentresult);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getMessage());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getMessage());
+			}
+		}
+		return resultados;
+	}
+	
+	/**
+	 * Lista os logs de acesso com erro 400
+	 * @param conn : conexao com o DB
+	 * @param num : numero de logs a listar
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<ResultTable> lista400(Connection conn)
+	{
+		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
+		ResultTable currentresult;
+		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=400;";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentresult = new ResultTable("Arquivo", rs.getString("arquivo"));
+					resultados.add(currentresult);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getMessage());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getMessage());
+			}
+		}
+		return resultados;
+	}
+	
+	/**
+	 * Lista os logs de acesso com erro 403
+	 * @param conn : conexao com o DB
+	 * @param num : numero de logs a listar
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<ResultTable> lista403(Connection conn)
+	{
+		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
+		ResultTable currentresult;
+		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=403;";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentresult = new ResultTable("Arquivo", rs.getString("arquivo"));
+					resultados.add(currentresult);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getMessage());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getMessage());
+			}
+		}
+		return resultados;
+	}
+	
+	/**
+	 * Lista os logs de acesso com erro 404
+	 * @param conn : conexao com o DB
+	 * @param num : numero de logs a listar
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<ResultTable> lista404(Connection conn)
+	{
+		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
+		ResultTable currentresult;
+		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=404;";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentresult = new ResultTable("Arquivo", rs.getString("arquivo"));
+					resultados.add(currentresult);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getMessage());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getMessage());
+			}
+		}
+		return resultados;
+	}
+	
+	/**
+	 * Lista os logs de acesso com erro 405
+	 * @param conn : conexao com o DB
+	 * @param num : numero de logs a listar
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<ResultTable> lista405(Connection conn)
+	{
+		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
+		ResultTable currentresult;
+		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=405;";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentresult = new ResultTable("Arquivo", rs.getString("arquivo"));
+					resultados.add(currentresult);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getMessage());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getMessage());
+			}
+		}
+		return resultados;
 	}
 	
 	/**
@@ -300,14 +570,14 @@ public class DAOLogAcc
 			{
 				if (ControllerMain.DEBUG)
 				{
-					System.out.print(e.getStackTrace());
+					System.out.print(e.getMessage());
 				}
 			}
 		} catch (Exception e1)
 		{
 			if (ControllerMain.DEBUG)
 			{
-				System.out.print(e1.getStackTrace());
+				System.out.print(e1.getMessage());
 			}
 		}
 		return logs;
