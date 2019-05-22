@@ -235,6 +235,46 @@ public class DAOLogAcc
 	}
 	
 	/**
+	 * Lista os ultimos logs de acesso fa família
+	 * @param conn : conexao com o DB
+	 * @param num : numero de logs a listar
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<AbstractLog> lista404(Connection conn)
+	{
+		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
+		LogAcc currentlog;
+		String sqlSelect = "SELECT * FROM logacesso WHERE metodo_http=404 AND sub ORDER BY id ASC;";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentlog = new LogAcc(rs.getTimestamp("hora_data"), rs.getString("arquivo")+"#"
+													+rs.getString("metodo_http")+"#"+rs.getString("ip")+"#"
+													+rs.getString("codigo_resposta"));
+					logs.add(currentlog);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getStackTrace());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getStackTrace());
+			}
+		}
+		return logs;
+	}
+	
+	/**
 	 * Lista todos os logs de acesso registrados no DB
 	 * @param conn : conexao com o DB
 	 * @return resultado da querie em ArrayList.
