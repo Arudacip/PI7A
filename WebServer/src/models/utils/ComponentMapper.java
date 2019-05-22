@@ -1,4 +1,4 @@
-package controllers.utils;
+package models.utils;
 
 import java.awt.Component;
 import java.util.HashMap;

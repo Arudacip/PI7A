@@ -1,4 +1,4 @@
-package controllers.utils;
+package models.utils;
 
 import java.io.IOException;
 import java.sql.Connection;

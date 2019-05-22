@@ -11,13 +11,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Properties;
 
-import controllers.services.ServiceLogAcc;
-import controllers.services.ServiceLogSrv;
 import controllers.sockets.SocketAdmin;
-import controllers.utils.ConnectorDB;
 import models.AbstractLog;
 import models.LogAcc;
 import models.LogSrv;
+import models.services.ServiceLogAcc;
+import models.services.ServiceLogSrv;
+import models.utils.ConnectorDB;
 import views.ViewServiceAdmin;
 import views.buttons.ButtonTypes;
 

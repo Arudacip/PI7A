@@ -7,8 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import controllers.ControllerMain;
-import controllers.utils.ComponentMapper;
 import models.AbstractLog;
+import models.utils.ComponentMapper;
 import views.panels.ComposeControl;
 import views.panels.ComposeLog;
 import views.panels.ComposeStatus;

@@ -1,36 +1,36 @@
-package controllers.services;
+package models.services;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 
 import models.AbstractLog;
-import models.dao.DAOLogAcc;
+import models.dao.DAOLogSrv;
 
 /**
- * Classe do Controller Service a tratar do LogAcc.
+ * Classe do Controller Service a tratar do LogSrv.
  * @author Grupo ECP7AN-MCA1-09 - Bruno Gama, Guilherme Sant'Clair, Luis Felipe, Rafael Cassiolato, Raiza Morata.
  *
  * @param dao : DAO do log
  * @param conn : conexao com o banco de dados
  */
 
-public class ServiceLogAcc
+public class ServiceLogSrv
 {
 	
-	private DAOLogAcc dao = new DAOLogAcc();
+	private DAOLogSrv dao = new DAOLogSrv();
 	private Connection conn = null;
 	
 	/**
 	 * Construtor exclusivo para referencia da conexao com o banco de dados e recuperar logs.
 	 * @param conn : conexao com o banco de dados
 	 */
-	public ServiceLogAcc(Connection conn)
+	public ServiceLogSrv(Connection conn)
 	{
 		this.conn = conn;
 	}
 	
 	/**
-	 * Inclui um LogAcc no banco de dados.
+	 * Inclui um LogSrv no banco de dados.
 	 */
 	public void incluir(AbstractLog log)
 	{
@@ -39,8 +39,8 @@ public class ServiceLogAcc
 	}
 	
 	/**
-	 * Recupera um LogAcc do banco de dados por ID.
-	 * @return lista de LogAcc
+	 * Recupera um LogSrv do banco de dados por ID.
+	 * @return lista de LogSrv
 	 */
 	public AbstractLog carregaID()
 	{
@@ -48,8 +48,8 @@ public class ServiceLogAcc
 	}
 	
 	/**
-	 * Recupera a lista dos ultimos X LogAcc do banco de dados.
-	 * @return lista de LogAcc
+	 * Recupera a lista dos ultimos X LogSrv do banco de dados.
+	 * @return lista de LogSrv
 	 */
 	public ArrayList<AbstractLog> listaUltimos(int num)
 	{
@@ -57,8 +57,8 @@ public class ServiceLogAcc
 	}
 	
 	/**
-	 * Recupera a lista de todos os LogAcc do banco de dados.
-	 * @return lista de LogAcc
+	 * Recupera a lista de todos os LogSrv do banco de dados.
+	 * @return lista de LogSrv
 	 */
 	public ArrayList<AbstractLog> listaTodos()
 	{
