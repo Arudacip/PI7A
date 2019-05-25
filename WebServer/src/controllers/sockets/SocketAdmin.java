@@ -504,7 +504,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio06.html\">Acessos/Mes</a>\r\n" + 
+				"                    <li><a href=\"relatorio06.html\">Acessos/M&ecirc;s</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -639,7 +639,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio06.html\">Acessos/Mes</a>\r\n" + 
+				"                    <li><a href=\"relatorio06.html\">Acessos/M&ecirc;s</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -760,7 +760,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio06.html\">Acessos/Mes</a>\r\n" + 
+				"                    <li><a href=\"relatorio06.html\">Acessos/M&ecirc;s</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -876,7 +876,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio06.html\">Acessos/Mes</a>\r\n" + 
+				"                    <li><a href=\"relatorio06.html\">Acessos/M&ecirc;s</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -1018,7 +1018,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio06.html\">Acessos/Mes</a>\r\n" + 
+				"                    <li><a href=\"relatorio06.html\">Acessos/M&ecirc;s</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -1257,7 +1257,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio06.html\">Acessos/Mes</a>\r\n" + 
+				"                    <li><a href=\"relatorio06.html\">Acessos/M&ecirc;s</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -1348,7 +1348,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio06.html\">Acessos/Mes</a>\r\n" + 
+				"                    <li><a href=\"relatorio06.html\">Acessos/M&ecirc;s</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -1370,7 +1370,7 @@ public class SocketAdmin implements Runnable
 				"		    </tr>\r\n" + 
 				"		    </thead>\r\n" + 
 				"		    <tbody>\r\n";
-		for (int i=0; i <=20; i++)
+		for (int i=0; i<=20; i++)
 		{
 			relatorio = relatorio + 
 					"		    <tr>\r\n" + 
