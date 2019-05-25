@@ -1,12 +1,10 @@
 controllers
 controllers.facades
-controllers.services
 controllers.sockets
-controllers.utils
 models
 models.dao
-models.factory
+models.services
+models.utils
 views
 views.buttons
 views.panels
-zones.models.deprecated
