@@ -3,7 +3,6 @@ package models.services;
 import java.sql.Connection;
 import java.util.ArrayList;
 
-import controllers.ControllerMain;
 import models.AbstractLog;
 import models.dao.DAOLogSrv;
 
@@ -20,15 +19,6 @@ public class ServiceLogSrv
 	
 	private DAOLogSrv dao = new DAOLogSrv();
 	private Connection conn = null;
-	
-	/**
-	 * Construtor exclusivo para referencia em JavaScript.
-	 * @param conn : conexao com o banco de dados
-	 */
-	public ServiceLogSrv()
-	{
-		this.conn = ControllerMain.getInstance().getConn();
-	}
 	
 	/**
 	 * Construtor exclusivo para referencia da conexao com o banco de dados e recuperar logs.

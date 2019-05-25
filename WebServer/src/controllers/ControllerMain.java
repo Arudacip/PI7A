@@ -337,12 +337,20 @@ public final class ControllerMain implements ActionListener
     }
 
 	/**
-	 * Retorna a conexao com o banco de dados do webserver.
-	 * @return Propriedades do webserver
-	 * @throws IOException
+	 * Retorna o service de LogAcc do webserver.
+	 * @return ServiceLogAcc do webserver
 	 */
-	public Connection getConn()
+	public ServiceLogAcc getServiceAcc()
 	{
-        return conn;
+        return serviceLA;
+    }
+
+	/**
+	 * Retorna o service de LogSrv do webserver.
+	 * @return ServiceLogSrv do webserver
+	 */
+	public ServiceLogSrv getServiceSrv()
+	{
+        return serviceLS;
     }
 }
