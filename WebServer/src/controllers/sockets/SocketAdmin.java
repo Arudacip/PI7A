@@ -449,7 +449,7 @@ public class SocketAdmin implements Runnable
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().listaMaisAcessados(10);
 		
-		if (ControllerMain.VERBOSE)
+		if (ControllerMain.DEBUG)
 		{
 			System.out.println("DADOS: "+dados.toString());
 			System.out.println("DADOS - Size: "+dados.size());
@@ -576,7 +576,7 @@ public class SocketAdmin implements Runnable
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().reqsPorHora();
 		
-		if (ControllerMain.VERBOSE)
+		if (ControllerMain.DEBUG)
 		{
 			System.out.println("DADOS: "+dados.toString());
 			System.out.println("DADOS - Size: "+dados.size());
@@ -717,7 +717,7 @@ public class SocketAdmin implements Runnable
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().listaIPsFrequentes(10);
 		
-		if (ControllerMain.VERBOSE)
+		if (ControllerMain.DEBUG)
 		{
 			System.out.println("DADOS: "+dados.toString());
 			System.out.println("DADOS - Size: "+dados.size());
@@ -806,7 +806,7 @@ public class SocketAdmin implements Runnable
 				"    <div class=\"site-wrapper\">\r\n" + 
 				"	    <div class=\"inner cover\">\r\n" + 
 				"    	    <h2 class=\"cover-heading\" align=center>Administrativo - Relat&oacute;rio 03</h2>\r\n" + 
-				"            <p class=\"lead\" align=center>IPs que mais enviaram requisi&ccedil/&otilde;es.</p>\r\n" + 
+				"            <p class=\"lead\" align=center>IPs que mais enviaram requisi&ccedil;&otilde;es.</p>\r\n" + 
 				"            <br>\r\n" + 
 				"            <p class=\"lead\" align=center>\r\n" + 
 				"            	<div id=\"chartContainer\" style=\"height: 300px; width: 100%;\"></div>\r\n" + 
@@ -839,7 +839,7 @@ public class SocketAdmin implements Runnable
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().lista404();
 		
-		if (ControllerMain.VERBOSE)
+		if (ControllerMain.DEBUG)
 		{
 			System.out.println("DADOS: "+dados.toString());
 			System.out.println("DADOS - Size: "+dados.size());
@@ -960,7 +960,7 @@ public class SocketAdmin implements Runnable
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().reqsPorDia();
 		
-		if (ControllerMain.VERBOSE)
+		if (ControllerMain.DEBUG)
 		{
 			System.out.println("DADOS: "+dados.toString());
 			System.out.println("DADOS - Size: "+dados.size());
@@ -1108,7 +1108,7 @@ public class SocketAdmin implements Runnable
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().reqsPorMes();
 		
-		if (ControllerMain.VERBOSE)
+		if (ControllerMain.DEBUG)
 		{
 			System.out.println("DADOS: "+dados.toString());
 			System.out.println("DADOS - Size: "+dados.size());
@@ -1237,7 +1237,7 @@ public class SocketAdmin implements Runnable
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().listaDistintos();
 		
-		if (ControllerMain.VERBOSE)
+		if (ControllerMain.DEBUG)
 		{
 			System.out.println("DADOS: "+dados.toString());
 			System.out.println("DADOS - Size: "+dados.size());
@@ -1358,7 +1358,7 @@ public class SocketAdmin implements Runnable
 		String relatorio;
 		ArrayList<AbstractLog> dados = ControllerMain.getInstance().getServiceSrv().listaUltimos(20);
 		
-		if (ControllerMain.VERBOSE)
+		if (ControllerMain.DEBUG)
 		{
 			System.out.println("DADOS: "+dados.toString());
 			System.out.println("DADOS - Size: "+dados.size());

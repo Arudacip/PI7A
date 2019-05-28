@@ -57,7 +57,7 @@ public final class ControllerMain implements ActionListener
 	public static final int SRV = 1;
 	public static final int ACC = 2;
     public static final boolean DEBUG = false;
-    public static final boolean VERBOSE = true;
+    //public static final boolean VERBOSE = true;
     private static String VERSION;
     private static int PORTA;
     private SocketAdmin servidor;

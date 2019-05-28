@@ -284,7 +284,7 @@ public class DAOLogAcc
 	{
 		ArrayList<AbstractLog> logs = new ArrayList<AbstractLog>();
 		LogAcc currentlog;
-		String sqlSelect = "SELECT * FROM logacesso WHERE DATE(hora_data) = '"+data+"';";
+		String sqlSelect = "SELECT * FROM logacesso WHERE DAY(hora_data) = '"+data+"';";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
