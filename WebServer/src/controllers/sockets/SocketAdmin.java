@@ -268,43 +268,54 @@ public class SocketAdmin implements Runnable
 						int fileLength;
 						String content = "text/html";
 						byte[] fileData;
+						
+						// RELATORIO 01
 						if (subtest02.contains("relatorio01"))
 						{
-							fileLength = (int) relatorio01().getBytes().length;
 							fileData = relatorio01().getBytes();
+							
+						// RELATORIO 02
 						} else if (subtest02.contains("relatorio02"))
-						{
-							fileLength = (int) relatorio02().getBytes().length;							
+						{							
 							fileData = relatorio02().getBytes();
+							
+						// RELATORIO 03
 						} else if (subtest02.contains("relatorio03"))
-						{
-							fileLength = (int) relatorio03().getBytes().length;							
+						{							
 							fileData = relatorio03().getBytes();
+							
+						// RELATORIO 04
 						} else if (subtest02.contains("relatorio04"))
-						{
-							fileLength = (int) relatorio04().getBytes().length;							
+						{							
 							fileData = relatorio04().getBytes();
+							
+						// RELATORIO 05
 						} else if (subtest02.contains("relatorio05"))
-						{
-							fileLength = (int) relatorio05().getBytes().length;							
+						{							
 							fileData = relatorio05().getBytes();
+							
+						// RELATORIO 06
 						} else if (subtest02.contains("relatorio06"))
 						{
-							fileLength = (int) relatorio06().getBytes().length;							
 							fileData = relatorio06().getBytes();
+							
+						// RELATORIO 07
 						} else if (subtest02.contains("relatorio07"))
-						{
-							fileLength = (int) relatorio07().getBytes().length;							
+						{							
 							fileData = relatorio07().getBytes();
+							
+						// RELATORIO 08
 						} else if (subtest02.contains("relatorio08"))
-						{
-							fileLength = (int) relatorio08().getBytes().length;							
+						{							
 							fileData = relatorio08().getBytes();
+							
+						// RELATORIO 01 - DEFAULT
 						} else
-						{
-							fileLength = (int) relatorio01().getBytes().length;							
+						{							
 							fileData = relatorio01().getBytes();
 						}
+						
+						fileLength = (int) fileData.length;
 						
 						// metodo de conexao GET no protocolo HTTP 
 						if (method.equals("GET"))
@@ -320,13 +331,19 @@ public class SocketAdmin implements Runnable
 							
 							dataOut.write(fileData, 0, fileLength);
 							dataOut.flush();
-						}
-						
-						if (ControllerMain.DEBUG)
+							ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
+							if (ControllerMain.DEBUG)
+							{
+								System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
+							}
+						} else
 						{
-							System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
+							ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"400");
+							if (ControllerMain.DEBUG)
+							{
+								System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"400");
+							}
 						}
-						ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
 					
 					} else
 					{
@@ -350,13 +367,18 @@ public class SocketAdmin implements Runnable
 							
 							dataOut.write(fileData, 0, fileLength);
 							dataOut.flush();
+							ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
+							if (ControllerMain.DEBUG)
+							{
+								System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
+							}
+						} else {
+							ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"400");
+							if (ControllerMain.DEBUG)
+							{
+								System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"400");
+							}
 						}
-						
-						if (ControllerMain.DEBUG)
-						{
-							System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
-						}
-						ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
 					}
 				}
 			}
@@ -370,8 +392,7 @@ public class SocketAdmin implements Runnable
 			{
 				if (ControllerMain.DEBUG)
 				{
-					String message = ioe.getMessage();
-					System.out.println("SYSError - FileNotFoundException: " + message);
+					System.out.println("SYSError - FileNotFoundException: " + ioe.getMessage());
 				}
 			}
 			
@@ -379,8 +400,7 @@ public class SocketAdmin implements Runnable
 		{
 			if (ControllerMain.DEBUG)
 			{
-				String message = ioe.getMessage();
-				System.out.println("SYSError - Erro de servidor: " + message);
+				System.out.println("SYSError - Erro de servidor: " + ioe.getMessage());
 			}
 		}  catch (Exception une)
 		{
@@ -391,8 +411,7 @@ public class SocketAdmin implements Runnable
 			{
 				if (ControllerMain.DEBUG)
 				{
-					String message = une.getMessage();
-					System.out.println("SYSError - Unknown - Erro de servidor: " + message);
+					System.out.println("SYSError - Unknown - Erro de servidor: " + une.getMessage());
 				}
 			}
 		} finally
@@ -405,10 +424,9 @@ public class SocketAdmin implements Runnable
 				cliente.close(); // fecha a conexao do socket
 			} catch (Exception e)
 			{
-				String message = e.getMessage();
 				if (ControllerMain.DEBUG)
 				{
-					System.out.println("SYSError - Erro ao fechar conexao: " + message);
+					System.out.println("SYSError - Erro ao fechar conexao: " + e.getMessage());
 				}
 				//ControllerMain.getInstance().generateLog(ControllerMain.SRV, "CloseErr");
 			}
@@ -430,6 +448,12 @@ public class SocketAdmin implements Runnable
 		// Recupera do DB os 10 mais acessados
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().listaMaisAcessados(10);
+		
+		if (ControllerMain.VERBOSE)
+		{
+			System.out.println("DADOS: "+dados.toString());
+			System.out.println("DADOS - Size: "+dados.size());
+		}
 		
 		// Preenche os dados no relatorio
 		relatorio = "<html lang=\"pt-br\">\r\n" + 
@@ -548,9 +572,15 @@ public class SocketAdmin implements Runnable
 	 */
 	private String relatorio02 ()
 	{
-		// Recupera do DB os 10 mais acessados
+		// Recupera do DB o volume de requisicoes por hora
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().reqsPorHora();
+		
+		if (ControllerMain.VERBOSE)
+		{
+			System.out.println("DADOS: "+dados.toString());
+			System.out.println("DADOS - Size: "+dados.size());
+		}
 		
 		// Preenche os dados no relatorio
 		relatorio = "<html lang=\"pt-br\">\r\n" + 
@@ -683,9 +713,15 @@ public class SocketAdmin implements Runnable
 	 */
 	private String relatorio03 ()
 	{
-		// Recupera do DB os 10 mais acessados
+		// Recupera do DB os IPs mais frequentes
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().listaIPsFrequentes(10);
+		
+		if (ControllerMain.VERBOSE)
+		{
+			System.out.println("DADOS: "+dados.toString());
+			System.out.println("DADOS - Size: "+dados.size());
+		}
 		
 		// Preenche os dados no relatorio
 		relatorio = "<html lang=\"pt-br\">\r\n" + 
@@ -707,24 +743,19 @@ public class SocketAdmin implements Runnable
 				"	window.onload = function () {\r\n" + 
 				"		var chart = new CanvasJS.Chart(\"chartContainer\", {\r\n" + 
 				"			title:{\r\n" + 
-				"				text: \"Grafico - Top 10 IPs\"              \r\n" + 
+				"				text: \"Grafico - Top IPs\"              \r\n" + 
 				"			},\r\n" + 
 				"			data: [              \r\n" + 
 				"			{\r\n" + 
 				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
 				"				type: \"column\",\r\n" + 
-				"				dataPoints: [\r\n" + 
-				"					{ label: \""+dados.get(0).getTipo()+"\", y: "+dados.get(0).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(1).getTipo()+"\", y: "+dados.get(1).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(2).getTipo()+"\", y: "+dados.get(2).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(3).getTipo()+"\", y: "+dados.get(3).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(4).getTipo()+"\", y: "+dados.get(4).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(5).getTipo()+"\", y: "+dados.get(5).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(6).getTipo()+"\", y: "+dados.get(6).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(7).getTipo()+"\", y: "+dados.get(7).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(8).getTipo()+"\", y: "+dados.get(8).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(9).getTipo()+"\", y: "+dados.get(9).getValor()+"  },\r\n" + 
-				"				]\r\n" + 
+				"				dataPoints: [\r\n";
+		
+		for (ResultTable dado : dados)
+		{
+			relatorio = relatorio + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+		}
+		relatorio = relatorio + "				]\r\n" +
 				"			}\r\n" + 
 				"			]\r\n" + 
 				"		});\r\n" + 
@@ -804,9 +835,15 @@ public class SocketAdmin implements Runnable
 	 */
 	private String relatorio04 ()
 	{
-		// Recupera do DB os 10 mais acessados
+		// Recupera do DB os que causaram erro 404
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().lista404();
+		
+		if (ControllerMain.VERBOSE)
+		{
+			System.out.println("DADOS: "+dados.toString());
+			System.out.println("DADOS - Size: "+dados.size());
+		}
 		
 		// Preenche os dados no relatorio
 		relatorio = "<html lang=\"pt-br\">\r\n" + 
@@ -834,13 +871,12 @@ public class SocketAdmin implements Runnable
 				"			{\r\n" + 
 				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
 				"				type: \"doughnut\",\r\n" + 
-				"				dataPoints: [\r\n" + 
-				"					{ label: \""+dados.get(0).getTipo()+"\", y: "+dados.get(0).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(1).getTipo()+"\", y: "+dados.get(1).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(2).getTipo()+"\", y: "+dados.get(2).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(3).getTipo()+"\", y: "+dados.get(3).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(4).getTipo()+"\", y: "+dados.get(4).getValor()+"  },\r\n" + 
-				"				]\r\n" + 
+				"				dataPoints: [\r\n";
+		for (ResultTable dado : dados)
+		{
+			relatorio = relatorio + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+		}
+		relatorio = relatorio + "				]\r\n" +
 				"			}\r\n" + 
 				"			]\r\n" + 
 				"		});\r\n" + 
@@ -920,9 +956,15 @@ public class SocketAdmin implements Runnable
 	 */
 	private String relatorio05 ()
 	{
-		// Recupera do DB os 10 mais acessados
+		// Recupera do DB as requisicoes por dia
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().reqsPorDia();
+		
+		if (ControllerMain.VERBOSE)
+		{
+			System.out.println("DADOS: "+dados.toString());
+			System.out.println("DADOS - Size: "+dados.size());
+		}
 		
 		// Preenche os dados no relatorio
 		relatorio = "<html lang=\"pt-br\">\r\n" + 
@@ -1062,9 +1104,15 @@ public class SocketAdmin implements Runnable
 	 */
 	private String relatorio06 ()
 	{
-		// Recupera do DB os 10 mais acessados
+		// Recupera do DB as requisicoes por mes
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().reqsPorMes();
+		
+		if (ControllerMain.VERBOSE)
+		{
+			System.out.println("DADOS: "+dados.toString());
+			System.out.println("DADOS - Size: "+dados.size());
+		}
 		
 		// Preenche os dados no relatorio
 		relatorio = "<html lang=\"pt-br\">\r\n" + 
@@ -1185,9 +1233,15 @@ public class SocketAdmin implements Runnable
 	 */
 	private String relatorio07 ()
 	{
-		// Recupera do DB os 10 mais acessados
+		// Recupera do DB os IPs distintos
 		String relatorio;
 		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().listaDistintos();
+		
+		if (ControllerMain.VERBOSE)
+		{
+			System.out.println("DADOS: "+dados.toString());
+			System.out.println("DADOS - Size: "+dados.size());
+		}
 		
 		// Preenche os dados no relatorio
 		relatorio = "<html lang=\"pt-br\">\r\n" + 
@@ -1215,13 +1269,12 @@ public class SocketAdmin implements Runnable
 				"			{\r\n" + 
 				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
 				"				type: \"doughnut\",\r\n" + 
-				"				dataPoints: [\r\n" + 
-				"					{ label: \""+dados.get(0).getTipo()+"\", y: "+dados.get(0).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(1).getTipo()+"\", y: "+dados.get(1).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(2).getTipo()+"\", y: "+dados.get(2).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(3).getTipo()+"\", y: "+dados.get(3).getValor()+"  },\r\n" + 
-				"					{ label: \""+dados.get(4).getTipo()+"\", y: "+dados.get(4).getValor()+"  },\r\n" + 
-				"				]\r\n" + 
+				"				dataPoints: [\r\n";
+		for (ResultTable dado : dados)
+        {
+			relatorio = relatorio + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+        }
+		relatorio = relatorio + "				]\r\n" + 
 				"			}\r\n" + 
 				"			]\r\n" + 
 				"		});\r\n" + 
@@ -1301,9 +1354,15 @@ public class SocketAdmin implements Runnable
 	 */
 	private String relatorio08 ()
 	{
-		// Recupera do DB os 10 mais acessados
+		// Recupera do DB os logs de servidor
 		String relatorio;
 		ArrayList<AbstractLog> dados = ControllerMain.getInstance().getServiceSrv().listaUltimos(20);
+		
+		if (ControllerMain.VERBOSE)
+		{
+			System.out.println("DADOS: "+dados.toString());
+			System.out.println("DADOS - Size: "+dados.size());
+		}
 		
 		// Preenche os dados no relatorio
 		relatorio = "<html lang=\"pt-br\">\r\n" + 
@@ -1311,13 +1370,13 @@ public class SocketAdmin implements Runnable
 				"    <meta charset=\"utf-8\">\r\n" + 
 				"    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n" + 
 				"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n" + 
-				"	<title>ECP7AN-MCA1-09 ..:::.. Relat&oacute;rio 02</title>\r\n" + 
+				"	<title>ECP7AN-MCA1-09 ..:::.. Relat&oacute;rio 08</title>\r\n" + 
 				"	\r\n" + 
 				"    <link href=\"../css/bootstrap.min.css\" rel=\"stylesheet\">\r\n" + 
 				"    <link href=\"../css/style.css\" rel=\"stylesheet\">\r\n" + 
 				"    \r\n" + 
 				"    <!-- Custom styles for this template -->\r\n" + 
-				"    <link href=\"../cover.css\" rel=\"stylesheet\">\r\n" + 
+				"    <link href=\"../css/cover.css\" rel=\"stylesheet\">\r\n" + 
 				"    \r\n" + 
 				"</head>\r\n" + 
 				"\r\n" + 
@@ -1360,36 +1419,34 @@ public class SocketAdmin implements Runnable
 				"    </nav>\r\n" + 
 				"\r\n" + 
 				"<!-- Corpo da Pagina -->\r\n" + 
-				"    <div class=\"site-wrapper\">\r\n" + 
+				"    <div class=\"site-wrapper\">\r\n\r\n" + 
+				"	    <div class=\"inner cover\">\r\n" + 
+				"    	    <h2 class=\"cover-heading\" align=center>Administrativo - Relat&oacute;rio 08</h2>\r\n" + 
+				"           <p class=\"lead\" align=center>Logs de servi&ccedil;o do ServerWeb.</p>\r\n" + 
+				"       </div>\r\n" + 
 				"	    <div class=\"table-responsive\">\r\n" + 
 				"			<table class=\"table table-hover\">\r\n" + 
 				"	    	<thead>\r\n" + 
 				"	      	<tr>\r\n" + 
-				"	        	<th>RA</th>\r\n" + 
-				"	        	<th>Membros</th>\r\n" + 
+				"	        	<th>Data</th>\r\n" + 
+				"	        	<th>Log</th>\r\n" + 
 				"		    </tr>\r\n" + 
 				"		    </thead>\r\n" + 
 				"		    <tbody>\r\n";
-		for (int i=0; i<=20; i++)
+		for (AbstractLog log : dados)
 		{
 			relatorio = relatorio + 
 					"		    <tr>\r\n" + 
-					"		        <td>"+dados.get(i).getData()+"</td>\r\n" + 
-					"		        <td>"+dados.get(i).getText()+"</td>\r\n" + 
+					"		        <td>"+log.getData()+"</td>\r\n" + 
+					"		        <td>"+log.getText()+"</td>\r\n" + 
 					"		    </tr>\r\n";
 		}
 		relatorio = relatorio +
 				"		    </tbody>\r\n" + 
 				"		  </table>\r\n" + 
-				"		</div>" +  
+				"		</div>\r\n" + 
+				"	</div>\r\n" +
 				"\r\n" + 
-				"        <div class=\"mastfoot\">\r\n" + 
-				"            <div class=\"inner\" align=center>\r\n" + 
-				"            	<br>\r\n" + 
-				"        		<p>ECP7AN-MCA1-09</p>\r\n" + 
-				"        	</div>\r\n" + 
-				"        </div>\r\n" + 
-				"    </div>\r\n" + 
 				"    <script src=\"../js/jquery.min.js\"></script>\r\n" + 
 				"    <script src=\"../js/bootstrap.min.js\"></script>\r\n" + 
 				"</body>\r\n" + 

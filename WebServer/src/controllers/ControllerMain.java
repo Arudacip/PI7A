@@ -32,7 +32,7 @@ import views.buttons.ButtonTypes;
  * @param UNKOWN : [CONSTANT] status do service web desconhecido
  * @param SRV : [CONSTANT] LogType para logs de SERVIDOR
  * @param ACC : [CONSTANT] LogType para logs de ACESSO
- * @param DEBUG : [CONSTANT] define se os logs de sistema e servico devem ser <b>verbose</b>
+ * @param DEBUG : [CONSTANT] define se os logs de console devem ser <b>verbose</b>
  * @param PORTA : porta em uso no servidor
  * @param servidor : ponteiro para o servidor
  * 
@@ -56,8 +56,10 @@ public final class ControllerMain implements ActionListener
     public static final int UNKOWN = 3;
 	public static final int SRV = 1;
 	public static final int ACC = 2;
-    public static final boolean DEBUG = true;
-    public static int PORTA;
+    public static final boolean DEBUG = false;
+    public static final boolean VERBOSE = true;
+    private static String VERSION;
+    private static int PORTA;
     private SocketAdmin servidor;
 	private AbstractLog currentLog;
     private Connection conn;
@@ -79,6 +81,7 @@ public final class ControllerMain implements ActionListener
 			// Recupera a porta de acesso ao serverweb
 			prop = getProp();
 			PORTA = Integer.parseInt(prop.getProperty("prop.server.porta"));
+			VERSION = prop.getProperty("prop.server.version");
 			if (DEBUG)
 			{
 				System.out.println("SYSINFO: Porta encontrada na config: " + Integer.parseInt(prop.getProperty("prop.server.porta")));
@@ -170,7 +173,7 @@ public final class ControllerMain implements ActionListener
      */
     public void createView()
     {
-        viewSAUI = new ViewServiceAdmin();
+        viewSAUI = new ViewServiceAdmin(VERSION);
         viewSAUI.setVisible(true);
     }
     

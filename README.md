@@ -19,13 +19,13 @@ WebServer de computação paralela para atender solicitações HTTP.
 * Montar relatório 08 - lista de eventos de servidor;
 * Montar gráficos em canvasjs;
 * Implementar bootstrap no codigo;
+* Verificados os erros no relatório 03 - IPs mais frequentes;
+* Verificados os erros no relatório 04 - arquivos que geraram erro 404;
+* Verificados os erros no relatório 05 - total de requisições por dia e por mês;
+* Verificados os erros no relatório 07 - IPs distintos que acessaram o servidor;
+* Verificados os erros no relatório 08 - lista de eventos de servidor;
 
 ## TODO
-* Verificar erros no relatório 03 - IPs mais frequentes;
-* Verificar erros no relatório 04 - arquivos que geraram erro 404;
-* Verificar erros no relatório 05 - total de requisições por dia e por mês;
-* Verificar erros no relatório 07 - IPs distintos que acessaram o servidor;
-* Verificar erros no relatório 08 - lista de eventos de servidor;
 * Ajustar verificação de diretório do sistema;
 
 ## OPCIONAL

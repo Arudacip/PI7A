@@ -176,7 +176,7 @@ public class DAOLogAcc
 			{
 				while (rs.next())
 				{
-					currentresult = new ResultTable(rs.getString("arquivo"), rs.getString("ocorrencias"));
+					currentresult = new ResultTable(rs.getString("arquivo"), rs.getInt("ocorrencias"));
 					resultados.add(currentresult);
 				}
 			} catch (SQLException e)
@@ -197,9 +197,9 @@ public class DAOLogAcc
 	}
 
 	/**
-	 * Lista os arquivos mais acessados no servidor
+	 * Lista os IPs mais frequentes no servidor
 	 * @param conn : conexao com o DB
-	 * @param num : numero de logs a listar
+	 * @param num : numero de IPs a listar
 	 * @return resultado da querie em ArrayList.
 	 */
 	public ArrayList<ResultTable> listaIPsFrequentes(Connection conn, int num)
@@ -214,7 +214,7 @@ public class DAOLogAcc
 			{
 				while (rs.next())
 				{
-					currentresult = new ResultTable(rs.getString("ip"), rs.getString("ocorrencias"));
+					currentresult = new ResultTable(rs.getString("ip"), rs.getInt("ocorrencias"));
 					resultados.add(currentresult);
 				}
 			} catch (SQLException e)
@@ -372,7 +372,7 @@ public class DAOLogAcc
 			{
 				while (rs.next())
 				{
-					currentresult = new ResultTable(rs.getString("ip"), "1");
+					currentresult = new ResultTable(rs.getString("ip"), 1);
 					resultados.add(currentresult);
 				}
 			} catch (SQLException e)
@@ -402,7 +402,7 @@ public class DAOLogAcc
 	{
 		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
 		ResultTable currentresult;
-		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=400 ORDER BY id DESC LIMIT 5;";
+		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=400 ORDER BY arquivo DESC LIMIT 5;";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -410,7 +410,7 @@ public class DAOLogAcc
 			{
 				while (rs.next())
 				{
-					currentresult = new ResultTable(rs.getString("arquivo"), "1");
+					currentresult = new ResultTable(rs.getString("arquivo"), 1);
 					resultados.add(currentresult);
 				}
 			} catch (SQLException e)
@@ -440,7 +440,7 @@ public class DAOLogAcc
 	{
 		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
 		ResultTable currentresult;
-		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=403 ORDER BY id DESC LIMIT 5;";
+		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=403 ORDER BY arquivo DESC LIMIT 5;";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -448,7 +448,7 @@ public class DAOLogAcc
 			{
 				while (rs.next())
 				{
-					currentresult = new ResultTable(rs.getString("arquivo"), "1");
+					currentresult = new ResultTable(rs.getString("arquivo"), 1);
 					resultados.add(currentresult);
 				}
 			} catch (SQLException e)
@@ -478,7 +478,7 @@ public class DAOLogAcc
 	{
 		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
 		ResultTable currentresult;
-		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=404 ORDER BY id DESC LIMIT 5;";
+		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=404 ORDER BY arquivo DESC LIMIT 5;";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -486,7 +486,7 @@ public class DAOLogAcc
 			{
 				while (rs.next())
 				{
-					currentresult = new ResultTable(rs.getString("arquivo"), "1");
+					currentresult = new ResultTable(rs.getString("arquivo"), 1);
 					resultados.add(currentresult);
 				}
 			} catch (SQLException e)
@@ -516,7 +516,7 @@ public class DAOLogAcc
 	{
 		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
 		ResultTable currentresult;
-		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=405 ORDER BY id DESC LIMIT 5;";
+		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=405 ORDER BY arquivo DESC LIMIT 5;";
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -524,7 +524,7 @@ public class DAOLogAcc
 			{
 				while (rs.next())
 				{
-					currentresult = new ResultTable(rs.getString("arquivo"), "1");
+					currentresult = new ResultTable(rs.getString("arquivo"), 1);
 					resultados.add(currentresult);
 				}
 			} catch (SQLException e)

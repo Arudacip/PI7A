@@ -3,13 +3,13 @@ package models;
 public class ResultTable
 {
 	private String tipo;
-	private String valor;
+	private int valor = -1;
 	
 	public ResultTable()
 	{
 	}
 	
-	public ResultTable(String tipo, String valor)
+	public ResultTable(String tipo, int valor)
 	{
 		this.tipo = tipo;
 		this.valor = valor;
@@ -25,13 +25,19 @@ public class ResultTable
 		this.tipo = tipo;
 	}
 	
-	public String getValor()
+	public int getValor()
 	{
 		return valor;
 	}
 	
-	public void setValor(String valor)
+	public void setValor(int valor)
 	{
 		this.valor = valor;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "["+this.getTipo()+"/"+this.getValor()+"]";
 	}
 }

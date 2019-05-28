@@ -72,19 +72,7 @@ public class ServiceLogAcc
 	 */
 	public ArrayList<ResultTable> listaIPsFrequentes(int num)
 	{
-		ArrayList<ResultTable> resposta = dao.listaIPsFrequentes(conn, num);
-		for (ResultTable dado : resposta)
-		{
-			if (dado.getTipo() == null || dado.getTipo().equals(""))
-			{
-				dado.setTipo(" ");
-			}
-			if (dado.getValor() == null || dado.getValor().equals(""))
-			{
-				dado.setValor("0");
-			}
-		}
-		return resposta;
+		return dao.listaIPsFrequentes(conn, num);
 	}
 
 	/**
@@ -99,7 +87,7 @@ public class ServiceLogAcc
 		// Loop que verifica cada hora
 		for (int i=0; i <= 23; i++) {
 			ArrayList<AbstractLog> logs = dao.listaHora(conn, ""+i+"");
-			currentresult = new ResultTable(""+i+"h", ""+logs.size());
+			currentresult = new ResultTable(""+i+"h", +logs.size());
 			resultados.add(currentresult);
 		}
 		return resultados;
@@ -117,7 +105,7 @@ public class ServiceLogAcc
 		// Loop que verifica cada hora
 		for (int i=1; i <= 31; i++) {
 			ArrayList<AbstractLog> logs = dao.listaDia(conn, ""+i+"");
-			currentresult = new ResultTable(""+i+"", ""+logs.size());
+			currentresult = new ResultTable(""+i+"", logs.size());
 			resultados.add(currentresult);
 		}
 		return resultados;
@@ -135,7 +123,7 @@ public class ServiceLogAcc
 		// Loop que verifica cada hora
 		for (int i=1; i <= 12; i++) {
 			ArrayList<AbstractLog> logs = dao.listaMes(conn, ""+i+"");
-			currentresult = new ResultTable(""+i+"", ""+logs.size());
+			currentresult = new ResultTable(""+i+"", logs.size());
 			resultados.add(currentresult);
 		}
 		return resultados;
@@ -147,19 +135,7 @@ public class ServiceLogAcc
 	 */
 	public ArrayList<ResultTable> listaDistintos()
 	{
-		ArrayList<ResultTable> resposta = dao.listaDistintos(conn);
-		for (ResultTable dado : resposta)
-		{
-			if (dado.getTipo() == null || dado.getTipo().equals(""))
-			{
-				dado.setTipo(" ");
-			}
-			if (dado.getValor() == null || dado.getValor().equals(""))
-			{
-				dado.setValor("0");
-			}
-		}
-		return resposta;
+		return dao.listaDistintos(conn);
 	}
 
 	/**
@@ -167,20 +143,8 @@ public class ServiceLogAcc
 	 * @return lista de LogAcc
 	 */
 	public ArrayList<ResultTable> lista400()
-	{
-		ArrayList<ResultTable> resposta = dao.lista400(conn);
-		for (ResultTable dado : resposta)
-		{
-			if (dado.getTipo() == null || dado.getTipo().equals(""))
-			{
-				dado.setTipo(" ");
-			}
-			if (dado.getValor() == null || dado.getValor().equals(""))
-			{
-				dado.setValor("0");
-			}
-		}
-		return resposta;
+	{ 
+		return dao.lista400(conn);
 	}
 
 	/**
@@ -189,19 +153,7 @@ public class ServiceLogAcc
 	 */
 	public ArrayList<ResultTable> lista403()
 	{
-		ArrayList<ResultTable> resposta = dao.lista403(conn);
-		for (ResultTable dado : resposta)
-		{
-			if (dado.getTipo() == null || dado.getTipo().equals(""))
-			{
-				dado.setTipo(" ");
-			}
-			if (dado.getValor() == null || dado.getValor().equals(""))
-			{
-				dado.setValor("0");
-			}
-		}
-		return resposta;
+		return dao.lista403(conn);
 	}
 
 	/**
@@ -210,19 +162,7 @@ public class ServiceLogAcc
 	 */
 	public ArrayList<ResultTable> lista404()
 	{
-		ArrayList<ResultTable> resposta = dao.lista404(conn);
-		for (ResultTable dado : resposta)
-		{
-			if (dado.getTipo() == null || dado.getTipo().equals(""))
-			{
-				dado.setTipo(" ");
-			}
-			if (dado.getValor() == null || dado.getValor().equals(""))
-			{
-				dado.setValor("0");
-			}
-		}
-		return resposta;
+		return dao.lista404(conn);
 	}
 
 	/**
@@ -231,19 +171,7 @@ public class ServiceLogAcc
 	 */
 	public ArrayList<ResultTable> lista405()
 	{
-		ArrayList<ResultTable> resposta = dao.lista405(conn);
-		for (ResultTable dado : resposta)
-		{
-			if (dado.getTipo() == null || dado.getTipo().equals(""))
-			{
-				dado.setTipo(" ");
-			}
-			if (dado.getValor() == null || dado.getValor().equals(""))
-			{
-				dado.setValor("0");
-			}
-		}
-		return resposta;
+		return dao.lista405(conn);
 	}
 	
 	/**

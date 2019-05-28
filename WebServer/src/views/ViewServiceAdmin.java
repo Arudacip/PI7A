@@ -38,11 +38,12 @@ public class ViewServiceAdmin extends JFrame
 
     /**
      * Constroi a View de Administracao do servico.
+     * @param VERSION : versao do ServerWeb 
      */
-    public ViewServiceAdmin()
+    public ViewServiceAdmin(String VERSION)
     {
         // Define valores principais do View
-        super("Servidor Web v4.1 - ECP7AN-MCA1-09");
+        super("Servidor Web v"+VERSION+" - ECP7AN-MCA1-09");
         setSize(400, 300);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
