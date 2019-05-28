@@ -24,8 +24,9 @@ WebServer de computação paralela para atender solicitações HTTP.
 * Verificados os erros no relatório 05 - total de requisições por dia e por mês;
 * Verificados os erros no relatório 07 - IPs distintos que acessaram o servidor;
 * Verificados os erros no relatório 08 - lista de eventos de servidor;
+* Ajustar verificação de diretório do sistema;
 
 ## TODO
-* Ajustar verificação de diretório do sistema;
+* Até onde sei, nada;
 
 ## OPCIONAL

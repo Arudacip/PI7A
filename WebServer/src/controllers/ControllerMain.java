@@ -60,6 +60,7 @@ public final class ControllerMain implements ActionListener
     //public static final boolean VERBOSE = true;
     private static String VERSION;
     private static int PORTA;
+    private static String PATH;
     private SocketAdmin servidor;
 	private AbstractLog currentLog;
     private Connection conn;
@@ -82,9 +83,16 @@ public final class ControllerMain implements ActionListener
 			prop = getProp();
 			PORTA = Integer.parseInt(prop.getProperty("prop.server.porta"));
 			VERSION = prop.getProperty("prop.server.version");
+			String local = prop.getProperty("prop.server.uselocal");
 			if (DEBUG)
 			{
 				System.out.println("SYSINFO: Porta encontrada na config: " + Integer.parseInt(prop.getProperty("prop.server.porta")));
+			}
+			if (local.equals("true"))
+			{
+				PATH = System.getProperty("user.dir")+System.getProperty("file.separator");
+			} else {
+				PATH = "."+System.getProperty("file.separator");
 			}
 			
 			// Recupera as configs de BD e instancia a o ConnectorDB
@@ -191,7 +199,7 @@ public final class ControllerMain implements ActionListener
             	generateLog(SRV, "TryStart");
                 try
                 {
-                	servidor.start(PORTA);
+                	servidor.start(PORTA, PATH);
                 	generateLog(SRV, "Started!");
                 	// tem que ser checado aqui caso contrario da null pointer exception
                     checkStatus();

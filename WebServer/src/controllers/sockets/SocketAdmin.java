@@ -35,13 +35,14 @@ import models.ResultTable;
 
 public class SocketAdmin implements Runnable
 {
-
-    private static final File WEB_ROOT = new File("./wwwroot/");
+	
     private static final String DEFAULT_FILE = "index.html";
 	private static final String UNKNOWN = "errors/400.html";
     private static final String FORBIDDEN = "errors/403.html";
     private static final String NOT_FOUND = "errors/404.html";
     private static final String NOT_SUPPORTED = "errors/405.html";
+    private static File WEB_ROOT = new File("./wwwroot/");
+    private String PATH;
 	private ServerSocket servidor;
 	private Socket cliente;
 	
@@ -66,9 +67,15 @@ public class SocketAdmin implements Runnable
 	 * @param porta : porta onde o service vai "ouvir"
 	 * @throws IOException
 	 */
-	public void start(int porta) throws IOException
+	public void start(int porta, String path) throws IOException
 	{
 		servidor = new ServerSocket(porta);
+		this.PATH = path;
+		WEB_ROOT = new File(PATH+"wwwroot/");
+		if (ControllerMain.DEBUG)
+		{
+			System.out.println(WEB_ROOT.toString());
+		}
 	}
 	
 	/**
