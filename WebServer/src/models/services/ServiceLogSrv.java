@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 import models.AbstractLog;
+import models.ResultTable;
 import models.dao.DAOLogSrv;
 
 /**
@@ -54,6 +55,15 @@ public class ServiceLogSrv
 	public ArrayList<AbstractLog> listaUltimos(int num)
 	{
 		return dao.listaUltimos(conn, num);
+	}
+	
+	/**
+	 * Recupera a lista dos ultimos X LogSrv do banco de dados.
+	 * @return lista de LogSrv
+	 */
+	public ArrayList<ResultTable> contaUltimos(int num)
+	{
+		return dao.contaUltimos(conn, num);
 	}
 	
 	/**

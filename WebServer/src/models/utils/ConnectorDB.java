@@ -66,6 +66,15 @@ public class ConnectorDB
 		database = prop.getProperty("prop.server.database");
 		user = prop.getProperty("prop.server.user");
 		password = prop.getProperty("prop.server.password");
+		// PARA DEBUG
+		
+		//jdbc = "mariadb";
+		//address = "127.0.0.1";
+		//dbporta = "3306";
+		//database = "mx5nzdqvcg";
+		//user = "webserverpi";
+		//password = "a2A4V1s5Fz";
+		
 		if (ControllerMain.DEBUG)
 		{
 			System.out.println("jdbc:"+jdbc+"://"+address+":"+dbporta+"/"+database+"?user="+user+"&"+"password="+password);
@@ -84,6 +93,7 @@ public class ConnectorDB
 		        	connected = true;
 		        } else
 		        {
+			        System.out.println("Timeout 01");
 		        	// Timeout. Tente novamente.
 		        }
 		    } catch(Exception e)
@@ -93,6 +103,7 @@ public class ConnectorDB
 		        	// Exception. Tente novamente.
 		        }
 		        ++errors;
+		        System.out.println("Timeout 02");
 		        Thread.sleep(1000);
 		    }
 		}

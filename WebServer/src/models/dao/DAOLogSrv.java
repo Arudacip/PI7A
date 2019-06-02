@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import controllers.ControllerMain;
 import models.AbstractLog;
 import models.LogSrv;
+import models.ResultTable;
 
 /**
  * Classe do Model DAO do LogSrv do design pattern MVC + Abstract Factory.
@@ -159,6 +160,44 @@ public class DAOLogSrv
 			}
 		}
 		return logs;
+	}
+	
+	/**
+	 * Lista os logs de servidor mais registrados
+	 * @param conn : conexao com o DB
+	 * @param num : numero de mensagens a verificar
+	 * @return resultado da querie em ArrayList.
+	 */
+	public ArrayList<ResultTable> contaUltimos(Connection conn, int num)
+	{
+		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
+		ResultTable currentresult;
+		String sqlSelect = "SELECT acao, count(acao) AS ocorrencias FROM logservidor GROUP BY acao ORDER BY ocorrencias DESC LIMIT "+num+";";
+		
+		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
+		{
+			try (ResultSet rs = stm.executeQuery();)
+			{
+				while (rs.next())
+				{
+					currentresult = new ResultTable(rs.getString("acao"), rs.getInt("ocorrencias"));
+					resultados.add(currentresult);
+				}
+			} catch (SQLException e)
+			{
+				if (ControllerMain.DEBUG)
+				{
+					System.out.print(e.getMessage());
+				}
+			}
+		} catch (Exception e1)
+		{
+			if (ControllerMain.DEBUG)
+			{
+				System.out.print(e1.getMessage());
+			}
+		}
+		return resultados;
 	}
 	
 	/**

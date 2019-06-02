@@ -120,8 +120,8 @@ public class SocketAdmin implements Runnable
 		} catch (Exception e)
 		{
 			// Trata a exception
-			e.printStackTrace();
-			status = ControllerMain.UNKOWN;
+			System.out.println(e.getMessage());
+			//status = ControllerMain.UNKOWN;
 		}
 		return status;
 	}
@@ -317,9 +317,22 @@ public class SocketAdmin implements Runnable
 							fileData = relatorio08().getBytes();
 							
 						// RELATORIO 01 - DEFAULT
+						} else if (subtest02.contains("relatorio09"))
+						{							
+							fileData = relatorio09().getBytes();
+							
+						// RELATORIO 01 - DEFAULT
+						} else if (subtest02.contains("relatorio10"))
+						{							
+							fileData = relatorio10().getBytes();
+							
+						// RELATORIO 01 - DEFAULT
 						} else
 						{							
-							fileData = relatorio01().getBytes();
+							File file = new File(WEB_ROOT, fileRequested);
+							content = getContentType(fileRequested);
+							fileLength = (int) file.length();
+							fileData = lerArquivoDados(file, fileLength);
 						}
 						
 						fileLength = (int) fileData.length;
@@ -352,6 +365,39 @@ public class SocketAdmin implements Runnable
 							}
 						}
 					
+					} else if (subtest02.equals("admin.html"))
+					{
+						// Retornar dashboard
+						String content = "text/html";
+						byte[] fileData = dashboard().getBytes();
+						int fileLength = (int) fileData.length;
+						
+						// metodo de conexao GET no protocolo HTTP 
+						if (method.equals("GET"))
+						{
+							// send HTTP Headers
+							out.println("HTTP/1.1 200 OK");
+							out.println("Server: Servidor Java HTTP - ECP7AN-MCA1-09");
+							out.println("Date: " + new Date());
+							out.println("Content-type: " + content);
+							out.println("Content-length: " + fileLength);
+							out.println();
+							out.flush();
+							
+							dataOut.write(fileData, 0, fileLength);
+							dataOut.flush();
+							ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"200");
+							if (ControllerMain.DEBUG)
+							{
+								System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"200");
+							}
+						} else {
+							ControllerMain.getInstance().generateLog(ControllerMain.ACC, fileRequested+"#"+method+"#"+ip+"#"+"400");
+							if (ControllerMain.DEBUG)
+							{
+								System.out.println("ACC: " + fileRequested+"#"+method+"#"+ip+"#"+"400");
+							}
+						}
 					} else
 					{
 						File file = new File(WEB_ROOT, fileRequested);
@@ -429,6 +475,11 @@ public class SocketAdmin implements Runnable
 				out.close();
 				dataOut.close();
 				cliente.close(); // fecha a conexao do socket
+				if (ControllerMain.DEBUG)
+				{
+					System.out.println("Conexao fechada com sucesso.");
+				}
+				ControllerMain.getInstance().generateLog(ControllerMain.SRV, "CloseOK");
 			} catch (Exception e)
 			{
 				if (ControllerMain.DEBUG)
@@ -437,12 +488,409 @@ public class SocketAdmin implements Runnable
 				}
 				//ControllerMain.getInstance().generateLog(ControllerMain.SRV, "CloseErr");
 			}
-			if (ControllerMain.DEBUG)
-			{
-				System.out.println("Conexao fechada com sucesso.");
-			}
-			ControllerMain.getInstance().generateLog(ControllerMain.SRV, "CloseOK");
 		}
+	}
+	
+	/**
+	 * Monta o dashboard dinamicamente conforme dados recuperados no DB do webserver.
+	 * 
+	 * @return dashboard montado com os dados do DB
+	 */
+	private String dashboard ()
+	{
+		// Recupera do DB os 10 mais acessados
+		String dashboard;
+		ArrayList<ResultTable> dados01 = ControllerMain.getInstance().getServiceAcc().lista403(true);
+		ArrayList<ResultTable> dados02 = ControllerMain.getInstance().getServiceAcc().lista404(true);
+		ArrayList<ResultTable> dados03 = ControllerMain.getInstance().getServiceAcc().listaDistintos();
+		ArrayList<ResultTable> dados04 = ControllerMain.getInstance().getServiceAcc().reqsPorHora();
+		ArrayList<ResultTable> dados05 = ControllerMain.getInstance().getServiceAcc().reqsPorMes();
+		ArrayList<ResultTable> dados06 = ControllerMain.getInstance().getServiceAcc().listaMaisAcessados(10);
+		ArrayList<ResultTable> dados07 = ControllerMain.getInstance().getServiceAcc().listaTopErros();
+		ArrayList<ResultTable> dados08 = ControllerMain.getInstance().getServiceAcc().listaIPsFrequentes(10);
+		ArrayList<ResultTable> dados09 = ControllerMain.getInstance().getServiceSrv().contaUltimos(5);
+		ArrayList<ResultTable> dados10 = ControllerMain.getInstance().getServiceAcc().reqsPorDia();
+		
+		if (ControllerMain.DEBUG)
+		{
+			System.out.println("DADOS01: "+dados01.toString());
+			System.out.println("DADOS01 - Size: "+dados01.size());
+			System.out.println("DADOS02: "+dados02.toString());
+			System.out.println("DADOS02 - Size: "+dados02.size());
+			System.out.println("DADOS03: "+dados03.toString());
+			System.out.println("DADOS03 - Size: "+dados03.size());
+			System.out.println("DADOS04: "+dados04.toString());
+			System.out.println("DADOS04 - Size: "+dados04.size());
+			System.out.println("DADOS05: "+dados05.toString());
+			System.out.println("DADOS05 - Size: "+dados05.size());
+			System.out.println("DADOS06: "+dados06.toString());
+			System.out.println("DADOS06 - Size: "+dados06.size());
+			System.out.println("DADOS07: "+dados07.toString());
+			System.out.println("DADOS07 - Size: "+dados07.size());
+			System.out.println("DADOS08: "+dados08.toString());
+			System.out.println("DADOS08 - Size: "+dados08.size());
+			System.out.println("DADOS09: "+dados09.toString());
+			System.out.println("DADOS09 - Size: "+dados09.size());
+			System.out.println("DADOS10: "+dados10.toString());
+			System.out.println("DADOS10 - Size: "+dados10.size());
+		}
+		
+		// Preenche os dados no relatorio
+		dashboard = "<html lang=\"pt-br\">\r\n" + 
+				"<head>\r\n" + 
+				"    <meta charset=\"utf-8\">\r\n" + 
+				"    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n" + 
+				"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n" + 
+				"	<title>ECP7AN-MCA1-09 ..:::.. Dashboard</title>\r\n" + 
+				"	\r\n" + 
+				"    <link href=\"../css/bootstrap.min.css\" rel=\"stylesheet\">\r\n" + 
+				"    <link href=\"../css/style.css\" rel=\"stylesheet\">\r\n" + 
+				"    \r\n" + 
+				"    <!-- Custom styles for this template -->\r\n" + 
+				"    <link href=\"../cover.css\" rel=\"stylesheet\">\r\n" + 
+				"    \r\n" + 
+				"    <!-- CanvasJS Data -->\r\n" + 
+				"    <script src=\"https://canvasjs.com/assets/script/canvasjs.min.js\"></script>\r\n" + 
+				"	<script type=\"text/javascript\">\r\n" + 
+				"	window.onload = function () {\r\n" + 
+				"		\r\n" + 
+				"		var chart01 = new CanvasJS.Chart(\"403-doughnut-chart\", {\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"doughnut\",\r\n" + 
+				"				dataPoints: [\r\n";
+				
+				for (ResultTable dado : dados01)
+				{
+					dashboard = dashboard + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+				}
+				dashboard = dashboard +
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		\r\n" + 
+				"		var chart02 = new CanvasJS.Chart(\"404-doughnut-chart\", {\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"doughnut\",\r\n" + 
+				"				dataPoints: [\r\n";
+				
+				for (ResultTable dado : dados02)
+				{
+					dashboard = dashboard + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+				}
+				dashboard = dashboard +
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		\r\n" + 
+				"		var chart03 = new CanvasJS.Chart(\"ips-pie-chart\", {\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"pie\",\r\n" + 
+				"				dataPoints: [\r\n";
+				
+				for (ResultTable dado : dados03)
+				{
+					dashboard = dashboard + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+				}
+				dashboard = dashboard +
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		\r\n" + 
+				"		var chart04 = new CanvasJS.Chart(\"acessoshorario-column-chart\", {\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"column\",\r\n" + 
+				"				dataPoints: [\r\n";
+				
+				for (ResultTable dado : dados04)
+				{
+					dashboard = dashboard + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+				}
+				dashboard = dashboard +
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		\r\n" + 
+				"		var chart05 = new CanvasJS.Chart(\"acessosmes-column-chart\", {\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"column\",\r\n" + 
+				"				dataPoints: [\r\n";
+				
+				for (ResultTable dado : dados05)
+				{
+					dashboard = dashboard + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+				}
+				dashboard = dashboard +
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		\r\n" + 
+				"		var chart06 = new CanvasJS.Chart(\"toparquivos-column-chart\", {\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"column\",\r\n" + 
+				"				dataPoints: [\r\n";
+				
+				for (ResultTable dado : dados06)
+				{
+					dashboard = dashboard + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+				}
+				dashboard = dashboard +
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		\r\n" + 
+				"		var chart07 = new CanvasJS.Chart(\"toperros-column-chart\", {\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"column\",\r\n" + 
+				"				dataPoints: [\r\n";
+				
+				for (ResultTable dado : dados07)
+				{
+					dashboard = dashboard + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+				}
+				dashboard = dashboard +
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		\r\n" + 
+				"		var chart08 = new CanvasJS.Chart(\"topips-column-chart\", {\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"column\",\r\n" + 
+				"				dataPoints: [\r\n";
+				
+				for (ResultTable dado : dados08)
+				{
+					dashboard = dashboard + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+				}
+				dashboard = dashboard +
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		\r\n" + 
+				"		var chart09 = new CanvasJS.Chart(\"servidor-line-table\", {\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"column\",\r\n" + 
+				"				dataPoints: [\r\n";
+				
+				for (ResultTable dado : dados09)
+				{
+					dashboard = dashboard + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+				}
+				dashboard = dashboard +
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		\r\n" + 
+				"		var chart10 = new CanvasJS.Chart(\"acessosdia-column-chart\", {\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"column\",\r\n" + 
+				"				dataPoints: [\r\n";
+				
+				for (ResultTable dado : dados10)
+				{
+					dashboard = dashboard + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+				}
+				dashboard = dashboard +
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"\r\n" + 
+				"		chart01.render();\r\n" + 
+				"		chart02.render();\r\n" + 
+				"		chart03.render();\r\n" + 
+				"		chart04.render();\r\n" + 
+				"		chart05.render();\r\n" + 
+				"		chart06.render();\r\n" + 
+				"		chart07.render();\r\n" + 
+				"		chart08.render();\r\n" + 
+				"		chart09.render();\r\n" + 
+				"		chart10.render();\r\n" + 
+				"	}\r\n" + 
+				"	</script>\r\n" + 
+				"</head>\r\n" + 
+				"\r\n" + 
+				"<body>\r\n" + 
+				"	<!-- Barra de Navegacao -->\r\n" + 
+				"	<nav class=\"navbar navbar-inverse navbar-fixed-top\">\r\n" + 
+				"        <div class=\"container-fluid\">\r\n" + 
+				"            <div class=\"navbar-header\">\r\n" + 
+				"                <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\r\n" + 
+				"                    <span class=\"sr-only\">Toggle navigation</span>\r\n" + 
+				"                    <span class=\"icon-bar\"></span>\r\n" + 
+				"                    <span class=\"icon-bar\"></span>\r\n" + 
+				"                    <span class=\"icon-bar\"></span>\r\n" + 
+				"                </button>\r\n" + 
+				"                <a class=\"navbar-brand\" href=\"../index.html\">ECP7AN-MCA1-09</a>\r\n" + 
+				"            </div>\r\n" + 
+				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
+				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio06.html\">Acessos/Mes</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                </ul>\r\n" + 
+				"            </div>\r\n" + 
+				"        </div>\r\n" + 
+				"    </nav>\r\n" + 
+				"    <!-- /Barra de Navegacao -->\r\n" + 
+				"\r\n" + 
+				"	<!-- Corpo da Pagina -->\r\n" + 
+				"    <div class=\"site-wrapper\">\r\n" + 
+				"	    <div class=\"inner cover\">\r\n" + 
+				"    	    <h2 class=\"cover-heading\" align=center>Dashboard</h2>\r\n" + 
+				"            <!-- <p class=\"lead\" align=center>Página usada para testes de gráfico do CanvasJS.</p> -->\r\n" + 
+				"            <br>\r\n" + 
+				"        </div>\r\n" + 
+				"        \r\n" + 
+				"        <!-- 1st row -->\r\n" + 
+				"		<div class=\"row m-b-2\" align=center>\r\n" + 
+				"			<div class=\"col-lg-4\">\r\n" + 
+				"				<div class=\"card card-block\">\r\n" + 
+				"					<h4 class=\"card-title\" align=center>Erros 403</h4>\r\n" + 
+				"					<div id=\"403-doughnut-chart\" style=\"height: 200px; width: 100%;\"></div>\r\n" + 
+				"				</div>\r\n" + 
+				"			</div>\r\n" + 
+				"			<div class=\"col-lg-4\">\r\n" + 
+				"				<div class=\"card card-block\">\r\n" + 
+				"					<h4 class=\"card-title\" align=center>Erros 404</h4>\r\n" + 
+				"					<div id=\"404-doughnut-chart\" style=\"height: 200px; width: 100%;\"></div>\r\n" + 
+				"				</div>\r\n" + 
+				"			</div>\r\n" + 
+				"			<div class=\"col-lg-4\">\r\n" + 
+				"				<div class=\"card card-block\">\r\n" + 
+				"					<h4 class=\"card-title\" align=center>IPs Distintos</h4>\r\n" + 
+				"					<div id=\"ips-pie-chart\" style=\"height: 200px; width: 100%;\"></div>\r\n" + 
+				"				</div>\r\n" + 
+				"			</div>\r\n" + 
+				"		</div>\r\n" + 
+				"		<!-- /1st row -->\r\n" + 
+				"	<hr align=center>\r\n" + 
+				"		<!-- 2nd row -->\r\n" + 
+				"		<div class=\"row\" align=center>\r\n" + 
+				"			<div class=\"col-lg-6\">\r\n" + 
+				"				<div class=\"card card-block\">\r\n" + 
+				"					<h4 class=\"card-title m-b-2\" align=center>Acessos/Hora</h4>\r\n" + 
+				"					<div id=\"acessoshorario-column-chart\" style=\"height: 200px; width: 100%;\"></div>\r\n" + 
+				"				</div>\r\n" + 
+				"			</div>\r\n" + 
+				"			<div class=\"col-lg-6\">\r\n" + 
+				"				<div class=\"card card-block\">\r\n" + 
+				"					<h4 class=\"card-title m-b-2\" align=center>Acessos/Mes</h4>\r\n" + 
+				"					<div id=\"acessosmes-column-chart\" style=\"height: 200px; width: 100%;\"></div>\r\n" + 
+				"				</div>\r\n" + 
+				"			</div>\r\n" + 
+				"		</div>\r\n" + 
+				"		<!-- /2nd row -->\r\n" + 
+				"	<hr align=center>\r\n" + 
+				"		<!-- 3rd row -->\r\n" + 
+				"		<div class=\"row\" align=center>\r\n" + 
+				"			<div class=\"col-lg-6\">\r\n" + 
+				"				<div class=\"card card-block\">\r\n" + 
+				"					<h4 class=\"card-title m-b-2\" align=center>Top Arquivos</h4>\r\n" + 
+				"					<div id=\"toparquivos-column-chart\" style=\"height: 200px; width: 100%;\"></div>\r\n" + 
+				"				</div>\r\n" + 
+				"			</div>\r\n" + 
+				"			<div class=\"col-lg-6\">\r\n" + 
+				"				<div class=\"card card-block\">\r\n" + 
+				"					<h4 class=\"card-title m-b-2\" align=center>Top Erros</h4>\r\n" + 
+				"					<div id=\"toperros-column-chart\" style=\"height: 200px; width: 100%;\"></div>\r\n" + 
+				"				</div>\r\n" + 
+				"			</div>\r\n" + 
+				"		</div>\r\n" + 
+				"		<!-- /3rd row -->\r\n" + 
+				"	<hr align=center>	\r\n" + 
+				"		<!-- 4th row -->\r\n" + 
+				"		<div class=\"row\" align=center>\r\n" + 
+				"			<div class=\"col-lg-6\">\r\n" + 
+				"				<div class=\"card card-block\">\r\n" + 
+				"					<h4 class=\"card-title m-b-2\" align=center>Top IPs</h4>\r\n" + 
+				"					<div id=\"topips-column-chart\" style=\"height: 200px; width: 100%;\"></div>\r\n" + 
+				"				</div>\r\n" + 
+				"			</div>\r\n" + 
+				"			<div class=\"col-lg-6\">\r\n" + 
+				"				<div class=\"card card-block\">\r\n" + 
+				"					<h4 class=\"card-title m-b-2\" align=center>Servidor</h4>\r\n" + 
+				"					<div id=\"servidor-line-table\" style=\"height: 200px; width: 100%;\"></div>\r\n" + 
+				"				</div>\r\n" + 
+				"			</div>\r\n" + 
+				"		</div>\r\n" + 
+				"		<!-- /4th row -->\r\n" + 
+				"	<hr align=center>\r\n" + 
+				"		<!-- 5th row -->\r\n" + 
+				"		<div class=\"row\">\r\n" + 
+				"			<div class=\"col-md-12\">\r\n" + 
+				"				<div class=\"card card-block\">\r\n" + 
+				"					<h4 class=\"card-title\" align=center>Acessos/Dia</h4>\r\n" + 
+				"					<div id=\"acessosdia-column-chart\" style=\"height: 200px; width: 100%;\"></div>\r\n" + 
+				"				</div>\r\n" + 
+				"			</div>\r\n" + 
+				"		</div>\r\n" + 
+				"		<!-- /5th row -->\r\n" + 
+				"\r\n" + 
+				"        <div class=\"mastfoot\">\r\n" + 
+				"            <div class=\"inner\" align=center>\r\n" + 
+				"            	<br>\r\n" + 
+				"        		<p>ECP7AN-MCA1-09</p>\r\n" + 
+				"        	</div>\r\n" + 
+				"        </div>\r\n" + 
+				"    </div>\r\n" + 
+				"    <script src=\"../js/jquery.min.js\"></script>\r\n" + 
+				"    <script src=\"../js/bootstrap.min.js\"></script>\r\n" + 
+				"</body>\r\n" + 
+				"</html>";
+		
+		if (ControllerMain.DEBUG)
+		{
+			//System.out.println("------------------------\n"+dashboard);
+		}
+		return dashboard;
 	}
 	
 	/**
@@ -523,15 +971,19 @@ public class SocketAdmin implements Runnable
 				"            </div>\r\n" + 
 				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
 				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
-				"                    <li><a href=\"admin.html\">Administrativo</a>\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio02.html\">Acessos/Hor&aacute;rio</a>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" +  
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -539,7 +991,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio08.html\">Eventos de Servidor</a>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                </ul>\r\n" + 
 				"            </div>\r\n" + 
@@ -664,15 +1116,19 @@ public class SocketAdmin implements Runnable
 				"            </div>\r\n" + 
 				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
 				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
-				"                    <li><a href=\"admin.html\">Administrativo</a>\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio02.html\">Acessos/Hor&aacute;rio</a>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" +  
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -680,7 +1136,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio08.html\">Eventos de Servidor</a>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                </ul>\r\n" + 
 				"            </div>\r\n" + 
@@ -786,15 +1242,19 @@ public class SocketAdmin implements Runnable
 				"            </div>\r\n" + 
 				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
 				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
-				"                    <li><a href=\"admin.html\">Administrativo</a>\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio02.html\">Acessos/Hor&aacute;rio</a>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" +  
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -802,7 +1262,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio08.html\">Eventos de Servidor</a>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                </ul>\r\n" + 
 				"            </div>\r\n" + 
@@ -844,7 +1304,7 @@ public class SocketAdmin implements Runnable
 	{
 		// Recupera do DB os que causaram erro 404
 		String relatorio;
-		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().lista404();
+		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().lista404(true);
 		
 		if (ControllerMain.DEBUG)
 		{
@@ -907,15 +1367,19 @@ public class SocketAdmin implements Runnable
 				"            </div>\r\n" + 
 				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
 				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
-				"                    <li><a href=\"admin.html\">Administrativo</a>\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio02.html\">Acessos/Hor&aacute;rio</a>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" +  
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -923,7 +1387,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio08.html\">Eventos de Servidor</a>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                </ul>\r\n" + 
 				"            </div>\r\n" + 
@@ -1055,15 +1519,19 @@ public class SocketAdmin implements Runnable
 				"            </div>\r\n" + 
 				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
 				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
-				"                    <li><a href=\"admin.html\">Administrativo</a>\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio02.html\">Acessos/Hor&aacute;rio</a>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" +  
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -1071,7 +1539,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio08.html\">Eventos de Servidor</a>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                </ul>\r\n" + 
 				"            </div>\r\n" + 
@@ -1184,15 +1652,19 @@ public class SocketAdmin implements Runnable
 				"            </div>\r\n" + 
 				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
 				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
-				"                    <li><a href=\"admin.html\">Administrativo</a>\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio02.html\">Acessos/Hor&aacute;rio</a>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" +  
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -1200,7 +1672,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio08.html\">Eventos de Servidor</a>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                </ul>\r\n" + 
 				"            </div>\r\n" + 
@@ -1305,15 +1777,19 @@ public class SocketAdmin implements Runnable
 				"            </div>\r\n" + 
 				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
 				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
-				"                    <li><a href=\"admin.html\">Administrativo</a>\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio02.html\">Acessos/Hor&aacute;rio</a>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" +  
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -1321,7 +1797,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio08.html\">Eventos de Servidor</a>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                </ul>\r\n" + 
 				"            </div>\r\n" + 
@@ -1402,15 +1878,19 @@ public class SocketAdmin implements Runnable
 				"            </div>\r\n" + 
 				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
 				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
-				"                    <li><a href=\"admin.html\">Administrativo</a>\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio02.html\">Acessos/Hor&aacute;rio</a>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" +  
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
 				"                    </li>\r\n" + 
@@ -1418,7 +1898,7 @@ public class SocketAdmin implements Runnable
 				"                    </li>\r\n" + 
 				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
 				"                    </li>\r\n" + 
-				"                    <li><a href=\"relatorio08.html\">Eventos de Servidor</a>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
 				"                    </li>\r\n" + 
 				"                </ul>\r\n" + 
 				"            </div>\r\n" + 
@@ -1454,6 +1934,255 @@ public class SocketAdmin implements Runnable
 				"		</div>\r\n" + 
 				"	</div>\r\n" +
 				"\r\n" + 
+				"    <script src=\"../js/jquery.min.js\"></script>\r\n" + 
+				"    <script src=\"../js/bootstrap.min.js\"></script>\r\n" + 
+				"</body>\r\n" + 
+				"</html>";
+		
+		return relatorio;
+	}
+	
+	/**
+	 * Monta o relatorio09 dinamicamente conforme dados recuperados no DB do webserver.
+	 * 
+	 * @return relatorio09 montado com os dados do DB
+	 */
+	private String relatorio09 ()
+	{
+		// Recupera do DB os que causaram erro 403
+		String relatorio;
+		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().lista403(true);		
+		if (ControllerMain.DEBUG)
+		{
+			System.out.println("DADOS: "+dados.toString());
+			System.out.println("DADOS - Size: "+dados.size());
+		}
+		
+		// Preenche os dados no relatorio
+		relatorio = "<html lang=\"pt-br\">\r\n" + 
+				"<head>\r\n" + 
+				"    <meta charset=\"utf-8\">\r\n" + 
+				"    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n" + 
+				"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n" + 
+				"	<title>ECP7AN-MCA1-09 ..:::.. Relat&oacute;rio 09</title>\r\n" + 
+				"	\r\n" + 
+				"    <link href=\"../css/bootstrap.min.css\" rel=\"stylesheet\">\r\n" + 
+				"    <link href=\"../css/style.css\" rel=\"stylesheet\">\r\n" + 
+				"    \r\n" + 
+				"    <!-- Custom styles for this template -->\r\n" + 
+				"    <link href=\"../cover.css\" rel=\"stylesheet\">\r\n" + 
+				"    \r\n" + 
+				"    <!-- CanvasJS Data -->\r\n" + 
+				"    <script src=\"https://canvasjs.com/assets/script/canvasjs.min.js\"></script>\r\n" + 
+				"	<script type=\"text/javascript\">\r\n" + 
+				"	window.onload = function () {\r\n" + 
+				"		var chart = new CanvasJS.Chart(\"chartContainer\", {\r\n" + 
+				"			title:{\r\n" + 
+				"				text: \"Grafico - Erros 403\"              \r\n" + 
+				"			},\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"doughnut\",\r\n" + 
+				"				dataPoints: [\r\n";
+		for (ResultTable dado : dados)
+		{
+			relatorio = relatorio + "					{ label: \""+dado.getTipo()+"\", y: "+dado.getValor()+"  },\r\n"; 
+		}
+		relatorio = relatorio + "				]\r\n" +
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		chart.render();\r\n" + 
+				"	}\r\n" + 
+				"	</script>\r\n" + 
+				"</head>\r\n" + 
+				"\r\n" + 
+				"<body>\r\n" + 
+				"<!-- Barra de Navegacao -->\r\n" + 
+				"<nav class=\"navbar navbar-inverse navbar-fixed-top\">\r\n" + 
+				"        <div class=\"container-fluid\">\r\n" + 
+				"            <div class=\"navbar-header\">\r\n" + 
+				"                <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\r\n" + 
+				"                    <span class=\"sr-only\">Toggle navigation</span>\r\n" + 
+				"                    <span class=\"icon-bar\"></span>\r\n" + 
+				"                    <span class=\"icon-bar\"></span>\r\n" + 
+				"                    <span class=\"icon-bar\"></span>\r\n" + 
+				"                </button>\r\n" + 
+				"                <a class=\"navbar-brand\" href=\"../index.html\">ECP7AN-MCA1-09</a>\r\n" + 
+				"            </div>\r\n" + 
+				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
+				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio06.html\">Acessos/M&ecirc;s</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                </ul>\r\n" + 
+				"            </div>\r\n" + 
+				"        </div>\r\n" + 
+				"    </nav>\r\n" + 
+				"\r\n" + 
+				"<!-- Corpo da Pagina -->\r\n" + 
+				"    <div class=\"site-wrapper\">\r\n" + 
+				"	    <div class=\"inner cover\">\r\n" + 
+				"    	    <h2 class=\"cover-heading\" align=center>Administrativo - Relat&oacute;rio 09</h2>\r\n" + 
+				"            <p class=\"lead\" align=center>Arquivos distintos que causaram erro HTTP 403.</p>\r\n" + 
+				"            <br>\r\n" + 
+				"            <p class=\"lead\" align=center>\r\n" + 
+				"            	<div id=\"chartContainer\" style=\"height: 300px; width: 100%;\"></div>\r\n" + 
+				"            </p>\r\n" + 
+				"        </div>\r\n" + 
+				"\r\n" + 
+				"        <div class=\"mastfoot\">\r\n" + 
+				"            <div class=\"inner\" align=center>\r\n" + 
+				"            	<br>\r\n" + 
+				"        		<p>ECP7AN-MCA1-09</p>\r\n" + 
+				"        	</div>\r\n" + 
+				"        </div>\r\n" + 
+				"    </div>\r\n" + 
+				"    <script src=\"../js/jquery.min.js\"></script>\r\n" + 
+				"    <script src=\"../js/bootstrap.min.js\"></script>\r\n" + 
+				"</body>\r\n" + 
+				"</html>";
+		
+		return relatorio;
+	}
+	
+	/**
+	 * Monta o relatorio10 dinamicamente conforme dados recuperados no DB do webserver.
+	 * 
+	 * @return relatorio10 montado com os dados do DB
+	 */
+	private String relatorio10 ()
+	{
+		// Recupera do DB os 10 mais acessados
+		String relatorio;
+		ArrayList<ResultTable> dados = ControllerMain.getInstance().getServiceAcc().listaTopErros();
+		
+		if (ControllerMain.DEBUG)
+		{
+			System.out.println("DADOS: "+dados.toString());
+			System.out.println("DADOS - Size: "+dados.size());
+		}
+		
+		// Preenche os dados no relatorio
+		relatorio = "<html lang=\"pt-br\">\r\n" + 
+				"<head>\r\n" + 
+				"    <meta charset=\"utf-8\">\r\n" + 
+				"    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n" + 
+				"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n" + 
+				"	<title>ECP7AN-MCA1-09 ..:::.. Relat&oacute;rio 10</title>\r\n" + 
+				"	\r\n" + 
+				"    <link href=\"../css/bootstrap.min.css\" rel=\"stylesheet\">\r\n" + 
+				"    <link href=\"../css/style.css\" rel=\"stylesheet\">\r\n" + 
+				"    \r\n" + 
+				"    <!-- Custom styles for this template -->\r\n" + 
+				"    <link href=\"../cover.css\" rel=\"stylesheet\">\r\n" + 
+				"    \r\n" + 
+				"    <!-- CanvasJS Data -->\r\n" + 
+				"    <script src=\"https://canvasjs.com/assets/script/canvasjs.min.js\"></script>\r\n" + 
+				"	<script type=\"text/javascript\">\r\n" + 
+				"	window.onload = function () {\r\n" + 
+				"		var chart = new CanvasJS.Chart(\"chartContainer\", {\r\n" + 
+				"			title:{\r\n" + 
+				"				text: \"Grafico - Top Erros\"              \r\n" + 
+				"			},\r\n" + 
+				"			data: [              \r\n" + 
+				"			{\r\n" + 
+				"				// Change type to \"doughnut\", \"line\", \"splineArea\", etc.\r\n" + 
+				"				type: \"column\",\r\n" + 
+				"				dataPoints: [\r\n" + 
+				"					{ label: \""+dados.get(0).getTipo()+"\", y: "+dados.get(0).getValor()+"  },\r\n" + 
+				"					{ label: \""+dados.get(1).getTipo()+"\", y: "+dados.get(1).getValor()+"  },\r\n" + 
+				"					{ label: \""+dados.get(2).getTipo()+"\", y: "+dados.get(2).getValor()+"  },\r\n" + 
+				"					{ label: \""+dados.get(3).getTipo()+"\", y: "+dados.get(3).getValor()+"  },\r\n" + 
+				"				]\r\n" + 
+				"			}\r\n" + 
+				"			]\r\n" + 
+				"		});\r\n" + 
+				"		chart.render();\r\n" + 
+				"	}\r\n" + 
+				"	</script>\r\n" + 
+				"</head>\r\n" + 
+				"\r\n" + 
+				"<body>\r\n" + 
+				"<!-- Barra de Navegacao -->\r\n" + 
+				"<nav class=\"navbar navbar-inverse navbar-fixed-top\">\r\n" + 
+				"        <div class=\"container-fluid\">\r\n" + 
+				"            <div class=\"navbar-header\">\r\n" + 
+				"                <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\r\n" + 
+				"                    <span class=\"sr-only\">Toggle navigation</span>\r\n" + 
+				"                    <span class=\"icon-bar\"></span>\r\n" + 
+				"                    <span class=\"icon-bar\"></span>\r\n" + 
+				"                    <span class=\"icon-bar\"></span>\r\n" + 
+				"                </button>\r\n" + 
+				"                <a class=\"navbar-brand\" href=\"../index.html\">ECP7AN-MCA1-09</a>\r\n" + 
+				"            </div>\r\n" + 
+				"            <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n" + 
+				"                <ul class=\"nav navbar-nav navbar-right\">\r\n" + 
+				"                    <li><a href=\"admin.html\">Dashboard</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio01.html\">Top 10 Arquivos</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio02.html\">Acessos/Hora</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio03.html\">Top 10 IPs</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio09.html\">Erros 403</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio04.html\">Erros 404</a>\r\n" +  
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio10.html\">Top Erros</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio05.html\">Acessos/Dia</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio06.html\">Acessos/M&ecirc;s</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio07.html\">IPs Distintos</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                    <li><a href=\"relatorio08.html\">Servidor</a>\r\n" + 
+				"                    </li>\r\n" + 
+				"                </ul>\r\n" + 
+				"            </div>\r\n" + 
+				"        </div>\r\n" + 
+				"    </nav>\r\n" + 
+				"\r\n" + 
+				"<!-- Corpo da Pagina -->\r\n" + 
+				"    <div class=\"site-wrapper\">\r\n" + 
+				"	    <div class=\"inner cover\">\r\n" + 
+				"    	    <h2 class=\"cover-heading\" align=center>Administrativo - Relat&oacute;rio 10</h2>\r\n" + 
+				"            <p class=\"lead\" align=center>Listagem de erros de acesso no servidor.</p>\r\n" + 
+				"            <br>\r\n" + 
+				"            <p class=\"lead\" align=center>\r\n" + 
+				"            	<div id=\"chartContainer\" style=\"height: 300px; width: 100%;\"></div>\r\n" + 
+				"            </p>\r\n" + 
+				"        </div>\r\n" + 
+				"\r\n" + 
+				"        <div class=\"mastfoot\">\r\n" + 
+				"            <div class=\"inner\" align=center>\r\n" + 
+				"            	<br>\r\n" + 
+				"        		<p>ECP7AN-MCA1-09</p>\r\n" + 
+				"        	</div>\r\n" + 
+				"        </div>\r\n" + 
+				"    </div>\r\n" + 
 				"    <script src=\"../js/jquery.min.js\"></script>\r\n" + 
 				"    <script src=\"../js/bootstrap.min.js\"></script>\r\n" + 
 				"</body>\r\n" + 

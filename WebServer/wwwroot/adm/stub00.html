@@ -1,0 +1,333 @@
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ECP7AN-MCA1-09 ..:::.. Dashboard</title>
+	
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="../cover.css" rel="stylesheet">
+    
+    <!-- CanvasJS Data -->
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script type="text/javascript">
+	window.onload = function () {
+		
+		var chart01 = new CanvasJS.Chart("403-doughnut-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "doughnut",
+				dataPoints: [
+					{ label: "relatorios.html",  y: 10  },
+					{ label: "400.html", y: 15  },
+					{ label: "perfil.html", y: 25  },
+					{ label: "index.html",  y: 30  }
+				]
+			}
+			]
+		});
+		
+		var chart02 = new CanvasJS.Chart("404-doughnut-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "doughnut",
+				dataPoints: [
+					{ label: "relatorios.html",  y: 10  },
+					{ label: "400.html", y: 15  },
+					{ label: "perfil.html", y: 25  },
+					{ label: "index.html",  y: 30  }
+				]
+			}
+			]
+		});
+		
+		var chart03 = new CanvasJS.Chart("ips-pie-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "pie",
+				dataPoints: [
+					{ label: "relatorios.html",  y: 10  },
+					{ label: "400.html", y: 15  },
+					{ label: "perfil.html", y: 25  },
+					{ label: "index.html",  y: 30  }
+				]
+			}
+			]
+		});
+		
+		var chart04 = new CanvasJS.Chart("acessoshorario-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "relatorios.html",  y: 10  },
+					{ label: "400.html", y: 15  },
+					{ label: "perfil.html", y: 25  },
+					{ label: "index.html",  y: 30  }
+				]
+			}
+			]
+		});
+		
+		var chart05 = new CanvasJS.Chart("acessosmes-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "relatorios.html",  y: 10  },
+					{ label: "400.html", y: 15  },
+					{ label: "perfil.html", y: 25  },
+					{ label: "index.html",  y: 30  }
+				]
+			}
+			]
+		});
+		
+		var chart06 = new CanvasJS.Chart("toparquivos-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "relatorios.html",  y: 10  },
+					{ label: "400.html", y: 15  },
+					{ label: "perfil.html", y: 25  },
+					{ label: "index.html",  y: 30  }
+				]
+			}
+			]
+		});
+		
+		var chart07 = new CanvasJS.Chart("toperros-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "relatorios.html",  y: 10  },
+					{ label: "400.html", y: 15  },
+					{ label: "perfil.html", y: 25  },
+					{ label: "index.html",  y: 30  }
+				]
+			}
+			]
+		});
+		
+		var chart08 = new CanvasJS.Chart("topips-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "relatorios.html",  y: 10  },
+					{ label: "400.html", y: 15  },
+					{ label: "perfil.html", y: 25  },
+					{ label: "index.html",  y: 30  }
+				]
+			}
+			]
+		});
+		
+		var chart09 = new CanvasJS.Chart("servidor-line-table", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "relatorios.html",  y: 10  },
+					{ label: "400.html", y: 15  },
+					{ label: "perfil.html", y: 25  },
+					{ label: "index.html",  y: 30  }
+				]
+			}
+			]
+		});
+		
+		var chart10 = new CanvasJS.Chart("acessosdia-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "relatorios.html",  y: 10  },
+					{ label: "400.html", y: 15  },
+					{ label: "perfil.html", y: 25  },
+					{ label: "403.html", y: 27  },
+					{ label: "perfil1.html", y: 13  },
+					{ label: "402.html", y: 15  },
+					{ label: "perfil2.html", y: 8  },
+					{ label: "index.html",  y: 30  }
+				]
+			}
+			]
+		});
+
+		chart01.render();
+		chart02.render();
+		chart03.render();
+		chart04.render();
+		chart05.render();
+		chart06.render();
+		chart07.render();
+		chart08.render();
+		chart09.render();
+		chart10.render();
+	}
+	</script>
+</head>
+
+<body>
+	<!-- Barra de Navegacao -->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../index.html">ECP7AN-MCA1-09</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="admin.html">Dashboard</a>
+                    </li>
+                    <li><a href="relatorio01.html">Top 10 Arquivos</a>
+                    </li>
+                    <li><a href="relatorio02.html">Acessos/Hora</a>
+                    </li>
+                    <li><a href="relatorio03.html">Top 10 IPs</a>
+                    </li>
+                    <li><a href="relatorio09.html">Erros 403</a>
+                    </li>
+                    <li><a href="relatorio04.html">Erros 404</a>
+                    </li>
+                    <li><a href="relatorio10.html">Top Erros</a>
+                    </li>
+                    <li><a href="relatorio05.html">Acessos/Dia</a>
+                    </li>
+                    <li><a href="relatorio06.html">Acessos/Mes</a>
+                    </li>
+                    <li><a href="relatorio07.html">IPs Distintos</a>
+                    </li>
+                    <li><a href="relatorio08.html">Servidor</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- /Barra de Navegacao -->
+
+	<!-- Corpo da Pagina -->
+    <div class="site-wrapper">
+	    <div class="inner cover">
+    	    <h2 class="cover-heading" align=center>Dashboard</h2>
+            <!-- <p class="lead" align=center>Página usada para testes de gráfico do CanvasJS.</p> -->
+            <br>
+        </div>
+        
+        <!-- 1st row -->
+		<div class="row m-b-2" align=center>
+			<div class="col-lg-4">
+				<div class="card card-block">
+					<h4 class="card-title" align=center>Erros 403</h4>
+					<div id="403-doughnut-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="card card-block">
+					<h4 class="card-title" align=center>Erros 404</h4>
+					<div id="404-doughnut-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="card card-block">
+					<h4 class="card-title" align=center>IPs Distintos</h4>
+					<div id="ips-pie-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /1st row -->
+	<hr align=center>
+		<!-- 2nd row -->
+		<div class="row" align=center>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Acessos/Hora</h4>
+					<div id="acessoshorario-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Acessos/Mes</h4>
+					<div id="acessosmes-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /2nd row -->
+	<hr align=center>
+		<!-- 3rd row -->
+		<div class="row" align=center>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Top Arquivos</h4>
+					<div id="toparquivos-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Top Erros</h4>
+					<div id="toperros-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /3rd row -->
+	<hr align=center>	
+		<!-- 4th row -->
+		<div class="row" align=center>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Top IPs</h4>
+					<div id="topips-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Servidor</h4>
+					<div id="servidor-line-table" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /4th row -->
+	<hr align=center>
+		<!-- 5th row -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card card-block">
+					<h4 class="card-title" align=center>Acessos/Dia</h4>
+					<div id="acessosdia-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /5th row -->
+
+        <div class="mastfoot">
+            <div class="inner" align=center>
+            	<br>
+        		<p>ECP7AN-MCA1-09</p>
+        	</div>
+        </div>
+    </div>
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+</body>
+</html>

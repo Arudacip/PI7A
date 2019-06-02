@@ -25,6 +25,9 @@ WebServer de computação paralela para atender solicitações HTTP.
 * Verificados os erros no relatório 07 - IPs distintos que acessaram o servidor;
 * Verificados os erros no relatório 08 - lista de eventos de servidor;
 * Ajustar verificação de diretório do sistema;
+* Montar relatório 09 - erros 403; (extra)
+* Montar relatório 10 - top erros; (extra)
+* Montar dashboard na pagina admin.html; (extra)
 
 ## TODO
 * Até onde sei, nada;

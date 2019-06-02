@@ -398,11 +398,18 @@ public class DAOLogAcc
 	 * @param num : numero de logs a listar
 	 * @return resultado da querie em ArrayList.
 	 */
-	public ArrayList<ResultTable> lista400(Connection conn)
+	public ArrayList<ResultTable> lista400(Connection conn, boolean limit)
 	{
 		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
 		ResultTable currentresult;
-		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=400 ORDER BY arquivo DESC LIMIT 5;";
+		String sqlSelect ="";
+		if (limit)
+		{
+			sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=400 ORDER BY arquivo DESC LIMIT 5;";
+		} else
+		{
+			sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=400 ORDER BY arquivo;";
+		}
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -436,11 +443,18 @@ public class DAOLogAcc
 	 * @param num : numero de logs a listar
 	 * @return resultado da querie em ArrayList.
 	 */
-	public ArrayList<ResultTable> lista403(Connection conn)
+	public ArrayList<ResultTable> lista403(Connection conn, boolean limit)
 	{
 		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
 		ResultTable currentresult;
-		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=403 ORDER BY arquivo DESC LIMIT 5;";
+		String sqlSelect ="";
+		if (limit)
+		{
+			sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=403 ORDER BY arquivo DESC LIMIT 5;";
+		} else
+		{
+			sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=403 ORDER BY arquivo;";
+		}
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -474,11 +488,18 @@ public class DAOLogAcc
 	 * @param num : numero de logs a listar
 	 * @return resultado da querie em ArrayList.
 	 */
-	public ArrayList<ResultTable> lista404(Connection conn)
+	public ArrayList<ResultTable> lista404(Connection conn, boolean limit)
 	{
 		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
 		ResultTable currentresult;
-		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=404 ORDER BY arquivo DESC LIMIT 5;";
+		String sqlSelect ="";
+		if (limit)
+		{
+			sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=404 ORDER BY arquivo DESC LIMIT 5;";
+		} else
+		{
+			sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=404 ORDER BY arquivo;";
+		}
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{
@@ -512,11 +533,18 @@ public class DAOLogAcc
 	 * @param num : numero de logs a listar
 	 * @return resultado da querie em ArrayList.
 	 */
-	public ArrayList<ResultTable> lista405(Connection conn)
+	public ArrayList<ResultTable> lista405(Connection conn, boolean limit)
 	{
 		ArrayList<ResultTable> resultados = new ArrayList<ResultTable>();
 		ResultTable currentresult;
-		String sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=405 ORDER BY arquivo DESC LIMIT 5;";
+		String sqlSelect ="";
+		if (limit)
+		{
+			sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=405 ORDER BY arquivo DESC LIMIT 5;";
+		} else
+		{
+			sqlSelect = "SELECT DISTINCT arquivo FROM logacesso WHERE codigo_resposta=405 ORDER BY arquivo;";
+		}
 		
 		try (PreparedStatement stm = conn.prepareStatement(sqlSelect);)
 		{

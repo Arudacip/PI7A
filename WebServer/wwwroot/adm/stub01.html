@@ -1,0 +1,392 @@
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ECP7AN-MCA1-09 ..:::.. Dashboard</title>
+	
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="../cover.css" rel="stylesheet">
+    
+    <!-- CanvasJS Data -->
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<script type="text/javascript">
+	window.onload = function () {
+		
+		var chart01 = new CanvasJS.Chart("403-doughnut-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "doughnut",
+				dataPoints: [
+					{ label: "/img/", y: 1  },
+					{ label: "/adm//", y: 1  },
+					{ label: "/adm/", y: 1  },
+					{ label: "//", y: 1  }
+				]
+			}
+			]
+		});
+		
+		var chart02 = new CanvasJS.Chart("404-doughnut-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "doughnut",
+				dataPoints: [
+					{ label: "/teste.html", y: 1  },
+					{ label: "/style.css", y: 1  },
+					{ label: "/js/jquery.min.js", y: 1  },
+					{ label: "/js/bootstrap.min.js", y: 1  },
+					{ label: "/img/perfil.png", y: 1  }
+				]
+			}
+			]
+		});
+		
+		var chart03 = new CanvasJS.Chart("ips-pie-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "pie",
+				dataPoints: [
+					{ label: "193.11.17.219", y: 1  },
+					{ label: "177.33.145.29", y: 1  },
+					{ label: "127.0.0.1", y: 1  },
+					{ label: "0:0:0:0:0:0:0:1", y: 1  }
+				]
+			}
+			]
+		});
+		
+		var chart04 = new CanvasJS.Chart("acessoshorario-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "0h", y: 691  },
+					{ label: "1h", y: 364  },
+					{ label: "2h", y: 93  },
+					{ label: "3h", y: 189  },
+					{ label: "4h", y: 60  },
+					{ label: "5h", y: 42  },
+					{ label: "6h", y: 0  },
+					{ label: "7h", y: 0  },
+					{ label: "8h", y: 0  },
+					{ label: "9h", y: 0  },
+					{ label: "10h", y: 0  },
+					{ label: "11h", y: 0  },
+					{ label: "12h", y: 2  },
+					{ label: "13h", y: 0  },
+					{ label: "14h", y: 2  },
+					{ label: "15h", y: 0  },
+					{ label: "16h", y: 2  },
+					{ label: "17h", y: 42  },
+					{ label: "18h", y: 26  },
+					{ label: "19h", y: 99  },
+					{ label: "20h", y: 11  },
+					{ label: "21h", y: 2  },
+					{ label: "22h", y: 98  },
+					{ label: "23h", y: 337  }
+				]
+			}
+			]
+		});
+		
+		var chart05 = new CanvasJS.Chart("acessosmes-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "1", y: 0  },
+					{ label: "2", y: 0  },
+					{ label: "3", y: 2  },
+					{ label: "4", y: 4  },
+					{ label: "5", y: 1917  },
+					{ label: "6", y: 137  },
+					{ label: "7", y: 0  },
+					{ label: "8", y: 0  },
+					{ label: "9", y: 0  },
+					{ label: "10", y: 0  },
+					{ label: "11", y: 0  },
+					{ label: "12", y: 0  }
+				]
+			}
+			]
+		});
+		
+		var chart06 = new CanvasJS.Chart("toparquivos-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "/index.html", y: 259  },
+					{ label: "/js/bootstrap.min.js", y: 240  },
+					{ label: "/css/bootstrap.min.css", y: 238  },
+					{ label: "/js/jquery.min.js", y: 232  },
+					{ label: "/css/style.css", y: 231  },
+					{ label: "/perfil.html", y: 82  },
+					{ label: "/img/logo.png", y: 79  },
+					{ label: "/img/usjt.png", y: 68  },
+					{ label: "/relatorios.html", y: 40  },
+					{ label: "/adm/admin.html", y: 35  }
+				]
+			}
+			]
+		});
+		
+		var chart07 = new CanvasJS.Chart("toperros-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "Erro 400", y: 12  },
+					{ label: "Erro 403", y: 4  },
+					{ label: "Erro 404", y: 29  },
+					{ label: "Erro 405", y: 3  }
+				]
+			}
+			]
+		});
+		
+		var chart08 = new CanvasJS.Chart("topips-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "0:0:0:0:0:0:0:1", y: 1937  },
+					{ label: "127.0.0.1", y: 112  },
+					{ label: "177.33.145.29", y: 6  },
+					{ label: "193.11.17.219", y: 5  }
+				]
+			}
+			]
+		});
+		
+		var chart09 = new CanvasJS.Chart("servidor-line-table", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "CloseOK", y: 1742  },
+					{ label: "OpenCon", y: 1507  },
+					{ label: "TryStart", y: 110  },
+					{ label: "Started!", y: 105  },
+					{ label: "CloseErr", y: 51  }
+				]
+			}
+			]
+		});
+		
+		var chart10 = new CanvasJS.Chart("acessosdia-column-chart", {
+			data: [              
+			{
+				// Change type to "doughnut", "line", "splineArea", etc.
+				type: "column",
+				dataPoints: [
+					{ label: "1", y: 0  },
+					{ label: "2", y: 137  },
+					{ label: "3", y: 0  },
+					{ label: "4", y: 0  },
+					{ label: "5", y: 2  },
+					{ label: "6", y: 0  },
+					{ label: "7", y: 0  },
+					{ label: "8", y: 0  },
+					{ label: "9", y: 0  },
+					{ label: "10", y: 0  },
+					{ label: "11", y: 66  },
+					{ label: "12", y: 122  },
+					{ label: "13", y: 0  },
+					{ label: "14", y: 0  },
+					{ label: "15", y: 75  },
+					{ label: "16", y: 32  },
+					{ label: "17", y: 0  },
+					{ label: "18", y: 2  },
+					{ label: "19", y: 0  },
+					{ label: "20", y: 0  },
+					{ label: "21", y: 100  },
+					{ label: "22", y: 36  },
+					{ label: "23", y: 45  },
+					{ label: "24", y: 165  },
+					{ label: "25", y: 676  },
+					{ label: "26", y: 0  },
+					{ label: "27", y: 58  },
+					{ label: "28", y: 307  },
+					{ label: "29", y: 0  },
+					{ label: "30", y: 168  },
+					{ label: "31", y: 69  }
+				]
+			}
+			]
+		});
+
+		chart01.render();
+		chart02.render();
+		chart03.render();
+		chart04.render();
+		chart05.render();
+		chart06.render();
+		chart07.render();
+		chart08.render();
+		chart09.render();
+		chart10.render();
+	}
+	</script>
+</head>
+
+<body>
+	<!-- Barra de Navegacao -->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../index.html">ECP7AN-MCA1-09</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="admin.html">Dashboard</a>
+                    </li>
+                    <li><a href="relatorio01.html">Top 10 Arquivos</a>
+                    </li>
+                    <li><a href="relatorio02.html">Acessos/Hora</a>
+                    </li>
+                    <li><a href="relatorio03.html">Top 10 IPs</a>
+                    </li>
+                    <li><a href="relatorio09.html">Erros 403</a>
+                    </li>
+                    <li><a href="relatorio04.html">Erros 404</a>
+                    </li>
+                    <li><a href="relatorio10.html">Top Erros</a>
+                    </li>
+                    <li><a href="relatorio05.html">Acessos/Dia</a>
+                    </li>
+                    <li><a href="relatorio06.html">Acessos/Mes</a>
+                    </li>
+                    <li><a href="relatorio07.html">IPs Distintos</a>
+                    </li>
+                    <li><a href="relatorio08.html">Servidor</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- /Barra de Navegacao -->
+
+	<!-- Corpo da Pagina -->
+    <div class="site-wrapper">
+	    <div class="inner cover">
+    	    <h2 class="cover-heading" align=center>Dashboard</h2>
+            <!-- <p class="lead" align=center>Página usada para testes de gráfico do CanvasJS.</p> -->
+            <br>
+        </div>
+        
+        <!-- 1st row -->
+		<div class="row m-b-2" align=center>
+			<div class="col-lg-4">
+				<div class="card card-block">
+					<h4 class="card-title" align=center>Erros 403</h4>
+					<div id="403-doughnut-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="card card-block">
+					<h4 class="card-title" align=center>Erros 404</h4>
+					<div id="404-doughnut-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<div class="card card-block">
+					<h4 class="card-title" align=center>IPs Distintos</h4>
+					<div id="ips-pie-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /1st row -->
+	<hr align=center>
+		<!-- 2nd row -->
+		<div class="row" align=center>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Acessos/Hora</h4>
+					<div id="acessoshorario-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Acessos/Mes</h4>
+					<div id="acessosmes-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /2nd row -->
+	<hr align=center>
+		<!-- 3rd row -->
+		<div class="row" align=center>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Top Arquivos</h4>
+					<div id="toparquivos-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Top Erros</h4>
+					<div id="toperros-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /3rd row -->
+	<hr align=center>	
+		<!-- 4th row -->
+		<div class="row" align=center>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Top IPs</h4>
+					<div id="topips-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="card card-block">
+					<h4 class="card-title m-b-2" align=center>Servidor</h4>
+					<div id="servidor-line-table" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /4th row -->
+	<hr align=center>
+		<!-- 5th row -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card card-block">
+					<h4 class="card-title" align=center>Acessos/Dia</h4>
+					<div id="acessosdia-column-chart" style="height: 200px; width: 100%;"></div>
+				</div>
+			</div>
+		</div>
+		<!-- /5th row -->
+
+        <div class="mastfoot">
+            <div class="inner" align=center>
+            	<br>
+        		<p>ECP7AN-MCA1-09</p>
+        	</div>
+        </div>
+    </div>
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+</body>
+</html>
