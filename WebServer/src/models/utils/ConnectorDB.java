@@ -68,12 +68,12 @@ public class ConnectorDB
 		password = prop.getProperty("prop.server.password");
 		// PARA DEBUG
 		
-		jdbc = "mariadb";
+		/*jdbc = "mysql";
 		address = "127.0.0.1";
 		dbporta = "3306";
 		database = "mx5nzdqvcg";
-		user = "webserverpi";
-		password = "a2A4V1s5Fz";
+		user = "root";
+		password = "a2A4V1s5Fz";*/
 		
 		if (ControllerMain.DEBUG)
 		{
