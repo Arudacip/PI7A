@@ -1,1 +1,10 @@
+controllers
+controllers.facades
+controllers.sockets
 models
+models.dao
+models.services
+models.utils
+views
+views.buttons
+views.panels
